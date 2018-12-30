@@ -1,0 +1,24 @@
+﻿系统路径设计：
+1. 无需身份验证的路径
+/login
+/error
+/forget
+/advice
+
+
+2. 无需授权的Controller
+/logout
+/c/**
+
+3. Manager页面
+/cManager/**
+
+4. Auditor页面
+/auditor/**
+
+5. ManagerController
+/cManager/c/**
+
+6. AuditorController
+/auditor/c/**
+

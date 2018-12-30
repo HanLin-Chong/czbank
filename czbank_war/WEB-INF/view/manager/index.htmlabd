@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!   特别注意    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+    <!--
+           子页面禁止引用其它任何位置，任何形式的jquery文件（包括联网引用的也不行）,
+           否则父页面bootstrap会失效报错，只能引用本地的js/jquery-1.11.0.min.js
+    -->
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!   /特别注意  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+    <title>客户经理</title>
+    <meta charset="utf-8">
+
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../img/czyh.png">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <!-- Bootstrap -->
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+
+
+    <!--<link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">-->
+
+
+    <link rel="stylesheet" href="../../css/jquery.mCustomScrollbar.min.css" />
+    <link rel="stylesheet" href="../../css/custom.css">
+    <!-- iziToast -->
+    <link rel="stylesheet" href="../../css/iziToast.min.css">
+
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="../../js/custom.js"></script>
+
+    <script src="../../js/iziToast.min.js" type="text/javascript"></script>
+    <script src="../../layui/layui.all.js"></script>
+    <script src="../../js/hanlinCommons.js"></script>
+    <script src="../../js/deferredAjax.js"></script>
+    <style>
+        /*调整用户信息下的两个label*/
+        .label{
+            float:left;
+            margin-left:5px;
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="page-wrapper">
+    <nav id="sidebar" class="sidebar-wrapper" style="z-index:999">
+        <div class="sidebar-content">
+            <a href="#" id="toggle-sidebar"><span class="glyphicon glyphicon-th-list"></span></a>
+            <div class="sidebar-brand">
+                <a href="#">客户经理</a>
+            </div>
+            <div class="sidebar-header">
+                <div class="user-pic">
+                    <img class="img-responsive img-rounded" src="../../img/user_default_head.jpg" alt="">
+                </div>
+                <div class="user-info">
+                    <span class="user-name">姓名：</span><!-- 名 <strong>姓</strong> -->
+                    <span class="user-role">工号：</span>
+                    <span class="user-role">机构号：</span>
+                    <div class="user-status">
+                        <a href="#"><span class="label label-success mylabelgroup">账号状态：</span></a>
+
+                    </div>
+                </div>
+            </div><!-- sidebar-header  -->
+            <div class="sidebar-search">
+                <div>
+                    <div class="input-group">
+                        <input type="text" class="form-control search-menu" placeholder="搜索功能暂未开放">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                    </div>
+                </div>
+            </div><!-- sidebar-search  -->
+            <div class="sidebar-menu">
+                <ul>
+                    <li class="header-menu"><span>业务处理</span></li>
+
+                    <a  data-toggle="collapse" type="button" data-target="#NRACollapse">
+
+                        <div id="NRACollapse" class="sidebar-submenu collapse">
+                            <ul>
+                                <li class="pageloder-trigger"  whichpage="Manager_NRA_upload.html"><a href="#">上传资料 </a> </li>
+
+                                <li class="pageloder-trigger" whichpage="Manager_NRA_queue.html"><a href="#">审核队列</a></li>
+
+                            </ul>
+                        </div>
+                    </a>
+
+
+                    <li class="" whichpage="">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-plus"></i>
+                            <span>账户申请</span>
+                        </a>
+                    </li>
+                    <!--  <li class="header-menu"><span>Simple menu</span></li>
+                    <li><a href="#"><i class="fa fa-tv"></i><span>用户权限管理</span></a></li>
+
+                    -->
+
+                </ul>
+            </div><!-- sidebar-menu  -->
+        </div><!-- sidebar-content  -->
+
+        <div class="sidebar-footer">
+            <a id="notifications-trigger" href="message.jsp" target="_blank" title="消息中心"><i class="glyphicon glyphicon-comment"></i></a>
+            <a id="message_send_and_history_message" title="发送消息"><i class="glyphicon glyphicon-list-alt"></i></a>
+
+            <a title="退出当前账号" href="/logout"><i class="glyphicon glyphicon-off"></i></a>
+        </div>
+    </nav><!-- sidebar-wrapper  -->
+    <main class="page-content">
+
+
+
+    </main><!-- page-content" -->
+</div><!-- page-wrapper -->
+
+
+
+<script>
+
+    $(document).ready(function(){
+        iziToast.destroy();
+        //加载此页时检查subject是否拥有经理的角色，这样做是为了提高用户体验，并不是为了提高安全性（后台代码已经拦截）
+        $.when(request("/cManager/c/checkLogin", {"":""})).done(function(data){
+            //data = JSON.parse(data);
+            console.log(data);
+            if (data){
+                iziToast.info({
+                    message:"欢迎回来"
+                });
+                //HanLin.info("欢迎回来");
+            } else {
+                HanLin.error("用户未登录，跳转至登录页")
+                window.location.href = "/login";
+            }
+        });
+
+        //默认500mm=0.5秒后跳出左侧栏
+        setTimeout(function(){
+            $(".page-wrapper").toggleClass("toggled");
+        },500);
+
+        //功能页初始化
+        //$(".page-content").load("Manager_NRA_upload.html");
+
+
+        //阻止通过浏览器的返回按钮回到此页
+        if (window.history && window.history.pushState) {
+            $(window).on('popstate', function () {
+                window.history.pushState('forward', null, '#');
+                window.history.forward(1);
+            });
+        }
+        window.history.pushState('forward', null, '#'); //在IE中必须得有这两行
+        window.history.forward(1);
+    });
+
+</script>
+
+</body>
+</html>

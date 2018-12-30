@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>稠州银行梅湖支行国际业务部业务系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- 禁止用户缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <link rel="icon" href="img/czyh.png">
+    <link rel="stylesheet" href="css/normalize.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <!-- iziToast -->
+    <link rel="stylesheet" href="css/iziToast.min.css"/>
+
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/iziToast.min.js"></script>
+    <script src="js/deferredAjax.js"></script>
+    <style>
+    </style>
+</head>
+<body style="background: rgba(255,255,255,0)">
+
+<div class="page-header">
+
+    <h1><img src="img/czyh.png" style="width: 60px;"/>稠州银行梅湖支行 <small>国际业务部</small></h1>
+</div>
+    <div class="col-lg-4 my-layout" style="height: 0px"></div>
+
+    <div class="col-lg-4 my-layout">
+        <form id="form" class="form-group" style="margin-top: 15%">
+            <div class="form-group">
+                <label for="username">ID：</label>
+                <input id="username" type="text" class="form-control" placeholder="输入您的ID"/>
+            </div>
+            <div class="form-group">
+                <label for="password">密码：</label>
+                <input id="password" type="password" class="form-control" placeholder="输入您的密码"/>
+            </div>
+            <br/>
+
+        </form>
+        <button id="submit" class=" form-group btn btn-primary" style="width:100%">登录</button>
+        <div style="margin-top:40px;">
+            <a href="#" style="margin-top: 30px;">忘记密码？</a>
+            <a href="#" class="pull-right">意见反馈</a>
+        </div>
+    </div>
+    <div class="col-lg-4 my-layout" style="height: 0px"></div>
+
+<script>
+$(document).ready(function(e){
+    iziToast.destroy();
+    iziToast.warning({
+        message:"新用户请联系系统管理员注册账户"
+    });
+    $("body").keydown(function() {
+        if (event.keyCode == "13") {//keyCode=13是回车键
+            submit();
+        }
+    });
+
+    $("#submit").click(function (){
+        submit();
+    });
+});
+function submit() {
+
+    iziToast.destroy();
+    var username = $("#username").val();
+    var password = $("#password").val();
+    if (username == "" || username == null){
+
+        iziToast.error({
+            message:"请填写用户名"
+        });
+    } else {
+        if (password == "" || password == null){
+            iziToast.error({
+                message: "请输入密码"
+            });
+        } else {
+            $("#submit").prop('disabled', true);
+            $("#submit").html("请稍后。。。");
+
+
+
+            $.when(request("c/login", {userId:username,password:password})).done(function (response){
+                $("#submit").html("登录");
+                $("#submit").prop("disabled", false);
+                response = JSON.parse(response);
+                if (response.flag){
+                    window.location.href = "/distribute";
+                } else {
+                    iziToast.error({
+                        message:response.message
+                    });
+                }
+            });
+
+
+        }
+    }
+}
+
+</script>
+</body>
+</html>

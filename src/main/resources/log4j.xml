@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd" [
+        <!ENTITY logroot "D:/logs">
+        ]>
+
+
+<log4j:configuration threshold="debug" debug="true">
+    <!--
+        日志要以业务功能模块分类进行文件输出，最好不要将所有service或spring等等的日志都输出在一个log里
+    -->
+
+
+    <appender name="SPRING" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="&logroot;/spring.log" />
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.txt'" />
+        <param name="Encoding" value="UTF-8" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss,SSS}]-[%p] [线程：%t] %c - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+
+        <param name="Encoding" value="UTF-8" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%n [%d{yyyy-MM-dd HH:mm:ss,SSS}]-[%p] [线程：%t] %c - %m %n" />
+        </layout>
+    </appender>
+
+
+    <appender name="WEBAPP" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="&logroot;/后端操作.log" />
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.txt'" />
+        <param name="Encoding" value="UTF-8" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss,SSS}]-[%p] [线程：%t] %c - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="ROOTLOG" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="&logroot;/所有日志.log" />
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.txt'" />
+        <param name="Encoding" value="UTF-8" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss,SSS}]-[%p] [线程：%t] %c - %m%n" />
+        </layout>
+    </appender>
+
+    <logger name="org.springframework" additivity="false">
+        <level value="ALL" />
+        <appender-ref ref="SPRING" />
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="com.relesee" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="WEBAPP"/>
+    </logger>
+
+    <logger name="org.apache.shiro.*">
+        <level value="ALL"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- Root Logger -->
+    <!-- 所有logger的父类，记录所有的日志。 -->
+    <root>
+        <level value="ALL" />  <!-- 限定记录等级 -->
+        <appender-ref ref="ROOTLOG" />  <!-- 调用记录方式 -->
+    </root>
+</log4j:configuration>
