@@ -13,34 +13,39 @@
     <![endif]-->
 
     <link rel="icon" href="../../img/czyh.png">
-    <link rel="stylesheet" href="../../css/normalize.css"/>
-    <link rel="stylesheet" href="../../css/bootstrap.min.css"/>
+    <!--<link rel="stylesheet" href="../../css/normalize.css"/>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css"/>-->
     <!-- iziToast -->
     <link rel="stylesheet" href="../../css/iziToast.min.css"/>
-    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../layui/css/layui.css"/>
 
     <script src="../../js/jquery-1.11.0.min.js"></script>
-    <script src="../../js/bootstrap.min.js"></script>
+    <!--<script src="../../js/bootstrap.min.js"></script>-->
     <script src="../../js/iziToast.min.js"></script>
     <script src="../../js/deferredAjax.js"></script>
     <script src="../../js/hanlinCommons.js"></script>
     <script src="../../layui/layui.js"></script>
+    <style>
+        a, a:hover, a:active{
+            text-decoration: none !important;
+        }
+    </style>
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo">layui 后台布局</div>
+        <div class="layui-logo" style="color: #9dc1d3;">客户经理</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="">控制台</a></li>
-            <li class="layui-nav-item"><a href="">商品管理</a></li>
-            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item loadPage"><a>消息中心</a></li>
+            <li class="layui-nav-item loadPage"><a>商品管理</a></li>
+            <li class="layui-nav-item loadPage"><a>用户</a></li>
             <li class="layui-nav-item">
                 <a href="javascript:;">其它系统</a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">邮件管理</a></dd>
-                    <dd><a href="">消息管理</a></dd>
-                    <dd><a href="">授权管理</a></dd>
+                    <dd class="loadPage"><a>邮件管理</a></dd>
+                    <dd class="loadPage"><a>消息管理</a></dd>
+                    <dd class="loadPage"><a>授权管理</a></dd>
                 </dl>
             </li>
         </ul>
@@ -48,14 +53,14 @@
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img id="headPhoto" src="../../img/czyh.png" class="layui-nav-img">
-                    <jsWrite id="userName">读取用户信息中...</jsWrite>
+                    <jsWrite id="userName"><img src="../../img/load.gif" class="layui-nav-img"/></jsWrite>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">基本资料</a></dd>
-                    <dd><a href="">安全设置</a></dd>
+                    <dd class="loadPage"><a>个人资料</a></dd>
+                    <dd><a href="/logout" style="color: #ff0000;">安全退出</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a href="/logout">安全退出</a></li>
+
         </ul>
     </div>
 
@@ -64,57 +69,65 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">所有商品</a>
+                    <a href="javascript:;">NRA业务</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="javascript:;">列表三</a></dd>
-                        <dd><a href="">超链接</a></dd>
+                        <dd class="loadPage" whichPage="nra"><a id="initOption" href="javascript:;">审核队列查看</a></dd>
+                        <dd class="loadPage" whichPage="nraUpload"><a href="javascript:;">境内账户申请资料上传</a></dd>
+                        <!--<dd><a>超链接</a></dd>-->
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;">解决方案</a>
+                    <a href="javascript:;">境外账户申请</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="">超链接</a></dd>
+                        <dd class="loadPage"><a href="javascript:;">Amazon(US)</a></dd>
+                        <dd class="loadPage"><a href="javascript:;">Amazon(EU)</a></dd>
+                        <dd class="loadPage"><a href="javascript:;">ebay</a></dd>
+
                     </dl>
                 </li>
-                <li class="layui-nav-item"><a href="">云市场</a></li>
-                <li class="layui-nav-item"><a href="">发布商品</a></li>
+                <li class="layui-nav-item">
+                    <a class="loadPage" whichPage="draft" href="javascript:;">草稿页</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a class="loadPage" whichPage="draft2" href="javascript:;">草稿页2</a>
+                </li>
             </ul>
         </div>
     </div>
 
-    <div class="layui-body">
-        <!-- 内容主体区域 -->
-        <div style="padding: 15px;">内容主体区域</div>
+    <div id="contentArea" class="layui-body layui-flud">
+
     </div>
 
+
     <div class="layui-footer">
-        <!-- 底部固定区域 -->
+        &lt;!&ndash; 底部固定区域 &ndash;&gt;
         © layui.com - 底部固定区域
     </div>
 </div>
 <script>
 
     //JavaScript代码区域
-    layui.use('element', function(){
+    layui.use(['element', 'layer', 'form'], function(){
         var element = layui.element;
+        element.init();
 
     });
 
     //当前用户的JSON数据
     var currentUser;
     $(document).ready(function(){
-
         iziToast.destroy();
+
+
         //加载此页时检查subject是否拥有经理的角色，这样做是为了提高用户体验，并不是为了提高安全性（后台代码已经拦截）
         $.when(request("c/checkLogin", {})).done(function(data){
             if (data){
                 HanLin.info("欢迎回来");
+                HanLin.warn("对开发者说（我自己）：记得不要把用户重要的信息传回来");
             } else {
-                alert("用户未登录，跳转至登录页")
+                //这里会被后台过滤器拦截所以不会执行，但以防万一，在这里写一个
+                alert("用户未登录，跳转至登录页");
                 window.location.href = "/login";
             }
         });
@@ -130,6 +143,26 @@
             },2000);
 
         });
+
+        //绑定导航选项的点击事件
+        $(".loadPage").click(function (e){
+            $("#contentArea").html("");
+            var index = layer.load(2, {time: 10*1000});
+            setTimeout(function (){
+                var whichPage = $(e.currentTarget).attr("whichPage");
+                console.log("加载："+whichPage+".html");
+                if (whichPage == "" || whichPage == null || whichPage == undefined){
+                    //$("#contentArea").html("暂无此页面");
+                    HanLin.error("该功能正在施工中");
+                    layer.close(index);
+                } else {
+                    $("#contentArea").load(whichPage);
+                    layer.close(index);
+                }
+            },200);
+
+        });
+
     });
 </script>
 </body>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.relesee.dao.NraFileDao">
+
+
+    <insert id="insertNraFile">
+        INSERT INTO
+            nrafile(
+                id,
+                fileName,
+                uploadTime,
+                uploader,
+                restorePath,
+                isDel,
+                note,
+                isQualityCustomer,
+                statusCode,
+                isPriority
+            )
+        VALUE
+            (
+                #{id},
+                #{fileName},
+                NOW(),
+                #{uploader},
+                #{restorePath},
+                0,
+                #{note},
+                #{isQualityCustomer},
+                0,
+                0
+            )
+    </insert>
+
+    <select id="selectNraQueueLimit" resultType="com.relesee.domains.NraFile">
+        SELECT
+            id,
+            filename,
+            isQualityCustomer,
+            uploadTime,
+            uploader,
+            userName,
+            restorePath,
+            statusCode,
+            isPriority,
+            note
+        FROM
+            nrafile
+        INNER JOIN
+            user
+        ON
+            nrafile.uploader = user.userId
+        WHERE
+            isDel = '0'
+        AND
+            userState > 0
+        ORDER BY
+            uploadTime
+        LIMIT
+            #{begin}, #{size}
+    </select>
+
+    <select id="selectCountNraQueue" resultType="int">
+        SELECT
+            COUNT(id)
+        FROM
+            nrafile
+        WHERE
+            isDel = '0'
+    </select>
+
+</mapper>

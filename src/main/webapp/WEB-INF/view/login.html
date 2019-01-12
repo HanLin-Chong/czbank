@@ -45,11 +45,34 @@
             <a href="#" style="margin-top: 30px;">忘记密码？</a>
             <a href="#" class="pull-right">意见反馈</a>
         </div>
+        <div>
+            <h2>开发用快捷登录按钮</h2>
+            <button id="temp1" class="btn btn-danger">经理：m1</button>
+            <button id="temp2" class="btn btn-danger">审核员：a1</button>
+            <button id="temp3" class="btn btn-danger">root</button>
+        </div>
     </div>
     <div class="col-lg-4 my-layout" style="height: 0px"></div>
 
 <script>
 $(document).ready(function(e){
+    $("#temp1").click(function(){
+        $("#username").val("m1");
+        $("#password").val("0");
+        submit();
+    });
+    $("#temp2").click(function(){
+        $("#username").val("a1");
+        $("#password").val("0");
+        submit();
+    });
+    $("#temp3").click(function(){
+        $("#username").val("root");
+        $("#password").val("root");
+        submit();
+    });
+
+
     iziToast.destroy();
     iziToast.warning({
         message:"新用户请联系系统管理员注册账户"

@@ -16,4 +16,7 @@
 
     <bean id="shiroService" class="com.relesee.service.ShiroService"/>
 
+    <bean id="managerService" class="com.relesee.service.ManagerService"/>
+
+
 </beans>

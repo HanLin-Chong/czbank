@@ -1623,6 +1623,7 @@
             var self = this, settings;
             self._raise('filepreajax', [previewId, index]);
             self._uploadExtra(previewId, index);
+            /*
             //here  hanlin
             var hanlin_get_file_notes = $(".upload_file_notes").val();
             
@@ -1634,7 +1635,11 @@
             }
             
             self.formdata.append("notes",hanlin_get_file_notes);//!!!!!!!!!!!!!!!!!关键之处！！！！！
-            
+            */
+
+            preUpload(self.formdata);//调用我自己定义的函数去设置额外的formdata
+
+
             settings = $.extend(true, {}, {
                 xhr: function () {
                     var xhrobj = $.ajaxSettings.xhr();

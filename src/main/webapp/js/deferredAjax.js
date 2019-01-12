@@ -10,6 +10,8 @@ function request(url, parameters){
     });
     return defer.promise();
 }
+
+
 /**
  * 用例
  * $.when(request(url, parameters)).done(function(data){

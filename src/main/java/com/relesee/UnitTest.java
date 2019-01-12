@@ -2,34 +2,29 @@ package com.relesee;
 
 
 import com.alibaba.fastjson.JSON;
-import com.relesee.dao.RolePermissionDao;
-import com.relesee.dao.UserDao;
-import com.relesee.domains.User;
+import com.relesee.dao.NraFileDao;
+import com.relesee.domains.NraFile;
+import com.relesee.domains.Result;
+import com.relesee.service.ManagerService;
+import com.relesee.utils.FileUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Set;
+import java.util.List;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:application*.xml"})
+@ContextConfiguration({"classpath:application-context.xml"})
 public class UnitTest {
 
-    @Autowired
-    UserDao userDao;
 
     @Test
-    public void doTest(){
+    public void doTest() {
+        //TODO spring 读properties？
 
-        User user = userDao.selectUserById("m0000001");
-        User user2 = userDao.selectUserByIdAndPass("m0000001","000000");
-        System.out.println(JSON.toJSONString(user));
-        System.out.println(JSON.toJSONString(user2));
     }
-
-
 
 }

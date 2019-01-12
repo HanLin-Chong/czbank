@@ -1,0 +1,203 @@
+<body id="nraUploadPage">
+<style>
+    #chooseFile:hover{
+        cursor: pointer;
+        background: #66677c;
+    }
+</style>
+<div class="layui-row layui-col-lg12 layui-container">
+
+
+    <div class="layui-col-lg12">
+        <br/>
+    </div>
+
+    <div class="layui-inline layui-col-lg4 layui-form">
+        <button id="uploadFile" class="layui-btn">上传</button>
+        <button id="clear" class="layui-btn layui-btn-danger">清空</button>
+        <input type="checkbox" id="qualityCustomer" title="优质客户" lay-filter="form"/>
+    </div>
+
+    <div class="layui-inline layui-col-lg12">
+        <input id="fileNames" type="text" class="layui-input" placeholder="(请选择文件)支持的文件格式：.zip/.rar/.doc/.docx，限制100MB，最多可同时上传3个文件" readonly/>
+    </div>
+
+    <div class="layui-col-lg12 layui-form">
+
+    </div>
+    <div id="layer" class="layer-photos-demo">
+        <div class="layui-progress layui-col-lg12">
+            <div id="progressBar" lay-filter="demo" class="layui-progress-bar layui-bg-cyan"></div>
+        </div>
+    </div>
+
+
+    <div id="chooseFile" class="layui-col-lg12 layui-bg-gray" style="text-align: center;">
+        <!-- 毕竟不是专业前端，这里用br了 -->
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <h1 style="align-items: center;">将文件拖拽至此区域或点击此区域选择文件</h1>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+    </div>
+
+
+
+</div>
+<script>//laiui的所有操作
+var upload,form,element,layer,uploadInst,renderParam,files;
+layui.use(['upload', 'form', 'element', 'layer'], function (){
+    upload = layui.upload;
+    form = layui.form;
+    element = layui.element;
+    layer = layui.layer;
+    element.init();
+    form.render();
+    var loadIndex;
+
+    renderParam = {
+        elem: '#chooseFile',
+        url: 'c/nraUpload',
+        auto: false,
+        bindAction: "#uploadFile",
+        //accept: "file",//file所有文件,images图片,video视频,audio音频
+        //acceptMine: "file/rar, file/zip, file/doc, file/docx",//弹出的文件选择框只显示这些类型的文件
+        exts: "zip|rar|doc|docx",//允许的后缀
+        filed: "multipartFile",//猜测和input的name一样multipartFile直接作为Controller的参数
+        size: 100*1024,//100MB，不支持IE8和9
+        number: 3,
+        multiple: true,//不支持IE8和9
+        drag: true,
+        //使用自己的myChoose替代
+        choose: function (obj){
+            files = obj.pushFile();
+            /*
+            //读取文件名字，拼接后写到文本框中
+            var temp = "";
+            for (o in files){
+                temp += files[o].name+";;";
+            }
+            $("#fileNames").val(temp);*/
+        },
+        before: function(){
+            loadIndex = layer.load(2);
+
+            var data = {};
+            data.isQualityCustomer = $("#qualityCustomer").is(":checked");
+            data.note = $("#note").val();
+
+            this.data=data;
+
+            //禁用上传按钮
+            $("#uploadFile").addClass("layui-btn-disabled");
+
+        },
+
+        done: function(res, index, upload){
+            console.log(res);
+            if (res.flag){
+                HanLin.success(res.message);
+            } else {
+                HanLin.error(res.message);
+            }
+            //临时解决办法
+            $("#progressBar").css("width", "0%");
+
+        },
+        error: function(){
+            //请求异常回调
+            //layer.close(loadIndex);
+            HanLin.error("上传失败");
+            $("#uploadFile").removeClass("layui-btn-disabled");
+        },
+        allDone: function(obj){
+
+            layer.close(loadIndex);
+            //临时解决办法
+            //$("#progressBar").css("width", "0%");
+            $("#progressBar").css("width", "0%");
+            $("#uploadFile").removeClass("layui-btn-disabled");
+        },
+        xhr:xhrOnProgress,
+        progress:function(value){
+            //原生方法element.progress("demo", value+"%");不生效
+            //临时解决办法
+            $("#progressBar").css("width", value+"%");
+        },
+        myChoose:function (obj){
+            //读取文件名字，拼接后写到文本框中
+            var temp = "";
+            console.log(obj);
+            var myFiles = obj.files;
+            console.log(myFiles);
+
+            for (index in myFiles){
+                console.log(index);
+                temp += myFiles[index].name+";;";
+            }
+            $("#fileNames").val("hh"+temp);
+
+
+        }
+    }
+
+    //执行实例
+    uploadInst = upload.render(renderParam);
+});
+
+$(document).ready(function (){
+
+    $("#clear").click(function(){
+        $("#fileNames").val("");
+        $("#note").val("");
+
+        var form = $(".hanlinModifyTheUpload");
+        console.log(form);
+        for (var i = 0; i < form.length; i++){
+            form[i].reset();
+        }
+    });
+
+});
+
+//创建监听函数
+var xhrOnProgress=function(fun) {
+    xhrOnProgress.onprogress = fun; //绑定监听
+    //使用闭包实现监听绑
+    return function() {
+        //通过$.ajaxSettings.xhr();获得XMLHttpRequest对象
+        var xhr = $.ajaxSettings.xhr();
+        //判断监听函数是否为函数
+        if (typeof xhrOnProgress.onprogress !== 'function')
+            return xhr;
+        //如果有监听函数并且xhr对象支持绑定时就把监听函数绑定上去
+        if (xhrOnProgress.onprogress && xhr.upload) {
+            xhr.upload.onprogress = xhrOnProgress.onprogress;
+        }
+        return xhr;
+    }
+}
+
+
+</script>
+</body>
