@@ -6,13 +6,16 @@ import com.relesee.dao.NraFileDao;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
 import com.relesee.service.ManagerService;
+import com.relesee.service.NraQueueService;
 import com.relesee.utils.FileUtil;
+import com.relesee.utils.RedisUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,11 +23,14 @@ import java.util.List;
 @ContextConfiguration({"classpath:application-context.xml"})
 public class UnitTest {
 
+    @Autowired
+    NraFileDao dao;
 
     @Test
     public void doTest() {
-        //TODO spring 读properties？
-
+        //TODO 测试transactional
+        List<NraFile> list = dao.selectNraQueue("",  null , null);
+        System.out.println(JSON.toJSONString(list));
     }
 
 }

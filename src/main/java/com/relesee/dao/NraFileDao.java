@@ -8,7 +8,8 @@ import java.util.List;
 public interface NraFileDao {
     int insertNraFile(NraFile nraFile);
 
-    List<NraFile> selectNraQueueLimit(@Param("begin") int begin, @Param("size") int size);
+//    List<NraFile> selectNraQueueLimit(@Param("begin") int begin, @Param("size") int size);
 
-    int selectCountNraQueue();
+    List<NraFile> selectNraQueue(@Param("fileName") String fileName,@Param("beginDate") String beginDate,@Param("endDate") String endDate);
+
 }

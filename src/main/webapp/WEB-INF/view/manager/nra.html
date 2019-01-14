@@ -13,31 +13,39 @@
     <script src="../../js/bootstrap.min.js"></script>
 
     <script src="../../js/hanlinCommons.js"></script>
-    <!--<script src="../../layui/layui.js"></script>-->
+    <!--<script src="../../layui/layui.all.js"></script>-->
     <script src="../../js/deferredAjax.js"></script>
 </head>
 <body class="row">
-    <!--<div class="col-lg-12" style="background: #ffff00">
-        <>
-    </div>-->
+    <!-- 占位 -->
     <div class="col-lg-12">
-        <div id="tableTool" class="hidden"><!-- hidden防止其在表格上方渲染，是bootstrap的工具类 -->
-            <div class="input-group">
-                <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">文件名<span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                        <li><a>文件名</a></li>
-                        <li><a>上传时间</a></li>
-                        <li><a>Something else here</a></li>
+        <br/>
+        <br/>
+    </div>
 
-                    </ul>
-                </div><!-- /btn-group -->
-                <input type="text" class="form-control" placeholder="文件名查找">
-                <span class="input-group-btn">
-                    <button id="search" lay-filter="search" class="btn btn-primary" type="button">查找</button>
-                </span>
-            </div><!-- /input-group -->
+    <div class="col-lg-3">
+        <div class="input-group">
+            <span class="input-group-addon">文件名过滤</span>
+            <input type="text" id="fileNameFilter" class="form-control" placeholder="文件名过滤"/>
+
+            <!--<span class="input-group-btn">
+                <button lay-filter="search" class="btn btn-primary" type="button">查找</button>
+            </span>-->
+        </div><!-- /input-group -->
+    </div>
+    <div class="col-lg-7">
+        <div class="input-group">
+            <span class="input-group-addon">时间区间过滤</span>
+            <input type="text" id="dateFilterBegin" class="form-control" placeholder="开始时间"/>
+            <span class="input-group-addon">至</span>
+            <input type="text" id="dateFilterEnd" class="form-control" placeholder="不填则搜索开始时间当天的申请"/>
         </div>
+    </div>
+    <div class="col-lg-2">
+        <button id="search" class="btn btn-primary">过滤</button>
+        <button id="refresh" class="btn btn-success">刷新队列</button>
+    </div>
+    <div class="col-lg-12">
         <table id="queue" lay-filter="nra"></table>
     </div>
 
@@ -45,21 +53,68 @@
 
 <script>
 var currentUser = null;
-var table;
+renderTable();
 
-$.when(request("c/getManager"), {}).done( function (data){
+$.when(request("c/getManager"), {}).done(function (data){
     currentUser = JSON.parse(data).result;
 
-    layui.use(['table', 'form'], function (){
+    $(document).ready(function (){
+
+        layui.laydate.render({
+            elem: '#dateFilterBegin',
+            type: "datetime",
+            calendar: true,
+            //range: "至"
+        });
+        layui.laydate.render({
+            elem: '#dateFilterEnd',
+            type: 'datetime',
+            calendar: true
+        });
 
 
-        table = layui.table;
-        //defer.resolve(table);
-        table.render({
+        /*
+        $("#search").click(function (){
+            alert(1);
+        });*/
+        $("#search").click(function (){
+            var data = {
+                fileName:$("#fileNameFilter").val(),
+                beginDate:$("#dateFilterBegin").val(),
+                endDate:$("#dateFilterEnd").val()
+            };
+
+            reloadTableData(data);
+
+        });
+        $("#refresh").click(function (){
+            reloadTableData({});
+        });
+
+        $(document).on("click", ".revoke", function (e){
+            var btn = e.currentTarget;
+            var id = $(btn).attr("nraFileId");
+            console.log(id);
+        });
+
+
+    });
+
+
+
+
+});
+
+function renderTable(){
+
+    $.when(request("c/getNraQueue"), {}).done(function (data){
+        data = JSON.parse(data);
+
+        layui.table.render({
             elem: "#queue",
             title: "NRA队列",
             loading: true,
-            url: "/cManager/c/getQueueBetween",
+            //url: "/cManager/c/getQueueBetween",
             page: true,
             autoSort: false,
             cols: [[
@@ -73,6 +128,13 @@ $.when(request("c/getManager"), {}).done( function (data){
                                 return "<p style='color: #5eb95e'>审核通过</p>";
                             case 2:
                                 return "<p style='color: red'>审核未通过</p>";
+                        }
+                    }
+                },
+                {title: '操作', width:100, align: 'center',
+                    templet: function (d){
+                        if (d.userName == currentUser.userName){
+                            return "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' style='height: 25px;line-height: 10px;'>撤销</button>";
                         }
                     }
                 },
@@ -100,35 +162,30 @@ $.when(request("c/getManager"), {}).done( function (data){
             ]],
             toolbar: "#tableTool",
             defaultToolbar: ["filter", "exports", "print"],
-            where: {
-                test: "hhhhhh"
-            }
-
+            //data: data
+            data: [
+                // {"fileName":"nnn", "id":"id", "note":"", priority:true, qualityCustomer:false, queueNo:1, restorePath:"path", statusCode:"0", uploadTime:"2019-01-05 23:03:40", uploader:"m1", userName:""}
+            ]
         });
-        table.on('row(nra)', function (obj){
-            console.log(obj);
+        //table.render({data:data});
+        //table.data = data;
+    });
+}
+
+function reloadTableData(p){
+    var index = layer.load(2, {time: 10*1000});
+    console.log(p);
+
+    $.when(request("c/getNraQueue", p)).done(function (data){
+        console.log(JSON.parse(data))
+        layer.close(index);
+        layui.table.reload("queue", {
+            data: JSON.parse(data)
         });
     });
 
-    $(document).ready(function (){
-        /*
-        $("#search").click(function (){
-            alert(1);
-        });*/
-        $("#search").click(function (){
-            
-        });
 
-
-    });
-
-
-
-
-});
-
-
-
+}
 
 
 

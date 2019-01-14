@@ -11,6 +11,7 @@
             nrafile(
                 id,
                 fileName,
+                queueNo,
                 uploadTime,
                 uploader,
                 restorePath,
@@ -20,10 +21,19 @@
                 statusCode,
                 isPriority
             )
-        VALUE
+        VALUES
             (
                 #{id},
                 #{fileName},
+                (SELECT no FROM
+                    (SELECT CASE MAX(queueNo)
+                        WHEN MAX(queueNo)>=1 THEN MAX(queueNo)+1
+                        ELSE 1
+                        END AS no
+                    FROM
+                        nrafile
+                    ) AS temp
+                ),
                 NOW(),
                 #{uploader},
                 #{restorePath},
@@ -35,7 +45,7 @@
             )
     </insert>
 
-    <select id="selectNraQueueLimit" resultType="com.relesee.domains.NraFile">
+<!--    <select id="selectNraQueueLimit" resultType="com.relesee.domains.NraFile">
         SELECT
             id,
             filename,
@@ -58,18 +68,66 @@
         AND
             userState > 0
         ORDER BY
-            uploadTime
+            isPriority DESC,
+			uploadTime
         LIMIT
             #{begin}, #{size}
-    </select>
+    </select>-->
 
-    <select id="selectCountNraQueue" resultType="int">
+<!--    <select id="selectCountNraQueue" resultType="int">
         SELECT
             COUNT(id)
         FROM
             nrafile
         WHERE
             isDel = '0'
+    </select>-->
+
+    <select id="selectNraQueue" resultType="com.relesee.domains.NraFile">
+        SELECT
+            id,
+            filename,
+            queueNo,
+            isQualityCustomer,
+            uploadTime,
+            uploader,
+            userName,
+            restorePath,
+            statusCode,
+            isPriority,
+            note
+        FROM
+            nrafile
+        INNER JOIN
+            user
+        ON
+            nrafile.uploader = user.userId
+        WHERE
+            isDel = '0'
+        AND
+            userState > 0
+        AND
+            queueNo >= 1
+        AND
+            fileName LIKE CONCAT('%', #{fileName} ,'%')
+        <if test="beginDate != null and endDate != null">
+        AND
+            uploadTime
+        BETWEEN
+            #{beginDate} AND #{endDate}
+        </if>
+        <if test="beginDate != null and endDate == null">
+        AND
+            DATE_FORMAT(uploadtime, '%Y-%m-%d') = DATE_FORMAT(#{beginDate}, '%Y-%m-%d')
+        </if>
+        <if test="endDate != null and beginDate == null">
+        AND
+            DATE_FORMAT(uploadtime, '%Y-%m-%d') = DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+        </if>
+        ORDER BY
+            isPriority DESC,
+			uploadTime
     </select>
+
 
 </mapper>

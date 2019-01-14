@@ -3,6 +3,7 @@ package com.relesee.controller;
 import com.alibaba.fastjson.JSON;
 import com.relesee.domains.*;
 import com.relesee.service.ManagerService;
+import com.relesee.service.NraQueueService;
 import com.relesee.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -32,6 +33,9 @@ public class ManagerController {
 
     @Autowired
     ManagerService managerService;
+
+    @Autowired
+    NraQueueService nraQueueService;
 
     @RequestMapping("checkLogin")
     @ResponseBody
@@ -69,11 +73,20 @@ public class ManagerController {
         nraFile.setNote(note);
 
 
-        Result result = managerService.nraUpload(file, nraFile);
+        Result result = nraQueueService.nraUpload(file, nraFile);
 
         return JSON.toJSONString(result);
     }
 
+    @RequestMapping(value = "getNraQueue", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getNraQueue(String fileName, String beginDate, String endDate){
+
+        System.out.println("fileName:"+fileName+"|beginDate:"+beginDate+"|endDate:"+endDate);
+        return JSON.toJSONString(nraQueueService.getQueue(fileName, beginDate, endDate));
+    }
+
+    /*
     @RequestMapping(value = "getQueueBetween", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String getQueueBetween(int page, int limit, String test){
@@ -83,14 +96,14 @@ public class ManagerController {
 
         int begin = (page - 1) * limit;
         //由于前端插件的原因，直接返回List比较方便
-        List<NraFile> list = managerService.getQueueBetween(begin, limit);
+        List<NraFile> list = nraQueueService.getQueueBetween(begin, limit);
         response.setCode(0);
-        response.setCount(managerService.getNraQueueLength());
+        response.setCount(nraQueueService.getNraQueueLength());
         response.setData(list);
         response.setMsg("获取队列成功，共有"+list.size()+"条数据");
 
         return JSON.toJSONString(response);
 
-    }
+    }*/
 
 }

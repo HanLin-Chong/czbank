@@ -18,5 +18,5 @@
 
     <bean id="managerService" class="com.relesee.service.ManagerService"/>
 
-
+    <bean id="nraQueueService" class="com.relesee.service.NraQueueService"/>
 </beans>

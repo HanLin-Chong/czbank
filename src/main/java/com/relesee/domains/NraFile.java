@@ -1,6 +1,8 @@
 package com.relesee.domains;
 
-public class NraFile {
+import java.io.Serializable;
+
+public class NraFile implements Serializable {
     String id;
     int queueNo;
     String fileName;

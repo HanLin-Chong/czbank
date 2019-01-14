@@ -86,10 +86,10 @@ function preUpload(formdata){
     formdata.append("note", $("#note").val());
 }
 $(document).ready(function(){
-    layui.use(['form'], function(){
-        var form = layui.form;
-        form.render();
-    });
+    //layui.use(['form'], function(){
+    var form = layui.form;
+    form.render();
+    //});
     //异步上传返回结果处理
     $("#uploadfile").on("fileuploaded", function (event, data, previewId, index) {
         console.log(data);
