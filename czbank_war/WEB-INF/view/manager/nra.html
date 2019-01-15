@@ -94,7 +94,28 @@ $.when(request("c/getManager"), {}).done(function (data){
         $(document).on("click", ".revoke", function (e){
             var btn = e.currentTarget;
             var id = $(btn).attr("nraFileId");
-            console.log(id);
+            var uploadTime = $(btn).attr("uploadTime");
+            var fileName = $(btn).attr("fileName");
+            layui.layer.confirm('确定撤销您于<br/>('+uploadTime+')<br/>上传的<br/>('+fileName+')?', {icon: 3, title:'请三思'}, function(index2){
+                //do something
+
+                var index = layui.layer.load(2);
+                $.when(request("c/revokeNraFile", {id:id})).done(function(data){
+
+                    data = JSON.parse(data);
+                    layui.layer.close(index);
+                    if (data.flag){
+                        HanLin.success("已撤销("+fileName+":"+uploadTime+")");
+                    } else {
+                        HanLin.error("撤销失败");
+                    }
+                    reloadTableData({});
+                });
+
+                layui.layer.close(index2);
+            });
+
+
         });
 
 
@@ -134,7 +155,7 @@ function renderTable(){
                 {title: '操作', width:100, align: 'center',
                     templet: function (d){
                         if (d.userName == currentUser.userName){
-                            return "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' style='height: 25px;line-height: 10px;'>撤销</button>";
+                            return "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>撤销</button>";
                         }
                     }
                 },
@@ -162,10 +183,10 @@ function renderTable(){
             ]],
             toolbar: "#tableTool",
             defaultToolbar: ["filter", "exports", "print"],
-            //data: data
-            data: [
+            data: data
+            /*data: [
                 // {"fileName":"nnn", "id":"id", "note":"", priority:true, qualityCustomer:false, queueNo:1, restorePath:"path", statusCode:"0", uploadTime:"2019-01-05 23:03:40", uploader:"m1", userName:""}
-            ]
+            ]*/
         });
         //table.render({data:data});
         //table.data = data;

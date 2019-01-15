@@ -125,9 +125,39 @@
             DATE_FORMAT(uploadtime, '%Y-%m-%d') = DATE_FORMAT(#{endDate}, '%Y-%m-%d')
         </if>
         ORDER BY
-            isPriority DESC,
-			uploadTime
+            queueNo
     </select>
+
+    <update id="deleteNraFileById" parameterType="String">
+        UPDATE
+            nrafile
+        SET
+            isDel = 1
+        WHERE
+            id = #{id};
+        UPDATE
+            nrafile
+        SET
+            queueNo = queueNo - 1
+        WHERE
+            queueNo > (
+                SELECT queueNo FROM(
+                    SELECT
+                        queueNo
+                    FROM
+                        nrafile
+                    WHERE
+                        id = #{id}
+                ) as temp
+            );
+        UPDATE
+            nrafile
+        SET
+            queueNo = 0
+        WHERE
+            id = #{id}
+    </update>
+
 
 
 </mapper>

@@ -86,6 +86,13 @@ public class ManagerController {
         return JSON.toJSONString(nraQueueService.getQueue(fileName, beginDate, endDate));
     }
 
+    @RequestMapping(value = "revokeNraFile", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String revokeNraFile(String id){
+
+        Result result = nraQueueService.revokeNraFile(id);
+        return JSON.toJSONString(result);
+    }
     /*
     @RequestMapping(value = "getQueueBetween", produces = "text/plane;charset=utf-8")
     @ResponseBody

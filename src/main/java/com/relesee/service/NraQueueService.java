@@ -1,5 +1,6 @@
 package com.relesee.service;
 
+import com.alibaba.fastjson.JSON;
 import com.relesee.dao.NraFileDao;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
@@ -51,28 +52,27 @@ public class NraQueueService {
         return queue;
     }
 
-/*    public List<NraFile> queueFilter(String fileName, String beginDate, String endDate){
-        List<NraFile> originQueue = getQueue();
-
-        for (int i = 0; i<originQueue.size(); i++){
-            NraFile nraFile = originQueue.get(i);
-            String originFileName = nraFile.getFileName();
-            String originDate = nraFile.getFileName();
-            originQueue.remove(i);
+    /**
+     * 删除文件，需要并发锁，虽然每个客户经理只能删除自己的文件，但是以防万一，得加上锁，
+     * 队列重新编号、逻辑删除、状态码调0工作都在同一个update标签中完成
+     * @param id
+     * @return
+     */
+    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public synchronized Result revokeNraFile(String id){
+        Result result = new Result();
+        int count = nraFileDao.deleteNraFileById(id);
+        System.out.println(count);
+        if (count >= 1){
+            result.setFlag(true);
+            result.setMessage("撤销申请成功");
+        } else {
+            result.setFlag(false);
+            result.setMessage("撤销申请失败");
         }
-        return originQueue;
-
-    }*/
-
-    /*public List<NraFile> getQueueBetween(int begin, int size){
-        List<NraFile> result = nraFileDao.selectNraQueueLimit(begin, size);
-        int i = 1;
-        for (NraFile record : result){
-            record.setQueueNo(i+begin);
-            i++;
-        }
+        System.out.println(JSON.toJSONString(result));
         return result;
-    }*/
+    }
 
     /**
      * nra文件的上传是manager特有的功能

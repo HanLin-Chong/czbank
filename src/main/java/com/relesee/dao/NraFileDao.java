@@ -12,4 +12,6 @@ public interface NraFileDao {
 
     List<NraFile> selectNraQueue(@Param("fileName") String fileName,@Param("beginDate") String beginDate,@Param("endDate") String endDate);
 
+    int deleteNraFileById(String id);
+
 }
