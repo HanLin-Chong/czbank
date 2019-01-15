@@ -14,4 +14,5 @@ public interface NraFileDao {
 
     int deleteNraFileById(String id);
 
+    List<NraFile> selectNraHistory(@Param("userId")String userId, @Param("fileName") String fileName,@Param("beginDate") String beginDate,@Param("endDate") String endDate);
 }

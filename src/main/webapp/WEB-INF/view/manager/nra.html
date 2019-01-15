@@ -114,8 +114,31 @@ $.when(request("c/getManager"), {}).done(function (data){
 
                 layui.layer.close(index2);
             });
+        });
 
+        $(document).on("click", ".applyPriority", function (e){
+            var btn = e.currentTarget;
+            var id = $(btn).attr("nraFileId");
+            var uploadTime = $(btn).attr("uploadTime");
+            var fileName = $(btn).attr("fileName");
+            layui.layer.confirm('插队需要等待审核员的处理，审核员的处理结果将在消息中心通知<br/>需要插队的申请：<br/>于'+uploadTime+'<br/>上传的<br/>'+fileName+'<br/>确认无误后点击确定提交申请', {icon: 3, title:'听说您要插队？'}, function(index2){
+                //do something
 
+                var index = layui.layer.load(2);
+                $.when(request("c/revokeNraFile", {id:id})).done(function(data){
+
+                    data = JSON.parse(data);
+                    layui.layer.close(index);
+                    if (data.flag){
+                        HanLin.success("已撤销("+fileName+":"+uploadTime+")");
+                    } else {
+                        HanLin.error("撤销失败");
+                    }
+                    reloadTableData({});
+                });
+
+                layui.layer.close(index2);
+            });
         });
 
 
@@ -152,10 +175,11 @@ function renderTable(){
                         }
                     }
                 },
-                {title: '操作', width:100, align: 'center',
+                {title: '操作', width:140, align: 'center',
                     templet: function (d){
                         if (d.userName == currentUser.userName){
-                            return "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>撤销</button>";
+                            return "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>撤销</button> " +
+                                "<button class='applyPriority btn btn-success' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>插队</button>";
                         }
                     }
                 },

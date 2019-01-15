@@ -128,11 +128,52 @@
             queueNo
     </select>
 
+    <select id="selectNraHistory" resultType="com.relesee.domains.NraFile">
+        SELECT
+            id,
+            filename,
+            queueNo,
+            isQualityCustomer,
+            uploadTime,
+            uploader,
+            restorePath,
+            statusCode,
+            isPriority,
+            note
+        FROM
+            nrafile
+        INNER JOIN
+            user
+        ON
+            nrafile.uploader = user.userId
+        WHERE
+            userId = #{userId}
+        AND
+        fileName LIKE CONCAT('%', #{fileName} ,'%')
+        <if test="beginDate != null and endDate != null">
+            AND
+            uploadTime
+            BETWEEN
+            #{beginDate} AND #{endDate}
+        </if>
+        <if test="beginDate != null and endDate == null">
+            AND
+            DATE_FORMAT(uploadtime, '%Y-%m-%d') = DATE_FORMAT(#{beginDate}, '%Y-%m-%d')
+        </if>
+        <if test="endDate != null and beginDate == null">
+            AND
+            DATE_FORMAT(uploadtime, '%Y-%m-%d') = DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+        </if>
+        ORDER BY
+            uploadTime
+    </select>
+
     <update id="deleteNraFileById" parameterType="String">
         UPDATE
             nrafile
         SET
-            isDel = 1
+            isDel = 1,
+            statusCode = 3
         WHERE
             id = #{id};
         UPDATE

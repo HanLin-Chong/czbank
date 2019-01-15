@@ -81,9 +81,13 @@ public class ManagerController {
     @RequestMapping(value = "getNraQueue", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String getNraQueue(String fileName, String beginDate, String endDate){
-
-        System.out.println("fileName:"+fileName+"|beginDate:"+beginDate+"|endDate:"+endDate);
         return JSON.toJSONString(nraQueueService.getQueue(fileName, beginDate, endDate));
+    }
+
+    @RequestMapping(value = "getNraHistory", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getNraHistory(String fileName, String beginDate, String endDate){
+        return JSON.toJSONString(nraQueueService.getHistory(fileName, beginDate, endDate));
     }
 
     @RequestMapping(value = "revokeNraFile", produces = "text/plane;charset=utf-8")

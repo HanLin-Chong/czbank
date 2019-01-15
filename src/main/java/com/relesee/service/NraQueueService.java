@@ -47,9 +47,22 @@ public class NraQueueService {
         if (StringUtils.isBlank(endDate)){
             endDate = null;
         }
-        List<NraFile> queue = nraFileDao.selectNraQueue(fileName, beginDate, endDate);
+        return nraFileDao.selectNraQueue(fileName, beginDate, endDate);
 
-        return queue;
+    }
+
+    public List<NraFile> getHistory(String fileName, String beginDate, String endDate){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        if (StringUtils.isBlank(fileName)){
+            fileName = "";
+        }
+        if (StringUtils.isBlank(beginDate)){
+            beginDate = null;
+        }
+        if (StringUtils.isBlank(endDate)){
+            endDate = null;
+        }
+        return nraFileDao.selectNraHistory(user.getUserId(), fileName, beginDate, endDate);
     }
 
     /**
