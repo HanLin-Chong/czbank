@@ -15,6 +15,7 @@
     <script src="../../js/hanlinCommons.js"></script>
     <!--<script src="../../layui/layui.all.js"></script>-->
     <script src="../../js/deferredAjax.js"></script>
+
 </head>
 <body class="row">
     <!-- 占位 -->
@@ -55,8 +56,8 @@
 var currentUser = null;
 renderTable();
 
-$.when(request("c/getManager"), {}).done(function (data){
-    currentUser = JSON.parse(data).result;
+$.when(request("c/getManager"), {}).done(function (userData){
+    currentUser = JSON.parse(userData).result;
 
     $(document).ready(function (){
 
@@ -100,16 +101,17 @@ $.when(request("c/getManager"), {}).done(function (data){
                 //do something
 
                 var index = layui.layer.load(2);
-                $.when(request("c/revokeNraFile", {id:id})).done(function(data){
+                $.when(request("c/revokeNraFile", {id:id})).done(function(dataRevoke){
 
-                    data = JSON.parse(data);
-                    layui.layer.close(index);
-                    if (data.flag){
+                    dataRevoke = JSON.parse(dataRevoke);
+
+                    if (dataRevoke.flag){
                         HanLin.success("已撤销("+fileName+":"+uploadTime+")");
                     } else {
                         HanLin.error("撤销失败");
                     }
                     reloadTableData({});
+                    layui.layer.close(index);
                 });
 
                 layui.layer.close(index2);
@@ -125,14 +127,14 @@ $.when(request("c/getManager"), {}).done(function (data){
                 //do something
 
                 var index = layui.layer.load(2);
-                $.when(request("c/revokeNraFile", {id:id})).done(function(data){
+                $.when(request("c/applyPriority", {id:id})).done(function(dataPriority){
 
-                    data = JSON.parse(data);
+                    dataPriority = JSON.parse(dataPriority);
                     layui.layer.close(index);
-                    if (data.flag){
-                        HanLin.success("已撤销("+fileName+":"+uploadTime+")");
+                    if (dataPriority.flag){
+                        HanLin.success("已提交插队申请：("+fileName+":"+uploadTime+")");
                     } else {
-                        HanLin.error("撤销失败");
+                        HanLin.error("申请失败");
                     }
                     reloadTableData({});
                 });
@@ -151,8 +153,8 @@ $.when(request("c/getManager"), {}).done(function (data){
 
 function renderTable(){
 
-    $.when(request("c/getNraQueue"), {}).done(function (data){
-        data = JSON.parse(data);
+    $.when(request("c/getNraQueue"), {}).done(function (dataQueue){
+        dataQueue = JSON.parse(dataQueue);
 
         layui.table.render({
             elem: "#queue",
@@ -177,6 +179,7 @@ function renderTable(){
                 },
                 {title: '操作', width:140, align: 'center',
                     templet: function (d){
+
                         if (d.userName == currentUser.userName){
                             return "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>撤销</button> " +
                                 "<button class='applyPriority btn btn-success' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>插队</button>";
@@ -207,25 +210,22 @@ function renderTable(){
             ]],
             toolbar: "#tableTool",
             defaultToolbar: ["filter", "exports", "print"],
-            data: data
+            data: dataQueue
             /*data: [
                 // {"fileName":"nnn", "id":"id", "note":"", priority:true, qualityCustomer:false, queueNo:1, restorePath:"path", statusCode:"0", uploadTime:"2019-01-05 23:03:40", uploader:"m1", userName:""}
             ]*/
         });
-        //table.render({data:data});
-        //table.data = data;
+
     });
 }
 
 function reloadTableData(p){
     var index = layer.load(2, {time: 10*1000});
-    console.log(p);
 
-    $.when(request("c/getNraQueue", p)).done(function (data){
-        console.log(JSON.parse(data))
+    $.when(request("c/getNraQueue", p)).done(function (dataReload){
         layer.close(index);
         layui.table.reload("queue", {
-            data: JSON.parse(data)
+            data: JSON.parse(dataReload)
         });
     });
 

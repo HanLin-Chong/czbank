@@ -62,6 +62,8 @@ public class ShiroService extends AuthorizingRealm {
         Result<User> result = userService.login(userId, password);
         SimpleAuthenticationInfo loginfo = null;
         if (result.isFlag()){
+            //设置超时时间，这样设置可以使用户自定义超时时间,默认3小时
+            SecurityUtils.getSubject().getSession().setTimeout(10800000);
             User user = result.getResult();
             //下面构造方法的第一个参数就是pricipal(subject.getPricipal)
             loginfo = new SimpleAuthenticationInfo(user, user.getPassword(), getName());

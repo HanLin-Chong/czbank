@@ -46,7 +46,7 @@
     <button id="refresh" class="btn btn-success">刷新队列</button>
 </div>
 <div class="col-lg-12">
-    <table id="queue" lay-filter="nra"></table>
+    <table id="queueHistory" lay-filter="nra"></table>
 </div>
 
 
@@ -100,7 +100,7 @@
             data = JSON.parse(data);
 
             layui.table.render({
-                elem: "#queue",
+                elem: "#queueHistory",
                 title: "历史记录(仅可查看自己的记录)",
                 loading: true,
                 //url: "/cManager/c/getQueueBetween",
@@ -152,7 +152,6 @@
 
     function reloadTableData(p){
         var index = layer.load(2, {time: 10*1000});
-        console.log(p);
 
         $.when(request("c/getNraQueue", p)).done(function (data){
             console.log(JSON.parse(data))

@@ -97,24 +97,12 @@ public class ManagerController {
         Result result = nraQueueService.revokeNraFile(id);
         return JSON.toJSONString(result);
     }
-    /*
-    @RequestMapping(value = "getQueueBetween", produces = "text/plane;charset=utf-8")
+
+    @RequestMapping(value = "applyPriority", produces = "text/plane;charset=utf-8")
     @ResponseBody
-    public String getQueueBetween(int page, int limit, String test){
-        System.out.println(test);
-        LayTableResponse<List<NraFile>> response = new LayTableResponse<>();
-
-
-        int begin = (page - 1) * limit;
-        //由于前端插件的原因，直接返回List比较方便
-        List<NraFile> list = nraQueueService.getQueueBetween(begin, limit);
-        response.setCode(0);
-        response.setCount(nraQueueService.getNraQueueLength());
-        response.setData(list);
-        response.setMsg("获取队列成功，共有"+list.size()+"条数据");
-
-        return JSON.toJSONString(response);
-
-    }*/
+    public String applyPriority(String id){
+        //TODO 提交到审核员处，等待审核员功能
+        return "";
+    }
 
 }

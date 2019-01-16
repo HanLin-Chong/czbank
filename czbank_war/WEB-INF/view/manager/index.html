@@ -71,7 +71,7 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;">NRA业务</a>
                     <dl class="layui-nav-child">
-                        <dd class="loadPage" whichPage="nra"><a id="initOption" href="javascript:;">审核队列查看</a></dd>
+                        <dd class="loadPage" whichPage="nra"><a href="javascript:;">审核队列查看</a></dd>
                         <dd class="loadPage" whichPage="nraUpload"><a href="javascript:;">境内账户申请资料上传</a></dd>
                         <dd class="loadPage" whichPage="nraHistory"><a href="javascript:;">历史申请记录</a></dd>
                         <!--<dd><a>超链接</a></dd>-->
@@ -114,13 +114,13 @@
         //element.init();
 
     //});
-    layui.element.init();
+
 
     //当前用户的JSON数据
     var currentUser;
     $(document).ready(function(){
         iziToast.destroy();
-
+        layui.element.init();
 
         //加载此页时检查subject是否拥有经理的角色，这样做是为了提高用户体验，并不是为了提高安全性（后台代码已经拦截）
         $.when(request("c/checkLogin", {})).done(function(data){
@@ -136,7 +136,6 @@
         //获取用户信息，缓存到客户端内存中
         $.when(request("c/getManager", {})).done(function(data){
             data = JSON.parse(data);
-            console.log(data);
             var user = data.result;
             currentUser = user;
             setTimeout(function (){
@@ -152,7 +151,6 @@
             var index = layer.load(2, {time: 10*1000});
             setTimeout(function (){
                 var whichPage = $(e.currentTarget).attr("whichPage");
-                console.log("加载："+whichPage+".html");
                 if (whichPage == "" || whichPage == null || whichPage == undefined){
                     //$("#contentArea").html("暂无此页面");
                     HanLin.error("该功能正在施工中");
