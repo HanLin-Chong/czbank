@@ -366,6 +366,7 @@ $(document).ready(function (){
         transactionRecordFile = null;
     });
     $('#transactionRecord').on('fileerror', function(event, data, msg) {
+        layer.msg(msg);
         HanLin.error(msg);
     });
 
@@ -392,6 +393,7 @@ $(document).ready(function (){
         applicationFile = null;
     });
     $('#applicationFile').on('fileerror', function(event, data, msg) {
+        layer.msg(msg);
         HanLin.error(msg);
     });
 
@@ -428,7 +430,7 @@ $(document).ready(function (){
 
     function submit(){
         if (transactionRecordFile == null && applicationFile == null){
-            layer.msg("请选择申请文件");
+            layer.msg("请选择申请文件 ");
         }
         if (transactionRecordFile == null && !applicationFile == null){
             layer.confirm('新店铺可以不上传交易记录，确定继续？', {
@@ -441,8 +443,6 @@ $(document).ready(function (){
                 for(var i = 0; i < form.length; i++){
                     formData.append(form[i].name, form[i].value);
                 }
-                console.log(transactionRecordFile);
-                console.log(applicationFile);
                 formData.append("transactionRecord", transactionRecordFile);
                 formData.append("applicationFile", applicationFile);
                 var defer = $.Deferred();

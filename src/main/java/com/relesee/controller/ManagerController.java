@@ -115,9 +115,7 @@ public class ManagerController {
     @ResponseBody
     public String ebayApplication(EbayApplication ebayApplication){
         //System.out.println(JSON.toJSONString(ebay));
-        System.out.println(ebayApplication.getPaypalId());
-        System.out.println(ebayApplication.getApplicationFile().getOriginalFilename());
-        System.out.println(ebayApplication.getTransactionRecord().getOriginalFilename());
+
         return "";
     }
 
