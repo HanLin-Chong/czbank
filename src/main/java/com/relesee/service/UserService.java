@@ -26,10 +26,21 @@ public class UserService {
         return result;
     }
 
-    public Result checkLogin(){
+    public Result checkManagerLogin(){
         Result result = new Result();
         Subject subject = SecurityUtils.getSubject();
         if (subject.hasRole("manager")){
+            result.setFlag(true);
+        } else {
+            result.setFlag(false);
+        }
+        return result;
+    }
+
+    public Result checkAuditorLogin(){
+        Result result = new Result();
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.hasRole("auditor")){
             result.setFlag(true);
         } else {
             result.setFlag(false);

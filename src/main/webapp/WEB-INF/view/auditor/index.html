@@ -34,7 +34,7 @@
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo" style="color: #9dc1d3;">客户经理</div>
+        <div class="layui-logo" style="color: #9dc1d3;">审核员</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item loadPage"><a>消息中心</a></li>
@@ -71,14 +71,13 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;">NRA业务</a>
                     <dl class="layui-nav-child">
-                        <dd class="loadPage" whichPage="nra"><a href="javascript:;">审核队列查看</a></dd>
-                        <dd class="loadPage" whichPage="nraUpload"><a href="javascript:;">境内账户申请资料上传</a></dd>
-                        <dd class="loadPage" whichPage="nraHistory"><a href="javascript:;">历史申请记录</a></dd>
+                        <dd class="loadPage" whichPage="nra"><a href="javascript:;">审核队列管理</a></dd>
+                        <dd class="loadPage" whichPage="nraUpload"><a href="javascript:;">插队申请管理</a></dd>
                         <!--<dd><a>超链接</a></dd>-->
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;">境外账户申请</a>
+                    <a href="javascript:;">境外账户申请审核</a>
                     <dl class="layui-nav-child">
                         <dd class="loadPage"><a href="javascript:;">Amazon(US)</a></dd>
                         <dd class="loadPage"><a href="javascript:;">Amazon(EU)</a></dd>
@@ -87,10 +86,10 @@
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a class="loadPage" whichPage="draft" href="javascript:;">草稿页</a>
+                    <a class="loadPage" whichPage="managerAcc" href="javascript:;">经理账户管理</a>
                 </li>
                 <li class="layui-nav-item">
-                    <a class="loadPage" whichPage="draft2" href="javascript:;">草稿页2</a>
+                    <a class="loadPage" whichPage="ledger" href="javascript:;">总台账信息</a>
                 </li>
             </ul>
         </div>
@@ -126,7 +125,6 @@
         $.when(request("c/checkLogin", {})).done(function(data){
             if (data){
                 HanLin.info("欢迎回来");
-                HanLin.warn("对开发者说（我自己）：记得不要把用户重要的信息传回来");
             } else {
                 //这里会被后台过滤器拦截所以不会执行，但以防万一，在这里写一个
                 alert("用户未登录，跳转至登录页");
@@ -134,14 +132,14 @@
             }
         });
         //获取用户信息，缓存到客户端内存中
-        $.when(request("c/getManager", {})).done(function(data){
+        $.when(request("c/getAuditor", {})).done(function(data){
             data = JSON.parse(data);
             var user = data.result;
             currentUser = user;
             setTimeout(function (){
                 $("#userName").html(currentUser.userName);
                 $("#headPhoto").attr("src", "../../img/"+currentUser.headPhoto);
-            },2000);
+            },300);
 
         });
 

@@ -28,6 +28,43 @@ var HanLin = {
             message:msg,
             layout:1
         });
+    },
+    bootstrapInputGroup: function (target, options){
+        //TODO 实现功能：使用json快速渲染出与(像经理页面ebay账号申请页中的表单)一样的表单
+    },
+    getFrom: function (formSelector){
+        /**
+         * 注意：用此方法获取form的值时，要保证所有要被取值input拥有class：HanLinGetForm和name：（返回JSON中的name）
+         * @type {string}
+         * @result [
+         *      { #{name}:#{value} }
+         *      ...
+         * ]
+         */
+        /*
+        var result = "[";
+        $(".HanLinGetForm").each(function (index, e){
+            var name = e.attr("name");
+            var value = e.val();
+            result.push({});
+        });
+        result += "]";*/
+        //return JSON.parse(result);
+        return $(formSelector).serializeArray();
+    },
+    request: function (url, parameters, callback){
+        var defer = $.Deferred();
+        $.ajax({
+            url:url,
+            data:parameters,
+            method:"post",
+            success:function(data){
+                defer.resolve(data);
+            }
+        });
+        $.when(defer.promise()).done(function (data){
+            callback(data);
+        });
     }
 };
 

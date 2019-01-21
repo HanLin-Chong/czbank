@@ -56,7 +56,7 @@
                     <jsWrite id="userName"><img src="../../img/load.gif" class="layui-nav-img"/></jsWrite>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd class="loadPage"><a>个人资料</a></dd>
+                    <dd class="loadPage" whichPage="userCenter"><a>个人资料</a></dd>
                     <dd><a href="/logout" style="color: #ff0000;">安全退出</a></dd>
                 </dl>
             </li>
@@ -67,8 +67,8 @@
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-                <li class="layui-nav-item layui-nav-itemed">
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item "><!-- layui-nav-itemed -->
                     <a href="javascript:;">NRA业务</a>
                     <dl class="layui-nav-child">
                         <dd class="loadPage" whichPage="nra"><a href="javascript:;">审核队列查看</a></dd>
@@ -77,12 +77,12 @@
                         <!--<dd><a>超链接</a></dd>-->
                     </dl>
                 </li>
-                <li class="layui-nav-item">
+                <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;">境外账户申请</a>
                     <dl class="layui-nav-child">
-                        <dd class="loadPage"><a href="javascript:;">Amazon(US)</a></dd>
-                        <dd class="loadPage"><a href="javascript:;">Amazon(EU)</a></dd>
-                        <dd class="loadPage"><a href="javascript:;">ebay</a></dd>
+                        <dd class="loadPage" whichPage="amazonUS"><a href="javascript:;">Amazon(US)</a></dd>
+                        <dd class="loadPage" whichPage="amazonEU"><a href="javascript:;">Amazon(EU)</a></dd>
+                        <dd class="loadPage" whichPage="ebay"><a href="javascript:;">ebay</a></dd>
 
                     </dl>
                 </li>
@@ -135,7 +135,7 @@
             setTimeout(function (){
                 $("#userName").html(currentUser.userName);
                 $("#headPhoto").attr("src", "../../img/"+currentUser.headPhoto);
-            },2000);
+            },300);
 
         });
 
@@ -153,7 +153,7 @@
                     $("#contentArea").load(whichPage);
                     layer.close(index);
                 }
-            },200);
+            },100);
 
         });
 

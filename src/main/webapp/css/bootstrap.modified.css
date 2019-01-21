@@ -4045,6 +4045,7 @@ select[multiple].input-group-sm>.form-control,select[multiple].input-group-sm>.i
 	text-align:center;
 	list-style:none
 }
+
 .pager li {
 	display:inline
 }

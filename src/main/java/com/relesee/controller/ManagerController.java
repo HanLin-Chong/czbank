@@ -40,7 +40,7 @@ public class ManagerController {
     @RequestMapping("checkLogin")
     @ResponseBody
     public String checkLogin(){
-        if (userService.checkLogin().isFlag()){
+        if (userService.checkManagerLogin().isFlag()){
             return "1";
         } else {
             return "0";
@@ -64,6 +64,9 @@ public class ManagerController {
     }
 
 
+    /**
+     *  以下是NRA功能
+     */
     @RequestMapping(value = "nraUpload", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String nraUpload(MultipartFile file, boolean isQualityCustomer, String note){
@@ -102,6 +105,19 @@ public class ManagerController {
     @ResponseBody
     public String applyPriority(String id){
         //TODO 提交到审核员处，等待审核员功能
+        return "";
+    }
+
+    /**
+     *  以下是境外账户申请功能
+     */
+    @RequestMapping(value = "ebayApplication", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String ebayApplication(EbayApplication ebayApplication){
+        //System.out.println(JSON.toJSONString(ebay));
+        System.out.println(ebayApplication.getPaypalId());
+        System.out.println(ebayApplication.getApplicationFile().getOriginalFilename());
+        System.out.println(ebayApplication.getTransactionRecord().getOriginalFilename());
         return "";
     }
 
