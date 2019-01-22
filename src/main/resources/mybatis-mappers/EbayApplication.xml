@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.relesee.dao.EbayApplicationDao">
+
+
+    <insert id="insertApplication" parameterType="com.relesee.domains.EbayApplication">
+        INSERT INTO
+            ebayApplication(
+                id,
+                paypalId,
+                businessName,
+                shopUrl,
+                shopName,
+                applicantName,
+                applicantId,
+                recipientAcc,
+                recipientAccName,
+                recipientId,
+                address,
+                managerName,
+                managerDepartment,
+                managerId,
+                transactionRecordName,
+                applicationFileName,
+                uploadTime
+            )
+        VALUES
+            (
+                #{id},
+                #{paypalId},
+                #{businessName},
+                #{shopUrl},
+                #{shopName},
+                #{applicantName},
+                #{applicantId},
+                #{recipientAcc},
+                #{recipientAccName},
+                #{recipientId},
+                #{address},
+                #{managerName},
+                #{managerDepartment},
+                #{managerId},
+                #{transactionRecordName},
+                #{applicationFileName},
+                NOW()
+            )
+    </insert>
+
+
+
+
+
+
+</mapper>

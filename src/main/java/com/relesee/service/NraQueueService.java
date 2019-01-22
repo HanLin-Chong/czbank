@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,13 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class NraQueueService {
 
     private static final Logger logger = Logger.getLogger(NraQueueService.class);
 
     //private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    @Value("#{projectProperties['output.rootpath']}")
+    @Value("#{projectProperties['output.rootpath']}")//projectProperties是在spring的配置文件中配置的一个bean
     private String OUTPUT_ROOT_PATH;
 
     @Autowired

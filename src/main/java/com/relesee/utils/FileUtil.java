@@ -22,7 +22,7 @@ public class FileUtil {
     public static void writeInputStreamToDirectory(InputStream inputStream, String location) throws IOException {
         FileOutputStream out = new FileOutputStream(location);
         int index;
-        byte[] bytes = new byte[1024];
+        byte[] bytes = new byte[52428800];//1024?
         while ((index = inputStream.read(bytes)) != -1){
             out.write(bytes, 0, index);
             out.flush();

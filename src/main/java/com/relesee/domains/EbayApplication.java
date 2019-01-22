@@ -20,7 +20,9 @@ public class EbayApplication {
     private String managerName;
     private String managerDepartment;
     private String managerId;
-
+    private String uploadTime;
+    private String transactionRecordName;
+    private String applicationFileName;
 
     private MultipartFile transactionRecord;
     private MultipartFile applicationFile;
@@ -135,6 +137,30 @@ public class EbayApplication {
 
     public void setManagerId(String managerId) {
         this.managerId = managerId;
+    }
+
+    public String getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(String uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+
+    public String getTransactionRecordName() {
+        return transactionRecordName;
+    }
+
+    public void setTransactionRecordName(String transactionRecordName) {
+        this.transactionRecordName = transactionRecordName;
+    }
+
+    public String getApplicationFileName() {
+        return applicationFileName;
+    }
+
+    public void setApplicationFileName(String applicationFileName) {
+        this.applicationFileName = applicationFileName;
     }
 
     public MultipartFile getTransactionRecord() {

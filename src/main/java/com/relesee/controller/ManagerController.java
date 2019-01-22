@@ -2,6 +2,7 @@ package com.relesee.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.relesee.domains.*;
+import com.relesee.service.ForeignAccService;
 import com.relesee.service.ManagerService;
 import com.relesee.service.NraQueueService;
 import com.relesee.service.UserService;
@@ -36,6 +37,9 @@ public class ManagerController {
 
     @Autowired
     NraQueueService nraQueueService;
+
+    @Autowired
+    ForeignAccService foreignAccService;
 
     @RequestMapping("checkLogin")
     @ResponseBody
@@ -109,14 +113,14 @@ public class ManagerController {
     }
 
     /**
-     *  以下是境外账户申请功能
+     *  以下是境外账户申请功能,主要使用ForeignAccService
      */
     @RequestMapping(value = "ebayApplication", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String ebayApplication(EbayApplication ebayApplication){
-        //System.out.println(JSON.toJSONString(ebay));
 
-        return "";
+        Result<String> result = foreignAccService.ebayAcc(ebayApplication);
+
+        return JSON.toJSONString(result);
     }
-
 }

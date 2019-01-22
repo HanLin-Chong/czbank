@@ -52,18 +52,20 @@ var HanLin = {
         //return JSON.parse(result);
         return $(formSelector).serializeArray();
     },
-    request: function (url, parameters, callback){
-        var defer = $.Deferred();
+    request: function (url, parameters, functionDone, errorMsg){
         $.ajax({
-            url:url,
-            data:parameters,
-            method:"post",
-            success:function(data){
-                defer.resolve(data);
+            url: "c/ebayApplication",
+            data: formData,
+            processData: false,  //tell jQuery not to process the data
+            contentType: false,  //tell jQuery not to set contentType
+            async: false,
+            method: 'post',
+            error: function(){
+
+                HanLin.error(errorMsg);
             }
-        });
-        $.when(defer.promise()).done(function (data){
-            callback(data);
+        }).done(function (data){
+            functionDone(data);
         });
     }
 };

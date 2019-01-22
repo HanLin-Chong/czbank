@@ -11,12 +11,13 @@
    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
    http://www.springframework.org/schema/context
    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <context:component-scan base-package="com.relesee.service"/>
 
-    <bean id="userService" class="com.relesee.service.UserService"/>
+    <!--<bean id="userService" class="com.relesee.service.UserService"/>
 
     <bean id="shiroService" class="com.relesee.service.ShiroService"/>
 
     <bean id="managerService" class="com.relesee.service.ManagerService"/>
 
-    <bean id="nraQueueService" class="com.relesee.service.NraQueueService"/>
+    <bean id="nraQueueService" class="com.relesee.service.NraQueueService"/>-->
 </beans>
