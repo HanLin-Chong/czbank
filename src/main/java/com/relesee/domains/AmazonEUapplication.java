@@ -32,6 +32,7 @@ public class AmazonEUapplication {
     private String shareHolderAddress4;
 
     private String czbankBranch;
+    private String czbankAcc;
     private String customerName;
     private String mail;
     private String managerName;
@@ -232,6 +233,14 @@ public class AmazonEUapplication {
 
     public void setCzbankBranch(String czbankBranch) {
         this.czbankBranch = czbankBranch;
+    }
+
+    public String getCzbankAcc() {
+        return czbankAcc;
+    }
+
+    public void setCzbankAcc(String czbankAcc) {
+        this.czbankAcc = czbankAcc;
     }
 
     public String getCustomerName() {

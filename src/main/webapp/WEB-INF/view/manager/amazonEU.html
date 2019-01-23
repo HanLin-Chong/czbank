@@ -53,78 +53,167 @@
 <div class="col-lg-8" style="border-right: dotted 1px #0C0C0C;">
     <form id="form">
         <div class="input-group form-group">
-            <span class="input-group-addon">Paypal注册ID</span>
-            <input name="paypalId" type="text" class="form-control" placeholder="example@org.domain"/>
+            <span class="input-group-addon">店铺链接</span>
+            <input name="shopUrl" type="text" class="form-control" placeholder="https://www.amazon.com/..."/>
         </div>
         <div id="container1"></div>
         <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">境外账户名称(商家信息内容)</span>
-            <input name="businessName" type="text" class="form-control" placeholder="若为中文名称请以拼音格式填写" aria-describedby="basic-addon3"/>
+            <span class="input-group-addon">店铺ID</span>
+            <input name="shopId" type="text" class="form-control" placeholder="请填写店铺ID" aria-describedby="basic-addon3"/>
         </div>
         <div id="container2"></div>
         <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">Ebay店铺链接</span>
-            <input name="shopUrl" type="text" class="form-control" placeholder="https://www.ebay.com/usr/...."/>
+            <span class="input-group-addon">店铺名称</span>
+            <input name="shopName" type="text" class="form-control" placeholder="请填写店铺名称"/>
         </div>
         <div id="container3"></div>
         <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">Ebay店铺名称</span>
-            <input name="shopName" type="text" class="form-control" placeholder="请填写Ebay店铺名称"/>
+            <span class="input-group-addon">主营商品</span>
+            <!--<input name="shopName" type="text" class="form-control" placeholder="请填写Ebay店铺名称"/>-->
+            <textarea name="mainCommodity" style="resize: vertical;"></textarea>
         </div>
         <div id="container4"></div>
         <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">境外账户申请人姓名</span>
-            <input name="applicantName" type="text" class="form-control" placeholder="请填写境外账户申请人姓名"/>
+            <span class="input-group-addon">注册公司名称</span>
+            <input name="companyName" type="text" class="form-control" placeholder="请用中英文填写"/>
         </div>
         <div id="container5"></div>
         <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">境外账户申请人证件号码</span>
-            <input name="applicantId" type="text" class="form-control" placeholder="请填写申请人证件号"/>
+            <span class="input-group-addon">董事长姓名</span>
+            <input name="chairManName" type="text" class="form-control" placeholder="请用中英文填写"/>
         </div>
         <div id="container6"></div>
+        <hr/>
+        <strong>以下股东信息请按持股比例由大到小填写</strong>
         <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">境内收款账号</span>
-            <input name="recipientAcc" type="text" class="form-control" placeholder="请填写境内收款账号"/>
+            <span class="input-group-addon">大股东1（25%以上）姓名</span>
+            <input name="majorShareHolder1" type="text" class="form-control" placeholder="中文及拼音"/>
         </div>
         <div id="container7"></div>
-        <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">境内收款人户名</span>
-            <input name="recipientAccName" type="text" class="form-control" placeholder="请填写境内收款人户名"/>
+        <div class="input-group form-group">
+            <span class="input-group-addon">持股比例</span>
+            <input name="shareHolderRate1" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
         </div>
         <div id="container8"></div>
-        <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">境内收款人证件号码</span>
-            <input name="recipientId" type="text" class="form-control" placeholder="请填写收款人证件号"/>
+        <div class="input-group form-group">
+            <span class="input-group-addon">生日</span>
+            <input name="shareHolderBirthday1" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
         </div>
         <div id="container9"></div>
-        <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">详细联系地址</span>
-            <input name="address" type="text" class="form-control" placeholder="请填写联系地址"/>
+        <div class="input-group form-group">
+            <span class="input-group-addon">地址</span>
+            <input name="shareHolderAddress1" type="text" class="form-control" placeholder="中英文"/>
         </div>
         <div id="container10"></div>
+
         <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">所属客户经理</span>
-            <input name="managerName" placeholder="请填写客户经理姓名" type="text" class="form-control"/>
+            <span class="input-group-addon">大股东2（25%以上）姓名</span>
+            <input name="majorShareHolder2" type="text" class="form-control" placeholder="中文及拼音"/>
         </div>
         <div id="container11"></div>
-        <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">客户经理所属机构</span>
-            <input name="managerDepartment" placeholder="请填写XX支行字样" type="text" class="form-control"/>
+        <div class="input-group form-group">
+            <span class="input-group-addon">持股比例</span>
+            <input name="shareHolderRate2" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
         </div>
         <div id="container12"></div>
-        <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">客户经理工号</span>
-            <input name="managerId" placeholder="请填写客户经理工号" type="text" class="form-control"/>
+        <div class="input-group form-group">
+            <span class="input-group-addon">生日</span>
+            <input name="shareHolderBirthday2" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
         </div>
         <div id="container13"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">地址</span>
+            <input name="shareHolderAddress2" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <div id="container14"></div>
+
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">大股东3（25%以上）姓名</span>
+            <input name="majorShareHolder3" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <div id="container15"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">持股比例</span>
+            <input name="shareHolderRate3" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <div id="container16"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">生日</span>
+            <input name="shareHolderBirthday3" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <div id="container17"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">地址</span>
+            <input name="shareHolderAddress3" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <div id="container18"></div>
+
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">大股东4（25%以上）姓名</span>
+            <input name="majorShareHolder4" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <div id="container19"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">持股比例</span>
+            <input name="shareHolderRate4" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <div id="container20"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">生日</span>
+            <input name="shareHolderBirthday4" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <div id="container21"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">地址</span>
+            <input name="shareHolderAddress4" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <div id="container22"></div>
+        <hr/>
+
+        <div class="input-group form-group">
+            <span class="input-group-addon">稠州银行账号开户网点</span>
+            <input name="czbankBranch" type="text" class="form-control" placeholder="义乌+{机构名}，例：义乌营业部、义乌广场支行"/>
+        </div>
+        <div id="container23"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">稠州银行账号</span>
+            <input name="czbankAcc" type="text" class="form-control" placeholder=""/>
+        </div>
+        <div id="container24"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">客户姓名</span>
+            <input name="shareHolderAddress4" type="text" class="form-control" placeholder="中文+拼音，例：张三zhangsan"/>
+        </div>
+        <div id="container25"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">邮箱</span>
+            <input name="mail" type="text" class="form-control" placeholder="example@org.domain"/>
+        </div>
+        <div id="container26"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">客户经理姓名</span>
+            <input name="managerName" type="text" class="form-control" placeholder="。。"/>
+        </div>
+        <div id="container27"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">客户经理所属机构</span>
+            <input name="managerDepartment" type="text" class="form-control" placeholder="请填写XX支行字样"/>
+        </div>
+        <div id="container28"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">客户经理工号</span>
+            <input name="managerId" type="text" class="form-control" placeholder="。。"/>
+        </div>
+        <div id="container29"></div>
     </form>
 
 
 </div>
 <div class="col-lg-4">
-    <div class="col-lg-12">
-        <input id="transactionRecord" name="file" type="file" placeholder="交易记录" multiple/>
-    </div>
 
     <div class="col-lg-12 margin-top-20 ">
         <input id="applicationFile" name="file" type="file" multiple/>
@@ -132,12 +221,8 @@
 
 </div>
 <script>
-    //var form = layui.form;
-    var transactionRecordFile = null;
     var applicationFile = null;
     $(document).ready(function (){
-
-
         layui.form.render();
         //form.render();
         //validator参考博客: https://www.cnblogs.com/hwaggLee/p/6565604.html
@@ -145,7 +230,7 @@
             //message: '不正确的内容',
             live: 'enabled',
             container: 'tooltip',
-            submitButtons: '#submit',
+            //submitButtons: '#submit',
             excluded: [':disabled', ':hidden', ':not(:visible)'],
             feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
@@ -153,7 +238,7 @@
                 validating: 'glyphicon glyphicon-refresh'
             },
             fields: {
-                paypalId: {
+                shopUrl: {
                     container: "#container1",
                     validators: {
                         notEmpty: {
@@ -169,7 +254,7 @@
                     },
 
                 },
-                businessName: {
+                shopId: {
                     container: "#container2",
                     validators: {
                         notEmpty: {
@@ -181,7 +266,7 @@
                         },
                     }
                 },
-                shopUrl: {
+                shopName: {
                     container: "#container3",
                     validators: {
                         notEmpty: {
@@ -207,7 +292,7 @@
                         },
                     }
                 },
-                shopName: {
+                mainCommodity: {
                     container: "#container4",
                     validators: {
                         notEmpty: {
@@ -220,7 +305,7 @@
                     },
 
                 },
-                applicantName: {
+                companyName: {
                     container: "#container5",
                     validators: {
                         notEmpty: {
@@ -233,7 +318,7 @@
                     },
 
                 },
-                applicantId: {
+                chairManName: {
                     container: "#container6",
                     validators: {
                         notEmpty: {
@@ -245,7 +330,7 @@
                         },
                     }
                 },
-                recipientAcc: {
+                majorShareHolder1: {
                     container: "#container7",
                     validators: {
 
@@ -259,7 +344,7 @@
                         },
                     }
                 },
-                recipientAccName: {
+                shareHolderRate1: {
                     container: "#container8",
                     validators: {
                         notEmpty: {
@@ -271,7 +356,7 @@
                         },
                     }
                 },
-                recipientId: {
+                shareHolderBirthday1: {
                     container: "#container9",
                     validators: {
 
@@ -284,7 +369,7 @@
                         },
                     }
                 },
-                address: {
+                shareHolderAddress1: {
                     container: "#container10",
                     validators: {
                         notEmpty: {
@@ -296,8 +381,185 @@
                         },
                     }
                 },
-                managerName: {
+                majorShareHolder2: {
                     container: "#container11",
+                    validators: {
+
+                        stringLength: {
+                            message: '长度在20-25之间',
+                            max: 25,
+                            min: 20
+                        },
+                        notEmpty: {
+                            message: "境内收款账号为必填项"
+                        },
+                    }
+                },
+                shareHolderRate2: {
+                    container: "#container12",
+                    validators: {
+                        notEmpty: {
+                            message: "境内收款人户名为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                shareHolderBirthday2: {
+                    container: "#container13",
+                    validators: {
+
+                        stringLength: {
+                            message: "长度不得超过18",
+                            max: 18
+                        },
+                        notEmpty: {
+                            message: "境内收款人证件号码为必填项"
+                        },
+                    }
+                },
+                shareHolderAddress2: {
+                    container: "#container14",
+                    validators: {
+                        notEmpty: {
+                            message: "详细联系地址为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                majorShareHolder3: {
+                    container: "#container15",
+                    validators: {
+
+                        stringLength: {
+                            message: '长度在20-25之间',
+                            max: 25,
+                            min: 20
+                        },
+                        notEmpty: {
+                            message: "境内收款账号为必填项"
+                        },
+                    }
+                },
+                shareHolderRate3: {
+                    container: "#container16",
+                    validators: {
+                        notEmpty: {
+                            message: "境内收款人户名为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                shareHolderBirthday3: {
+                    container: "#container17",
+                    validators: {
+
+                        stringLength: {
+                            message: "长度不得超过18",
+                            max: 18
+                        },
+                        notEmpty: {
+                            message: "境内收款人证件号码为必填项"
+                        },
+                    }
+                },
+                shareHolderAddress3: {
+                    container: "#container18",
+                    validators: {
+                        notEmpty: {
+                            message: "详细联系地址为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                majorShareHolder4: {
+                    container: "#container19",
+                    validators: {
+
+                        stringLength: {
+                            message: '长度在20-25之间',
+                            max: 25,
+                            min: 20
+                        },
+                        notEmpty: {
+                            message: "境内收款账号为必填项"
+                        },
+                    }
+                },
+                shareHolderRate4: {
+                    container: "#container20",
+                    validators: {
+                        notEmpty: {
+                            message: "境内收款人户名为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                shareHolderBirthday4: {
+                    container: "#container21",
+                    validators: {
+
+                        stringLength: {
+                            message: "长度不得超过18",
+                            max: 18
+                        },
+                        notEmpty: {
+                            message: "境内收款人证件号码为必填项"
+                        },
+                    }
+                },
+                shareHolderAddress4: {
+                    container: "#container22",
+                    validators: {
+                        notEmpty: {
+                            message: "详细联系地址为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                czbankBranch: {
+                    container: "#container23",
+                    validators: {
+
+                    }
+                },
+                czbankAcc: {
+                    container: "#container24",
+                    validators: {
+
+                    }
+                },
+                customerName: {
+                    container: "#container25",
+                    validators: {
+
+                    }
+                },
+                mail: {
+                    container: "#container26",
+                    validators: {
+
+                    }
+                },
+                managerName: {
+                    container: "#container",
                     validators: {
                         notEmpty: {
                             message: "所属客户经理为必填项"
@@ -309,7 +571,7 @@
                     }
                 },
                 managerDepartment: {
-                    container: "#container12",
+                    container: "#container",
                     validators: {
                         notEmpty: {
                             message: "客户经理所属机构为必填项"
@@ -322,7 +584,7 @@
                 },
 
                 managerId: {
-                    container: "#container13",
+                    container: "#container",
                     validators: {
                         notEmpty: {
                             message: "客户经理工号为必填项"
