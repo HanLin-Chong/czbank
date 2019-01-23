@@ -1,10 +1,520 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <title>amazonEU-客户经理</title>
 
+    <link href="../../css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
+    <link href="../../css/bootstrapValidator.min.css" rel="stylesheet" />
+    <!--<link href="../../layui/css/layui.css" rel="stylesheet"/>-->
+
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/bootstrapValidator.min.js" type="text/javascript"></script>
+    <script src="../../js/fileinput.min.js" type="text/javascript"></script>
+    <script src="../../js/locales/zh.js" type="text/javascript"></script>
+
+    <style>
+        .margin-top-20{
+            margin-top: 20px;
+        }
+        .layui-form-switch{/* 解决layui与bootstrap的样式冲突 */
+            height:25px!important;
+            margin-top: 0px;
+        }
+        .hanlin-vertical-line{
+            display: inline !important;
+            border-right: solid 1px #c2c2c2;
+            height: auto;
+            margin: 0px 10px 0px 10px;
+        }
+        #advice:hover{
+            text-decoration: underline !important;
+        }
+    </style>
+</head>
+<body class="container">
+<div class="page-header">
+    <h1>&nbsp;&nbsp;&nbsp;&nbsp;<strong>Amazon欧洲（EU）</strong><small style="margin-left: 20px;">账户申请</small></h1>
+</div>
+<div class="alert alert-warning fade in">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>注意：</strong>表单校验尚未完善，使用者可提出更多的需求，目前的校验规则<strong>可参考：</strong><a href="adviceCenter.html#amazonEUform" id="advice" target="_blank" style="color: #337ab7;"><span class="glyphicon glyphicon-link"></span>当前页表单的校验规则（也可在此向开发者提出需求与建议）</a>
+</div>
+<div class="col-lg-12 layui-form">
+    <button id="submit" class="btn btn-primary">提交申请</button>
+    <button id="reset" class="btn btn-warning">重置表单</button>
+    <div class="hanlin-vertical-line"></div>
+    <label>表单验证：</label>
+    <input id="validatorSetting" type="checkbox" lay-filter="validatorSetting" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
+    <hr/>
+</div>
+
+<div class="col-lg-8" style="border-right: dotted 1px #0C0C0C;">
+    <form id="form">
+        <div class="input-group form-group">
+            <span class="input-group-addon">Paypal注册ID</span>
+            <input name="paypalId" type="text" class="form-control" placeholder="example@org.domain"/>
+        </div>
+        <div id="container1"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">境外账户名称(商家信息内容)</span>
+            <input name="businessName" type="text" class="form-control" placeholder="若为中文名称请以拼音格式填写" aria-describedby="basic-addon3"/>
+        </div>
+        <div id="container2"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">Ebay店铺链接</span>
+            <input name="shopUrl" type="text" class="form-control" placeholder="https://www.ebay.com/usr/...."/>
+        </div>
+        <div id="container3"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">Ebay店铺名称</span>
+            <input name="shopName" type="text" class="form-control" placeholder="请填写Ebay店铺名称"/>
+        </div>
+        <div id="container4"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">境外账户申请人姓名</span>
+            <input name="applicantName" type="text" class="form-control" placeholder="请填写境外账户申请人姓名"/>
+        </div>
+        <div id="container5"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">境外账户申请人证件号码</span>
+            <input name="applicantId" type="text" class="form-control" placeholder="请填写申请人证件号"/>
+        </div>
+        <div id="container6"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">境内收款账号</span>
+            <input name="recipientAcc" type="text" class="form-control" placeholder="请填写境内收款账号"/>
+        </div>
+        <div id="container7"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">境内收款人户名</span>
+            <input name="recipientAccName" type="text" class="form-control" placeholder="请填写境内收款人户名"/>
+        </div>
+        <div id="container8"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">境内收款人证件号码</span>
+            <input name="recipientId" type="text" class="form-control" placeholder="请填写收款人证件号"/>
+        </div>
+        <div id="container9"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">详细联系地址</span>
+            <input name="address" type="text" class="form-control" placeholder="请填写联系地址"/>
+        </div>
+        <div id="container10"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">所属客户经理</span>
+            <input name="managerName" placeholder="请填写客户经理姓名" type="text" class="form-control"/>
+        </div>
+        <div id="container11"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">客户经理所属机构</span>
+            <input name="managerDepartment" placeholder="请填写XX支行字样" type="text" class="form-control"/>
+        </div>
+        <div id="container12"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">客户经理工号</span>
+            <input name="managerId" placeholder="请填写客户经理工号" type="text" class="form-control"/>
+        </div>
+        <div id="container13"></div>
+    </form>
+
+
+</div>
+<div class="col-lg-4">
+    <div class="col-lg-12">
+        <input id="transactionRecord" name="file" type="file" placeholder="交易记录" multiple/>
+    </div>
+
+    <div class="col-lg-12 margin-top-20 ">
+        <input id="applicationFile" name="file" type="file" multiple/>
+    </div>
+
+</div>
+<script>
+    //var form = layui.form;
+    var transactionRecordFile = null;
+    var applicationFile = null;
+    $(document).ready(function (){
+
+
+        layui.form.render();
+        //form.render();
+        //validator参考博客: https://www.cnblogs.com/hwaggLee/p/6565604.html
+        var validator = $("#form").bootstrapValidator({
+            //message: '不正确的内容',
+            live: 'enabled',
+            container: 'tooltip',
+            submitButtons: '#submit',
+            excluded: [':disabled', ':hidden', ':not(:visible)'],
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                paypalId: {
+                    container: "#container1",
+                    validators: {
+                        notEmpty: {
+                            message: 'PayPal ID为必填项'
+                        },
+                        emailAddress: {
+                            message: 'PayPalId一定为邮箱格式，请输入正确的邮箱格式'
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    },
+
+                },
+                businessName: {
+                    container: "#container2",
+                    validators: {
+                        notEmpty: {
+                            message: '境外账户名称为必填项'
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                shopUrl: {
+                    container: "#container3",
+                    validators: {
+                        notEmpty: {
+                            message: '店铺链接为必填项'
+                        },
+                        callback: {
+                            callback: function (value, validatorIn){
+                                if (!value.match("https://www.ebay.com/usr/")){
+
+                                    return {
+                                        valid: false,
+                                        message: "请输入正确的URL地址：例:https://www.ebay.com/usr/..."
+                                    };
+                                } else {
+                                    return true;
+                                }
+
+                            }
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                shopName: {
+                    container: "#container4",
+                    validators: {
+                        notEmpty: {
+                            message: "Ebay店铺名称为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    },
+
+                },
+                applicantName: {
+                    container: "#container5",
+                    validators: {
+                        notEmpty: {
+                            message: "境外账户申请人姓名为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    },
+
+                },
+                applicantId: {
+                    container: "#container6",
+                    validators: {
+                        notEmpty: {
+                            message: "境外账户申请人证件号码为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过30",
+                            max: 30
+                        },
+                    }
+                },
+                recipientAcc: {
+                    container: "#container7",
+                    validators: {
+
+                        stringLength: {
+                            message: '长度在20-25之间',
+                            max: 25,
+                            min: 20
+                        },
+                        notEmpty: {
+                            message: "境内收款账号为必填项"
+                        },
+                    }
+                },
+                recipientAccName: {
+                    container: "#container8",
+                    validators: {
+                        notEmpty: {
+                            message: "境内收款人户名为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                recipientId: {
+                    container: "#container9",
+                    validators: {
+
+                        stringLength: {
+                            message: "长度不得超过18",
+                            max: 18
+                        },
+                        notEmpty: {
+                            message: "境内收款人证件号码为必填项"
+                        },
+                    }
+                },
+                address: {
+                    container: "#container10",
+                    validators: {
+                        notEmpty: {
+                            message: "详细联系地址为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                managerName: {
+                    container: "#container11",
+                    validators: {
+                        notEmpty: {
+                            message: "所属客户经理为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                },
+                managerDepartment: {
+                    container: "#container12",
+                    validators: {
+                        notEmpty: {
+                            message: "客户经理所属机构为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过8",
+                            max: 8
+                        },
+                    }
+                },
+
+                managerId: {
+                    container: "#container13",
+                    validators: {
+                        notEmpty: {
+                            message: "客户经理工号为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                }
+
+            }
+
+        });
+
+        $("#transactionRecord").fileinput({
+            language: 'zh',
+            browseLabel: '选择交易记录',
+            //showCaption: true,
+            showBrowse: true,
+            showPreview: false,
+            //showRemove: true,
+            showUpload: false,
+            //showCancel: true,
+            //autoReplace: true,
+            maxFileSize: 0,//kb
+            maxFileCount: 1,
+            //elCaptionText: "选择交易记录（新店铺不用上传）",
+            textEncoding: "UTF-8",
+            allowedFileExtensions : ['csv', 'txt','xls','xlsx'],
+        });
+
+        layui.form.on('switch(validatorSetting)', function(data){
+            if (!data.elem.checked){
+                layer.msg("强制提交会加重审核员的负担，请三思");
+                $("#form").bootstrapValidator('resetForm');
+            }
+        });
+        $("#transactionRecord").on("filebatchselected", function(event, files) {
+            transactionRecordFile = files[0];
+
+        });
+        $('#transactionRecord').on('filecleared', function(event) {
+            transactionRecordFile = null;
+        });
+        $('#transactionRecord').on('fileerror', function(event, data, msg) {
+            layer.msg(msg);
+            HanLin.error(msg);
+        });
+
+        $("#applicationFile").fileinput({
+            language: 'zh',
+            browseLabel: '选择申请文件',
+            //showCaption: true,
+            showBrowse: true,
+            showPreview: false,
+            //showRemove: true,
+            showUpload: false,
+            //showCancel: true,
+            //autoReplace: true,
+            maxFileSize: 0,//kb
+            maxFileCount: 1,
+            //elCaptionText: "选择交易记录（新店铺不用上传）",
+            textEncoding: "UTF-8",
+            allowedFileExtensions : ['doc', 'docx'],
+        });
+        $("#applicationFile").on("filebatchselected", function(event, files) {
+            applicationFile = files[0];
+        });
+        $('#applicationFile').on('filecleared', function(event) {
+            applicationFile = null;
+        });
+        $('#applicationFile').on('fileerror', function(event, data, msg) {
+            layer.msg(msg);
+            HanLin.error(msg);
+        });
+
+        $('#submit').click(function() {
+            //validator.bootstrapValidator('validate');
+            if ($("#validatorSetting").is(":checked")){
+                //需要表单验证
+
+                var flag = $("form").data("bootstrapValidator").isValid();
+                $("#form").bootstrapValidator("validate");
+                if (flag){
+                    //若表单填写正确
+                    submit();
+                } else {
+                    HanLin.error("表单填写不正确，请检查表单，或关闭表单验证强制提交");
+                }
+            } else {
+                submit();
+            }
+        });
+
+        $("#reset").click(function (){
+            resetForm();
+        });
+        function resetForm(){
+            $("#form")[0].reset();
+            $("#form").bootstrapValidator('resetForm');
+            //$("#form").data("bootstrapValidator").resetForm();
+        }
+
+        function submit(){
+            if (applicationFile == null){
+                layer.msg("请选择申请文件 ");
+            } else {
+                if (transactionRecordFile == null && !applicationFile != null){
+                    var layerIndexForSubmit = layer.confirm('新店铺可以不上传交易记录，确定提交？', {
+                        title: '交易记录为空',
+                        btn: ['确定', '取消'] //按钮
+                    }, function (){
+                        temp();
+                        layer.close(layerIndexForSubmit);
+                    }, function (){
+                        layer.close(layerIndexForSubmit);
+                    });
+                }
+                if (transactionRecordFile != null && !applicationFile != null){
+                    temp();
+                }
+                function temp(){
+
+                    var formData = new FormData();
+                    var form = HanLin.getFrom("#form");
+                    //script开始定义了 transactionRecordFile，用于保存交易记录文件
+                    //以及applicationFile，用于保存申请文件
+                    for(var i = 0; i < form.length; i++){
+                        formData.append(form[i].name, form[i].value);
+                    }
+                    if (transactionRecordFile != null){
+                        formData.append("transactionRecord", transactionRecordFile);
+                    }
+                    if (applicationFile != null){
+                        formData.append("applicationFile", applicationFile);
+                    }
+                    var layerUploadingIndex = layer.load(2);
+                    var defer = $.Deferred();
+                    $.ajax({
+                        url: "c/ebayApplication",
+                        data: formData,
+                        processData: false,  //tell jQuery not to process the data
+                        contentType: false,  //tell jQuery not to set contentType
+                        async: false,
+                        method: 'post',
+                        success:function (data){
+                            defer.resolve(data);
+
+                        },
+                        error: function(){
+                            layer.close(layerIndexForSubmit);
+                            HanLin.error("上传发生错误");
+                        },
+                        /*
+                        xhr :function () {//这里我们先拿到jQuery产生的 XMLHttpRequest对象，为其增加 progress 事件绑定，然后再返回交给ajax使用
+                            var myXhr = $.ajaxSettings.xhr();
+
+                             * progress事件会在浏览器接收新数据期间周期性地触发。
+                             * 而onprogress事件处理程序会接收到一个event对象，
+                             * 其target属性是XHR对象，但包含着三个额外的属性：lengthComputable、loaded和total。
+                             * 其中，lengthComputable是一个表示进度信息是否可用的布尔值，loaded表示已经接收的字节数，
+                             * loaded表示根据Content-Length响应头部确定的预期字节数。
+
+                            if(myXhr.upload){
+                                myXhr.upload.addEventListener('progress',progress1, false)
+                            }
+                        },*/
+
+                    });
+                    defer.done(function (data){
+                        layer.close(layerUploadingIndex);
+                        data = JSON.parse(data);
+                        HanLin.success(data.message);
+                    });
+                }
+            }
+
+
+
+        }
+    });
+    function progress1(event){
+        console.log(event);
+        if (event.lengthComputable){
+            console.log(event.loaded);
+            console.log(event.total);
+            var value = event.loaded/event.total*100;
+            console.log(value);
+        }
+    }
+
+</script>
 </body>
 </html>

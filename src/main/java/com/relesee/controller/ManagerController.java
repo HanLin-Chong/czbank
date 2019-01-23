@@ -10,19 +10,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 @RequiresPermissions( {"managerController"} )
@@ -118,9 +109,31 @@ public class ManagerController {
     @RequestMapping(value = "ebayApplication", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String ebayApplication(EbayApplication ebayApplication){
-
+        /*MultipartFile a = ebayApplication.getTransactionRecord();
+        MultipartFile b = ebayApplication.getApplicationFile();
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(a == null);
+        System.out.println(b == null);*/
         Result<String> result = foreignAccService.ebayAcc(ebayApplication);
+        /*Result result = new Result();
+        result.setFlag(true);
+        result.setMessage("调试中");*/
+        return JSON.toJSONString(result);
+    }
 
+    @RequestMapping(value = "amazonUSapplication", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String amazonUSapplication(AmazonUSapplication amazonUS){
+        Result result = foreignAccService.AmazonUSacc(amazonUS);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "advice", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String advice(String content){
+        System.out.println(content);
+        Result result = managerService.advice(content);
         return JSON.toJSONString(result);
     }
 }

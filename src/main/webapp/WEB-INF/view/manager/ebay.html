@@ -28,7 +28,7 @@
             height: auto;
             margin: 0px 10px 0px 10px;
         }
-        a:hover{
+        #advice:hover{
             text-decoration: underline !important;
         }
     </style>
@@ -37,9 +37,9 @@
     <div class="page-header">
         <h1>&nbsp;&nbsp;&nbsp;&nbsp;<strong>Ebay</strong> <small style="margin-right: 40px;">PayPal</small><small>账户申请</small></h1>
     </div>
-    <div class="alert alert-warning">
+    <div class="alert alert-warning fade in">
         <a href="#" class="close" data-dismiss="alert">&times;</a>
-        <strong>注意：</strong>表单校验尚未完善，使用者可提出更多的需求，目前的校验规则<strong>可参考：</strong><a href="#" target="_blank" style="color: #337ab7;"><span class="glyphicon glyphicon-link"></span>当前页表单的校验规则（也可在此向开发者提出需求与建议）</a>
+        <strong>注意：</strong>表单校验尚未完善，使用者可提出更多的需求，目前的校验规则<strong>可参考：</strong><a href="adviceCenter.html#ebayForm" id="advice" target="_blank" style="color: #337ab7;"><span class="glyphicon glyphicon-link"></span>当前页表单的校验规则（也可在此向开发者提出需求与建议）</a>
     </div>
     <div class="col-lg-12 layui-form">
         <button id="submit" class="btn btn-primary">提交申请</button>
@@ -185,7 +185,7 @@ $(document).ready(function (){
                 container: "#container3",
                 validators: {
                     notEmpty: {
-                        message: '境外账户名称为必填项'
+                        message: '店铺链接为必填项'
                     },
                     callback: {
                         callback: function (value, validatorIn){
@@ -460,6 +460,7 @@ $(document).ready(function (){
                 if (applicationFile != null){
                     formData.append("applicationFile", applicationFile);
                 }
+                var layerUploadingIndex = layer.load(2);
                 var defer = $.Deferred();
                 $.ajax({
                     url: "c/ebayApplication",
@@ -475,9 +476,25 @@ $(document).ready(function (){
                     error: function(){
                         layer.close(layerIndexForSubmit);
                         HanLin.error("上传发生错误");
-                    }
+                    },
+                    /*
+                    xhr :function () {//这里我们先拿到jQuery产生的 XMLHttpRequest对象，为其增加 progress 事件绑定，然后再返回交给ajax使用
+                        var myXhr = $.ajaxSettings.xhr();
+
+                         * progress事件会在浏览器接收新数据期间周期性地触发。
+                         * 而onprogress事件处理程序会接收到一个event对象，
+                         * 其target属性是XHR对象，但包含着三个额外的属性：lengthComputable、loaded和total。
+                         * 其中，lengthComputable是一个表示进度信息是否可用的布尔值，loaded表示已经接收的字节数，
+                         * loaded表示根据Content-Length响应头部确定的预期字节数。
+
+                        if(myXhr.upload){
+                            myXhr.upload.addEventListener('progress',progress1, false)
+                        }
+                    },*/
+
                 });
                 defer.done(function (data){
+                    layer.close(layerUploadingIndex);
                     data = JSON.parse(data);
                     HanLin.success(data.message);
                 });
@@ -488,7 +505,15 @@ $(document).ready(function (){
 
     }
 });
-
+function progress1(event){
+    console.log(event);
+    if (event.lengthComputable){
+        console.log(event.loaded);
+        console.log(event.total);
+        var value = event.loaded/event.total*100;
+        console.log(value);
+    }
+}
 
 </script>
 </body>
