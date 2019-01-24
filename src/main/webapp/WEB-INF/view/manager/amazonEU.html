@@ -67,10 +67,10 @@
             <input name="shopName" type="text" class="form-control" placeholder="请填写店铺名称"/>
         </div>
         <div id="container3"></div>
-        <div class="input-group form-group margin-top-20">
-            <span class="input-group-addon">主营商品</span>
+        <div class="input-group form-group margin-top-20" style="width: 100%">
+            <label>主营商品:</label>
             <!--<input name="shopName" type="text" class="form-control" placeholder="请填写Ebay店铺名称"/>-->
-            <textarea name="mainCommodity" style="resize: vertical;"></textarea>
+            <textarea name="mainCommodity" style="resize: vertical; width: 100%;"></textarea>
         </div>
         <div id="container4"></div>
         <div class="input-group form-group margin-top-20">
@@ -98,7 +98,7 @@
         <div id="container8"></div>
         <div class="input-group form-group">
             <span class="input-group-addon">生日</span>
-            <input name="shareHolderBirthday1" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+            <input id="birthday1" name="shareHolderBirthday1" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
         </div>
         <div id="container9"></div>
         <div class="input-group form-group">
@@ -120,7 +120,7 @@
         <div id="container12"></div>
         <div class="input-group form-group">
             <span class="input-group-addon">生日</span>
-            <input name="shareHolderBirthday2" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+            <input id="birthday2" name="shareHolderBirthday2" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
         </div>
         <div id="container13"></div>
         <div class="input-group form-group">
@@ -142,7 +142,7 @@
         <div id="container16"></div>
         <div class="input-group form-group">
             <span class="input-group-addon">生日</span>
-            <input name="shareHolderBirthday3" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+            <input id="birthday3" name="shareHolderBirthday3" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
         </div>
         <div id="container17"></div>
         <div class="input-group form-group">
@@ -164,7 +164,7 @@
         <div id="container20"></div>
         <div class="input-group form-group">
             <span class="input-group-addon">生日</span>
-            <input name="shareHolderBirthday4" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+            <input id="birthday4" name="shareHolderBirthday4" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
         </div>
         <div id="container21"></div>
         <div class="input-group form-group">
@@ -242,10 +242,7 @@
                     container: "#container1",
                     validators: {
                         notEmpty: {
-                            message: 'PayPal ID为必填项'
-                        },
-                        emailAddress: {
-                            message: 'PayPalId一定为邮箱格式，请输入正确的邮箱格式'
+                            message: '店铺链接为必填项'
                         },
                         stringLength: {
                             message: "长度不得超过255",
@@ -258,11 +255,11 @@
                     container: "#container2",
                     validators: {
                         notEmpty: {
-                            message: '境外账户名称为必填项'
+                            message: '店铺Id为必填项'
                         },
                         stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
+                            message: "长度不得超过50",
+                            max: 50
                         },
                     }
                 },
@@ -270,25 +267,11 @@
                     container: "#container3",
                     validators: {
                         notEmpty: {
-                            message: '店铺链接为必填项'
-                        },
-                        callback: {
-                            callback: function (value, validatorIn){
-                                if (!value.match("https://www.ebay.com/usr/")){
-
-                                    return {
-                                        valid: false,
-                                        message: "请输入正确的URL地址：例:https://www.ebay.com/usr/..."
-                                    };
-                                } else {
-                                    return true;
-                                }
-
-                            }
+                            message: '店铺名称为必填项'
                         },
                         stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
+                            message: "长度不得超过50",
+                            max: 50
                         },
                     }
                 },
@@ -296,7 +279,7 @@
                     container: "#container4",
                     validators: {
                         notEmpty: {
-                            message: "Ebay店铺名称为必填项"
+                            message: "主营商品为必填项"
                         },
                         stringLength: {
                             message: "长度不得超过255",
@@ -309,11 +292,11 @@
                     container: "#container5",
                     validators: {
                         notEmpty: {
-                            message: "境外账户申请人姓名为必填项"
+                            message: "注册公司名称为必填项"
                         },
                         stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
+                            message: "长度不得超过100",
+                            max: 100
                         },
                     },
 
@@ -322,25 +305,23 @@
                     container: "#container6",
                     validators: {
                         notEmpty: {
-                            message: "境外账户申请人证件号码为必填项"
+                            message: "董事长姓名为必填项"
                         },
                         stringLength: {
-                            message: "长度不得超过30",
-                            max: 30
+                            message: "长度不得超过50",
+                            max: 50
                         },
                     }
                 },
                 majorShareHolder1: {
                     container: "#container7",
                     validators: {
-
                         stringLength: {
-                            message: '长度在20-25之间',
-                            max: 25,
-                            min: 20
+                            message: '长度不超过50',
+                            max: 50,
                         },
                         notEmpty: {
-                            message: "境内收款账号为必填项"
+                            message: "股东1为必填项"
                         },
                     }
                 },
@@ -350,23 +331,33 @@
                         notEmpty: {
                             message: "境内收款人户名为必填项"
                         },
-                        stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
+                        digits: {
+                            message: "非数字输入"
                         },
+                        between: {
+                            inclusive: true,
+                            min: 25,
+                            max: 100,
+                            message: "只允许填写25-100的数字"
+                        }
                     }
                 },
                 shareHolderBirthday1: {
                     container: "#container9",
                     validators: {
-
+                        /*
                         stringLength: {
-                            message: "长度不得超过18",
-                            max: 18
-                        },
+                            message: "时间格式不正确",
+                            max: 10,
+                            min: 10
+                        },*/
                         notEmpty: {
-                            message: "境内收款人证件号码为必填项"
+                            message: "大股东1生日为必填项"
                         },
+                        date: {
+                            format: 'YYYY-MM-DD',
+                            message: '不正确的日期格式'
+                        }
                     }
                 },
                 shareHolderAddress1: {
@@ -376,190 +367,184 @@
                             message: "详细联系地址为必填项"
                         },
                         stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
+                            message: "长度不得超过100",
+                            max: 100
                         },
                     }
                 },
                 majorShareHolder2: {
                     container: "#container11",
                     validators: {
-
                         stringLength: {
-                            message: '长度在20-25之间',
-                            max: 25,
-                            min: 20
-                        },
-                        notEmpty: {
-                            message: "境内收款账号为必填项"
-                        },
+                            message: '长度不超过50',
+                            max: 50,
+                        }
                     }
                 },
                 shareHolderRate2: {
                     container: "#container12",
                     validators: {
-                        notEmpty: {
-                            message: "境内收款人户名为必填项"
+                        digits: {
+                            message: "非数字输入"
                         },
-                        stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
-                        },
+                        between: {
+                            inclusive: true,
+                            min: 25,
+                            max: 100,
+                            message: "只允许填写25-100的数字"
+                        }
                     }
                 },
                 shareHolderBirthday2: {
                     container: "#container13",
                     validators: {
-
                         stringLength: {
-                            message: "长度不得超过18",
-                            max: 18
-                        },
-                        notEmpty: {
-                            message: "境内收款人证件号码为必填项"
-                        },
-                    }
+                            message: "长度不得超过10",
+                            max: 10
+                        }
+                    },
                 },
                 shareHolderAddress2: {
                     container: "#container14",
                     validators: {
-                        notEmpty: {
-                            message: "详细联系地址为必填项"
-                        },
                         stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
+                            message: "长度不得超过100",
+                            max: 100
                         },
                     }
                 },
                 majorShareHolder3: {
                     container: "#container15",
                     validators: {
-
                         stringLength: {
-                            message: '长度在20-25之间',
-                            max: 25,
-                            min: 20
-                        },
-                        notEmpty: {
-                            message: "境内收款账号为必填项"
-                        },
+                            message: '长度不超过50',
+                            max: 50,
+                        }
                     }
                 },
                 shareHolderRate3: {
                     container: "#container16",
                     validators: {
-                        notEmpty: {
-                            message: "境内收款人户名为必填项"
+                        digits: {
+                            message: "非数字输入"
                         },
-                        stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
-                        },
+                        between: {
+                            inclusive: true,
+                            min: 25,
+                            max: 100,
+                            message: "只允许填写25-100的数字"
+                        }
                     }
                 },
                 shareHolderBirthday3: {
                     container: "#container17",
                     validators: {
-
                         stringLength: {
-                            message: "长度不得超过18",
-                            max: 18
-                        },
-                        notEmpty: {
-                            message: "境内收款人证件号码为必填项"
-                        },
-                    }
+                            message: "长度不得超过10",
+                            max: 10
+                        }
+                    },
                 },
                 shareHolderAddress3: {
                     container: "#container18",
                     validators: {
-                        notEmpty: {
-                            message: "详细联系地址为必填项"
-                        },
                         stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
+                            message: "长度不得超过100",
+                            max: 100
                         },
                     }
                 },
                 majorShareHolder4: {
                     container: "#container19",
                     validators: {
-
                         stringLength: {
-                            message: '长度在20-25之间',
-                            max: 25,
-                            min: 20
-                        },
-                        notEmpty: {
-                            message: "境内收款账号为必填项"
-                        },
+                            message: '长度不超过50',
+                            max: 50,
+                        }
                     }
                 },
                 shareHolderRate4: {
                     container: "#container20",
                     validators: {
-                        notEmpty: {
-                            message: "境内收款人户名为必填项"
+                        digits: {
+                            message: "非数字输入"
                         },
-                        stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
-                        },
+                        between: {
+                            inclusive: true,
+                            min: 25,
+                            max: 100,
+                            message: "只允许填写25-100的数字"
+                        }
                     }
                 },
                 shareHolderBirthday4: {
                     container: "#container21",
                     validators: {
-
                         stringLength: {
-                            message: "长度不得超过18",
-                            max: 18
-                        },
-                        notEmpty: {
-                            message: "境内收款人证件号码为必填项"
-                        },
-                    }
+                            message: "长度不得超过10",
+                            max: 10
+                        }
+                    },
                 },
                 shareHolderAddress4: {
                     container: "#container22",
                     validators: {
-                        notEmpty: {
-                            message: "详细联系地址为必填项"
-                        },
                         stringLength: {
-                            message: "长度不得超过255",
-                            max: 255
+                            message: "长度不得超过100",
+                            max: 100
                         },
                     }
                 },
                 czbankBranch: {
                     container: "#container23",
                     validators: {
-
+                        notEmpty: {
+                            message: "稠州银行开户网点为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过20",
+                            max: 20
+                        }
                     }
                 },
                 czbankAcc: {
                     container: "#container24",
                     validators: {
-
+                        notEmpty: {
+                            message: "稠州银行账号为必填项"
+                        },
+                        StringLength: {
+                            message: "长度不得超过30",
+                            max: 30
+                        }
                     }
                 },
                 customerName: {
                     container: "#container25",
                     validators: {
-
+                        notEmpty: {
+                            message: "客户姓名为必填项"
+                        },
+                        StringLength: {
+                            message: "长度不得超过30",
+                            max: 30
+                        }
                     }
                 },
                 mail: {
                     container: "#container26",
                     validators: {
-
+                        notEmpty: {
+                            message: "邮箱为必填项"
+                        },
+                        StringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        }
                     }
                 },
                 managerName: {
-                    container: "#container",
+                    container: "#container27",
                     validators: {
                         notEmpty: {
                             message: "所属客户经理为必填项"
@@ -571,20 +556,20 @@
                     }
                 },
                 managerDepartment: {
-                    container: "#container",
+                    container: "#container28",
                     validators: {
                         notEmpty: {
                             message: "客户经理所属机构为必填项"
                         },
                         stringLength: {
-                            message: "长度不得超过8",
-                            max: 8
+                            message: "长度不得超过10",
+                            max: 10
                         },
                     }
                 },
 
                 managerId: {
-                    container: "#container",
+                    container: "#container29",
                     validators: {
                         notEmpty: {
                             message: "客户经理工号为必填项"
@@ -599,40 +584,29 @@
             }
 
         });
-
-        $("#transactionRecord").fileinput({
-            language: 'zh',
-            browseLabel: '选择交易记录',
-            //showCaption: true,
-            showBrowse: true,
-            showPreview: false,
-            //showRemove: true,
-            showUpload: false,
-            //showCancel: true,
-            //autoReplace: true,
-            maxFileSize: 0,//kb
-            maxFileCount: 1,
-            //elCaptionText: "选择交易记录（新店铺不用上传）",
-            textEncoding: "UTF-8",
-            allowedFileExtensions : ['csv', 'txt','xls','xlsx'],
-        });
-
-        layui.form.on('switch(validatorSetting)', function(data){
-            if (!data.elem.checked){
-                layer.msg("强制提交会加重审核员的负担，请三思");
-                $("#form").bootstrapValidator('resetForm');
+        //fuck
+        layui.laydate.render({
+            elem: '#birthday1',
+            type: "date",
+            calendar: true,
+            done: function(value, date, endDate){
+                $("#form").bootstrapValidator("validateField", "shareHolderBirthday1");
             }
         });
-        $("#transactionRecord").on("filebatchselected", function(event, files) {
-            transactionRecordFile = files[0];
-
+        layui.laydate.render({
+            elem: '#birthday2',
+            type: "date",
+            calendar: true,
         });
-        $('#transactionRecord').on('filecleared', function(event) {
-            transactionRecordFile = null;
+        layui.laydate.render({
+            elem: '#birthday3',
+            type: "date",
+            calendar: true,
         });
-        $('#transactionRecord').on('fileerror', function(event, data, msg) {
-            layer.msg(msg);
-            HanLin.error(msg);
+        layui.laydate.render({
+            elem: '#birthday4',
+            type: "date",
+            calendar: true,
         });
 
         $("#applicationFile").fileinput({
@@ -691,76 +665,62 @@
 
         function submit(){
             if (applicationFile == null){
-                layer.msg("请选择申请文件 ");
+                layer.msg("请选择申请文件");
             } else {
-                if (transactionRecordFile == null && !applicationFile != null){
-                    var layerIndexForSubmit = layer.confirm('新店铺可以不上传交易记录，确定提交？', {
-                        title: '交易记录为空',
-                        btn: ['确定', '取消'] //按钮
-                    }, function (){
-                        temp();
+                var formData = new FormData();
+                var form = HanLin.getFrom("#form");
+                //script开始定义了 transactionRecordFile，用于保存交易记录文件
+                //以及applicationFile，用于保存申请文件
+                for(var i = 0; i < form.length; i++){
+                    formData.append(form[i].name, form[i].value);
+                }
+                if (transactionRecordFile != null){
+                    formData.append("transactionRecord", transactionRecordFile);
+                }
+                if (applicationFile != null){
+                    formData.append("applicationFile", applicationFile);
+                }
+                var layerUploadingIndex = layer.load(2);
+                var defer = $.Deferred();
+                $.ajax({
+                    url: "c/ebayApplication",
+                    data: formData,
+                    processData: false,  //tell jQuery not to process the data
+                    contentType: false,  //tell jQuery not to set contentType
+                    async: false,
+                    method: 'post',
+                    success:function (data){
+                        defer.resolve(data);
+
+                    },
+                    error: function(){
                         layer.close(layerIndexForSubmit);
-                    }, function (){
-                        layer.close(layerIndexForSubmit);
-                    });
-                }
-                if (transactionRecordFile != null && !applicationFile != null){
-                    temp();
-                }
-                function temp(){
+                        HanLin.error("上传发生错误");
+                    },
+                    /*
+                    xhr :function () {//这里我们先拿到jQuery产生的 XMLHttpRequest对象，为其增加 progress 事件绑定，然后再返回交给ajax使用
+                        var myXhr = $.ajaxSettings.xhr();
 
-                    var formData = new FormData();
-                    var form = HanLin.getFrom("#form");
-                    //script开始定义了 transactionRecordFile，用于保存交易记录文件
-                    //以及applicationFile，用于保存申请文件
-                    for(var i = 0; i < form.length; i++){
-                        formData.append(form[i].name, form[i].value);
-                    }
-                    if (transactionRecordFile != null){
-                        formData.append("transactionRecord", transactionRecordFile);
-                    }
-                    if (applicationFile != null){
-                        formData.append("applicationFile", applicationFile);
-                    }
-                    var layerUploadingIndex = layer.load(2);
-                    var defer = $.Deferred();
-                    $.ajax({
-                        url: "c/ebayApplication",
-                        data: formData,
-                        processData: false,  //tell jQuery not to process the data
-                        contentType: false,  //tell jQuery not to set contentType
-                        async: false,
-                        method: 'post',
-                        success:function (data){
-                            defer.resolve(data);
+                         * progress事件会在浏览器接收新数据期间周期性地触发。
+                         * 而onprogress事件处理程序会接收到一个event对象，
+                         * 其target属性是XHR对象，但包含着三个额外的属性：lengthComputable、loaded和total。
+                         * 其中，lengthComputable是一个表示进度信息是否可用的布尔值，loaded表示已经接收的字节数，
+                         * loaded表示根据Content-Length响应头部确定的预期字节数。
 
-                        },
-                        error: function(){
-                            layer.close(layerIndexForSubmit);
-                            HanLin.error("上传发生错误");
-                        },
-                        /*
-                        xhr :function () {//这里我们先拿到jQuery产生的 XMLHttpRequest对象，为其增加 progress 事件绑定，然后再返回交给ajax使用
-                            var myXhr = $.ajaxSettings.xhr();
+                        if(myXhr.upload){
+                            myXhr.upload.addEventListener('progress',progress1, false)
+                        }
+                    },*/
 
-                             * progress事件会在浏览器接收新数据期间周期性地触发。
-                             * 而onprogress事件处理程序会接收到一个event对象，
-                             * 其target属性是XHR对象，但包含着三个额外的属性：lengthComputable、loaded和total。
-                             * 其中，lengthComputable是一个表示进度信息是否可用的布尔值，loaded表示已经接收的字节数，
-                             * loaded表示根据Content-Length响应头部确定的预期字节数。
+                });
+                defer.done(function (data){
+                    layer.close(layerUploadingIndex);
+                    data = JSON.parse(data);
+                    HanLin.success(data.message);
+                });
 
-                            if(myXhr.upload){
-                                myXhr.upload.addEventListener('progress',progress1, false)
-                            }
-                        },*/
 
-                    });
-                    defer.done(function (data){
-                        layer.close(layerUploadingIndex);
-                        data = JSON.parse(data);
-                        HanLin.success(data.message);
-                    });
-                }
+
             }
 
 

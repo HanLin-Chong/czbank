@@ -129,6 +129,8 @@ public class ManagerController {
         return JSON.toJSONString(result);
     }
 
+
+
     @RequestMapping(value = "advice", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String advice(String content){
