@@ -1,6 +1,9 @@
 package com.relesee.domains;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
 
 public class AmazonEUapplication {
     private String id;
@@ -42,6 +45,33 @@ public class AmazonEUapplication {
 
     private String applicationFileName;
     private MultipartFile applicationFile;
+
+    public void valueFormat(){
+        if (StringUtils.isBlank(shareHolderRate1)){
+            shareHolderRate1 = "0";
+        }
+        if (StringUtils.isBlank(shareHolderBirthday1)){
+            shareHolderBirthday1 = "0000-00-00";
+        }
+        if (StringUtils.isBlank(shareHolderRate2)){
+            shareHolderRate2 = "0";
+        }
+        if (StringUtils.isBlank(shareHolderBirthday2)){
+            shareHolderBirthday2 = null;
+        }
+        if (StringUtils.isBlank(shareHolderRate3)){
+            shareHolderRate3 = "0";
+        }
+        if (StringUtils.isBlank(shareHolderBirthday3)){
+            shareHolderBirthday3 = null;
+        }
+        if (StringUtils.isBlank(shareHolderRate4)){
+            shareHolderRate4 = "0";
+        }
+        if (StringUtils.isBlank(shareHolderBirthday4)){
+            shareHolderBirthday4 = null;
+        }
+    }
 
     public String getId() {
         return id;
@@ -307,3 +337,4 @@ public class AmazonEUapplication {
         this.applicationFile = applicationFile;
     }
 }
+

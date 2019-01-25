@@ -39,15 +39,17 @@
 </head>
 <body style="background: #eee">
 
-    <div style="position: fixed;background: #000;height: 100%;width: 16.66666667%;">
+    <!--<div style="position: fixed;background: #000;height: 100%;width: 16.66666667%;z-index: 1;">-->
+    <div style="position: fixed;z-index: 1;background: #393D49;height: 100%;width: 16.66666667%">
         <ul class="nav nav-pills nav-stacked nav-pills-stacked-example" style="margin: 0 0 0 0;width: 100%;">
             <li class="myNavItem"><a href="#fillAdvice">填写反馈</a></li>
             <li role="presentation" class="myNavItem"><a href="#ebayForm">ebay表单规则</a></li>
-            <li role="presentation" class="myNavItem"><a href="#2">。。</a></li>
-            <li role="presentation" class="myNavItem"><a href="#3">。。</a></li>
+            <li role="presentation" class="myNavItem"><a href="#amazonUSform">Amazon（美国）US表单规则</a></li>
+            <li role="presentation" class="myNavItem"><a href="#amazonEUform">Amazon（欧洲）EU表单规则</a></li>
         </ul>
     </div>
-    <div class="col-lg-10 col-lg-offset-2">
+    <div class="col-lg-2">asd</div>
+    <div class="col-lg-10">
         <br/>
         <br/>
         <div class="form-group col-lg-12" id="fillAdvice">
@@ -154,14 +156,308 @@
                     </ul>
                 </div>
             </div>
-
         </div>
-
-        <div id="3" class="col-lg-12">
+        <div id="amazonUSform" class="col-lg-12">
             <div class="page-header">
-                <h1>div2</h1>
+                <h1>Amazon(美国)US表单校验规则</h1>
+            </div>
+            <div class="list-group">
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">Amazon注册邮箱</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">邮箱格式</p></li>
+                        <li><p class="list-group-item-text">长度不超过100</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">境外账户名称（Amazon店铺名称）</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过255</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">店铺链接</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">包含amazon.com的URL地址</p></li>
+                        <li><p class="list-group-item-text">长度不超过255</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">Amazon店铺名称</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过255</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">境外账户申请人姓名</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过255</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">境外账户申请人证件号</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过30</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">境内收款账号</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度在20-25之间</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">境内收款人户名</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过255</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">境内收款人证件号码</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过18</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">详细联系地址</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过255</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">所属客户经理</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过10</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">客户经理所属机构</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过8</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">客户经理工号</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过10</p></li>
+                    </ul>
+                </div>
             </div>
         </div>
+        <div id="amazonEUform" class="col-lg-12">
+            <div class="page-header">
+                <h1>Amazon(欧洲)EU表单校验规则</h1>
+            </div>
+            <div class="list-group">
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">店铺链接</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">包含“amazon.com”的URL格式</p></li>
+                        <li><p class="list-group-item-text">长度不超过255</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">店铺Id</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过50</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">店铺名称</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过50</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">主营商品</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过255</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">注册公司名称</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过100</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">董事长姓名</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过50</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">大股东1姓名</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过50</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">持股比例1</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">25-100的数字</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">生日1</h4>
+                    <ul>
+                        <li><p class="list-group-item-text" style="color: red;">非常抱歉，由于使用的框架存在bug，此项若添加了验证会影响用户体验，故此项没有任何验证，请保持输入格式YYYY-MM-DD</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">地址1</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过100</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">大股东2姓名</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">持股比例2</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">生日2</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">地址2</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">大股东3姓名</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">持股比例3</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">生日3</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">地址3</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">大股东4姓名</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">持股比例4</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">生日4</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">地址4</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">无验证</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">稠州银行账号开户网点</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过20</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">稠州银行账号</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过30</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">客户姓名</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过30</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">邮箱</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过100</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">客户经理姓名</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过10</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">客户经理所属机构</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过10</p></li>
+                    </ul>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">客户经理工号</h4>
+                    <ul>
+                        <li><p class="list-group-item-text">必填项</p></li>
+                        <li><p class="list-group-item-text">长度不超过10</p></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+
 
     </div>
 <script>

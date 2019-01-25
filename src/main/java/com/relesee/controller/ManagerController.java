@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("cManager/c/")
 public class ManagerController {
 
+
     @Autowired
     UserService userService;
 
@@ -125,11 +126,18 @@ public class ManagerController {
     @RequestMapping(value = "amazonUSapplication", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String amazonUSapplication(AmazonUSapplication amazonUS){
-        Result result = foreignAccService.AmazonUSacc(amazonUS);
+        Result result = foreignAccService.amazonUSacc(amazonUS);
         return JSON.toJSONString(result);
     }
 
+    @RequestMapping(value = "amazonEUapplication", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String amazonEUapplication(AmazonEUapplication amazonEU){
 
+        amazonEU.valueFormat();
+        Result result = foreignAccService.amazonEUacc(amazonEU);
+        return JSON.toJSONString(result);
+    }
 
     @RequestMapping(value = "advice", produces = "text/plane;charset=utf-8")
     @ResponseBody

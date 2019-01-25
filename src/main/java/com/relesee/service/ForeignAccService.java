@@ -1,7 +1,9 @@
 package com.relesee.service;
 
+import com.relesee.dao.AmazonEUdao;
 import com.relesee.dao.AmazonUSdao;
 import com.relesee.dao.EbayApplicationDao;
+import com.relesee.domains.AmazonEUapplication;
 import com.relesee.domains.AmazonUSapplication;
 import com.relesee.domains.EbayApplication;
 import com.relesee.domains.Result;
@@ -27,6 +29,9 @@ public class ForeignAccService {
 
     @Autowired
     AmazonUSdao amazonUSdao;
+
+    @Autowired
+    AmazonEUdao amazonEUdao;
 
     /**
      * 将上传的两个文件保存在：OUTPUT_ROOT_PATH/files/ebay/{uuid}文件夹内，名字保持原名即可。
@@ -76,7 +81,7 @@ public class ForeignAccService {
     }
 
     @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
-    public Result AmazonUSacc(AmazonUSapplication amazonUS){
+    public Result amazonUSacc(AmazonUSapplication amazonUS){
         String uuid = FileUtil.uuid();
         //手动注入uuid
         amazonUS.setId(uuid);
@@ -103,6 +108,42 @@ public class ForeignAccService {
         int count = 0;
         if (fileWriteSuccess){
             count = amazonUSdao.insertApplication(amazonUS);
+        }
+        Result<String> result = new Result();
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("申请已提交");
+        } else {
+            result.setMessage("申请提交失败");
+            result.setFlag(false);
+        }
+        return result;
+    }
+
+    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result amazonEUacc(AmazonEUapplication amazonEU){
+        String uuid = FileUtil.uuid();
+        //手动注入uuid
+        amazonEU.setId(uuid);
+
+        String DIRECTORY = OUTPUT_ROOT_PATH+"/files/amazon/eu/"+uuid;
+
+        MultipartFile applicationFile = amazonEU.getApplicationFile();
+        boolean fileWriteSuccess = false;
+        try {
+            FileUtil.createDirIfNotExist(DIRECTORY);
+            amazonEU.setApplicationFileName(applicationFile.getOriginalFilename());
+            FileUtil.writeInputStreamToDirectory(applicationFile.getInputStream(), DIRECTORY+"/"+applicationFile.getOriginalFilename());
+
+            fileWriteSuccess = true;
+        } catch (Exception e){
+            e.printStackTrace();
+            logger.error("Amazon EU文件上传出错",e);
+            fileWriteSuccess = false;
+        }
+        int count = 0;
+        if (fileWriteSuccess){
+            count = amazonEUdao.insertApplication(amazonEU);
         }
         Result<String> result = new Result();
         if (count == 1){
