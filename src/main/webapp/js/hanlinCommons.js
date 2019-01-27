@@ -54,8 +54,8 @@ var HanLin = {
     },
     request: function (url, parameters, functionDone, errorMsg){
         $.ajax({
-            url: "c/ebayApplication",
-            data: formData,
+            url: url,
+            data: parameters,
             processData: false,  //tell jQuery not to process the data
             contentType: false,  //tell jQuery not to set contentType
             async: false,
@@ -67,6 +67,46 @@ var HanLin = {
         }).done(function (data){
             functionDone(data);
         });
+    },
+    //第四个参数targetDivSelector不传的时候则返回Html
+    //level有: danger、warning、info、success
+    bootstrapAlert: function (level, title, content, targetDivSelector){
+        var legalLevels = ["danger", "warning", "info", "success"];
+        var isLevelLegal = false;
+        for (var i in legalLevels){
+            if (legalLevels[i] == level){
+                isLevelLegal = true;
+                break;
+            }
+        }
+        if (isLevelLegal){
+
+            var alertHtml = "";
+            if (targetDivSelector == undefined){
+                alertHtml += '<div class="alert alert-'+level+' fade in">';
+                alertHtml += '  <a href="#" class="close" data-dismiss="alert">&times;</a>';
+                alertHtml += '  <strong>'+title+'</strong>&nbsp;&nbsp;&nbsp;&nbsp;'+content;
+                alertHtml += '</div>';
+            } else {
+                var e = $(targetDivSelector);
+                e.addClass("alert-"+level);
+                if (!e.hasClass("alert")){
+                    e.addClass("alert")
+                }
+                if (!e.hasClass("fade")){
+                    e.addClass("fade");
+                }
+                if (!e.hasClass("in")){
+                    e.addClass("in");
+                }
+                alertHtml += '<a href="#" class="close" data-dismiss="alert">&times;</a>';
+                alertHtml += '<strong>'+title+'</strong>&nbsp;&nbsp;&nbsp;&nbsp;';
+                alertHtml += content;
+                e.html(alertHtml);
+            }
+        } else {
+            console.error("hanlinCommons：不合法的bootstrapAlertLevel,合法值为[danger, warning, info, success]");
+        }
     }
 };
 

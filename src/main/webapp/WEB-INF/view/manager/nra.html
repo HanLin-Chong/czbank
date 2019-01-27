@@ -54,11 +54,74 @@
 
 <script>
 var currentUser = null;
-renderTable();
+
 
 $.when(request("c/getManager"), {}).done(function (userData){
     currentUser = JSON.parse(userData).result;
+    $.when(request("c/getNraQueue"), {}).done(function (dataQueue){
+        dataQueue = JSON.parse(dataQueue);
 
+        layui.table.render({
+            elem: "#queue",
+            title: "NRA队列",
+            loading: true,
+            //url: "/cManager/c/getQueueBetween",
+            page: true,
+            autoSort: false,
+            cols: [[
+                {field: 'queueNo', title: '-', width: 40, fixed: 'left'},
+                {field: 'statusCode', title: '状态', width: 150, align: 'center',
+                    templet: function (d){
+                        switch (d.statusCode) {
+                            case 0:
+                                return "<p style='color: deepskyblue'>排队中</p>";
+                            case 1:
+                                return "<p style='color: #5eb95e'>审核通过</p>";
+                            case 2:
+                                return "<p style='color: red'>审核未通过</p>";
+                        }
+                    }
+                },
+                {title: '操作', width:140, align: 'center',
+                    templet: function (d){
+
+                        if (d.userName == currentUser.userName){
+                            return "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>撤销</button> " +
+                                "<button class='applyPriority btn btn-success' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>插队</button>";
+                        }
+                    }
+                },
+                {field: 'fileName', title: '文件名', width:300},
+                {field: 'qualityCustomer', title: '优质客户', width:100, align: 'center',
+                    templet: function (d){
+                        return d.qualityCustomer?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>":"-";
+                    }
+                },
+                {field: 'uploadTime', title: '上传时间', width:160, align: 'center'},
+                {field: 'userName', title: '上传者', width: 120, align: 'center',
+                    templet: function (d){
+                        return (d.userName == currentUser.userName)?"<p style='color: red'>"+d.userName+"</p>":"<p>"+d.userName+"</p>";
+                    }
+                },
+
+                {field: 'priority', title: '插队', width: 80, align: 'center',
+                    templet: function (d){
+
+                        return d.priority?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e'></span>":"-";
+                    }
+                },
+                {field: 'note', title: '备注', width: 200},
+                {field: 'id', title: 'ID', width:280},
+            ]],
+            toolbar: "#tableTool",
+            defaultToolbar: ["filter", "exports", "print"],
+            data: dataQueue
+            /*data: [
+                // {"fileName":"nnn", "id":"id", "note":"", priority:true, qualityCustomer:false, queueNo:1, restorePath:"path", statusCode:"0", uploadTime:"2019-01-05 23:03:40", uploader:"m1", userName:""}
+            ]*/
+        });
+
+    });
     $(document).ready(function (){
 
         layui.laydate.render({
@@ -150,74 +213,6 @@ $.when(request("c/getManager"), {}).done(function (userData){
 
 
 });
-
-function renderTable(){
-
-    $.when(request("c/getNraQueue"), {}).done(function (dataQueue){
-        dataQueue = JSON.parse(dataQueue);
-
-        layui.table.render({
-            elem: "#queue",
-            title: "NRA队列",
-            loading: true,
-            //url: "/cManager/c/getQueueBetween",
-            page: true,
-            autoSort: false,
-            cols: [[
-                {field: 'queueNo', title: '-', width: 40, fixed: 'left'},
-                {field: 'statusCode', title: '状态', width: 150, align: 'center',
-                    templet: function (d){
-                        switch (d.statusCode) {
-                            case 0:
-                                return "<p style='color: deepskyblue'>排队中</p>";
-                            case 1:
-                                return "<p style='color: #5eb95e'>审核通过</p>";
-                            case 2:
-                                return "<p style='color: red'>审核未通过</p>";
-                        }
-                    }
-                },
-                {title: '操作', width:140, align: 'center',
-                    templet: function (d){
-
-                        if (d.userName == currentUser.userName){
-                            return "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>撤销</button> " +
-                                "<button class='applyPriority btn btn-success' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>插队</button>";
-                        }
-                    }
-                },
-                {field: 'fileName', title: '文件名', width:300},
-                {field: 'qualityCustomer', title: '优质客户', width:100, align: 'center',
-                    templet: function (d){
-                        return d.qualityCustomer?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>":"-";
-                    }
-                },
-                {field: 'uploadTime', title: '上传时间', width:160, align: 'center'},
-                {field: 'userName', title: '上传者', width: 120, align: 'center',
-                    templet: function (d){
-                        return (d.userName == currentUser.userName)?"<p style='color: red'>"+d.userName+"</p>":"<p>"+d.userName+"</p>";
-                    }
-                },
-
-                {field: 'priority', title: '插队', width: 80, align: 'center',
-                    templet: function (d){
-
-                        return d.priority?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e'></span>":"-";
-                    }
-                },
-                {field: 'note', title: '备注', width: 200},
-                {field: 'id', title: 'ID', width:280},
-            ]],
-            toolbar: "#tableTool",
-            defaultToolbar: ["filter", "exports", "print"],
-            data: dataQueue
-            /*data: [
-                // {"fileName":"nnn", "id":"id", "note":"", priority:true, qualityCustomer:false, queueNo:1, restorePath:"path", statusCode:"0", uploadTime:"2019-01-05 23:03:40", uploader:"m1", userName:""}
-            ]*/
-        });
-
-    });
-}
 
 function reloadTableData(p){
     var index = layer.load(2, {time: 10*1000});

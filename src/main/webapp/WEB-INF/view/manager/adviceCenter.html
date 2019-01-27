@@ -37,19 +37,19 @@
         }
     </style>
 </head>
-<body style="background: #eee">
+<body style="background: #eee;position: relative;" data-target="#nav">
 
     <!--<div style="position: fixed;background: #000;height: 100%;width: 16.66666667%;z-index: 1;">-->
-    <div style="position: fixed;z-index: 1;background: #393D49;height: 100%;width: 16.66666667%">
+    <div id="nav" style="position: fixed;z-index: 1;background: #393D49;height: 100%;width: 16.66666667%">
         <ul class="nav nav-pills nav-stacked nav-pills-stacked-example" style="margin: 0 0 0 0;width: 100%;">
             <li class="myNavItem"><a href="#fillAdvice">填写反馈</a></li>
-            <li role="presentation" class="myNavItem"><a href="#ebayForm">ebay表单规则</a></li>
-            <li role="presentation" class="myNavItem"><a href="#amazonUSform">Amazon（美国）US表单规则</a></li>
-            <li role="presentation" class="myNavItem"><a href="#amazonEUform">Amazon（欧洲）EU表单规则</a></li>
+            <li class="myNavItem"><a href="#ebayForm">ebay表单规则</a></li>
+            <li class="myNavItem"><a href="#amazonUSform">Amazon（美国）US表单规则</a></li>
+            <li class="myNavItem"><a href="#amazonEUform">Amazon（欧洲）EU表单规则</a></li>
         </ul>
     </div>
     <div class="col-lg-2">asd</div>
-    <div class="col-lg-10">
+    <div id="content" class="col-lg-10" data-spy="scroll" data-target="#nav" style="position: relative;">
         <br/>
         <br/>
         <div class="form-group col-lg-12" id="fillAdvice">
@@ -462,10 +462,11 @@
     </div>
 <script>
     $(document).ready(function (){
-        $(".myNavItem").click(function (e){
+
+        /*$(".myNavItem").click(function (e){
             $(".myNavItem").removeClass("active");
             $(e.currentTarget).addClass("active");
-        });
+        });*/
 
 
         $('#advice').bind('input propertychange', function(){//$("#advice").live：动态元素的绑定

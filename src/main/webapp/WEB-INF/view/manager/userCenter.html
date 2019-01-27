@@ -7,8 +7,43 @@
     <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
 
     <script src="../../js/bootstrap.min.js"></script>
+    <style>
+        #uploadHead:hover{
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-userCenter
+<div id="alert"></div>
+<div class="col-lg-12" style="height: 40px">
+
+    <div class="col-lg-4" style="height: 40px;">
+    </div>
+    <div class="col-lg-4" style="text-align: center;height: 40px;">
+        <div style="height: 30px;margin-top: 5px;">
+            <h3 style="display: inline;">个人中心</h3>
+        </div>
+    </div>
+    <div class="col-lg-4" style="height: 40px;">
+
+    </div>
+</div>
+<hr/>
+
+
+<script>
+    $(document).ready(function (){
+        HanLin.bootstrapAlert("info", "提示", "点击右上方导航栏中的头像即可选择自定义的头像", "#alert")
+        HanLin.request("c/getManager", {}, function (data) {
+            data = JSON.parse(data);
+            console.log(data);
+
+
+        });
+
+
+
+    });
+</script>
 </body>
 </html>

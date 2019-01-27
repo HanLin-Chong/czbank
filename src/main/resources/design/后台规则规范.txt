@@ -44,3 +44,5 @@
 2：root账户
 
 8. nra队列在数据库取出时按时间排序，序列号在service中给出，后续需要筛选数据时需要先取出完整的队列，后再java中过滤后返回
+
+9. 用户头像的保存：/img/userHeadPhotos/{userId}/{photoName}

@@ -13,18 +13,18 @@
     <![endif]-->
 
     <link rel="icon" href="../../img/czyh.png">
-    <!--<link rel="stylesheet" href="../../css/normalize.css"/>
-    <link rel="stylesheet" href="../../css/bootstrap.min.css"/>-->
+    <link rel="stylesheet" href="../../css/bootstrap.modified.css"/>
     <!-- iziToast -->
     <link rel="stylesheet" href="../../css/iziToast.min.css"/>
     <link rel="stylesheet" href="../../layui/css/layui.css"/>
 
     <script src="../../js/jquery-1.11.0.min.js"></script>
-    <!--<script src="../../js/bootstrap.min.js"></script>-->
+    <script src="../../js/bootstrap.min.js"></script>
     <script src="../../js/iziToast.min.js"></script>
     <script src="../../js/deferredAjax.js"></script>
     <script src="../../js/hanlinCommons.js"></script>
     <script src="../../layui/layui.all.js"></script>
+    <script src="../../layui/lay/modules/upload.js.min"></script>
     <style>
         a, a:hover, a:active{
             text-decoration: none !important;
@@ -38,7 +38,7 @@
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item loadPage"><a>消息中心</a></li>
-            <li class="layui-nav-item loadPage"><a>商品管理</a></li>
+            <!--<li class="layui-nav-item loadPage"><a>商品管理</a></li>
             <li class="layui-nav-item loadPage"><a>用户</a></li>
             <li class="layui-nav-item">
                 <a href="javascript:;">其它系统</a>
@@ -47,11 +47,15 @@
                     <dd class="loadPage"><a>消息管理</a></dd>
                     <dd class="loadPage"><a>授权管理</a></dd>
                 </dl>
-            </li>
+            </li>-->
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
+                    <!--layui upload的bug：choose回调第一次可以触发，第二次不能，但是故意选择不符合格式的文件
+                        后，再选择正确的文件，choose回调又可以触发一次然后有丢失了choose回调，然后再故意选择不符合格式的
+                        文件。。。如此反复
+                    -->
                     <img id="headPhoto" src="../../img/czyh.png" class="layui-nav-img">
                     <jsWrite id="userName"><img src="../../img/load.gif" class="layui-nav-img"/></jsWrite>
                 </a>
@@ -78,7 +82,7 @@
                         <!--<dd><a>超链接</a></dd>-->
                     </dl>
                 </li>
-                <li class="layui-nav-item layui-nav-itemed">
+                <li class="layui-nav-item">
                     <a href="javascript:;">境外账户申请</a>
                     <dl class="layui-nav-child">
                         <dd class="loadPage" whichPage="amazonUS"><a href="javascript:;">Amazon(US)</a></dd>
@@ -97,8 +101,8 @@
 
 
     <div class="layui-footer">
-        &lt;!&ndash; 底部固定区域 &ndash;&gt;
-        © layui.com - 底部固定区域
+        <!--&lt;!&ndash; 底部固定区域 &ndash;&gt;
+        © layui.com - 底部固定区域-->
     </div>
 </div>
 <script>
@@ -114,6 +118,9 @@
     //当前用户的JSON数据
     var currentUser;
     $(document).ready(function(){
+        var device = layui.device("os");
+        console.log(device);
+
         iziToast.destroy();
         layui.element.init();
 
@@ -135,10 +142,16 @@
             currentUser = user;
             setTimeout(function (){
                 $("#userName").html(currentUser.userName);
-                $("#headPhoto").attr("src", "../../img/"+currentUser.headPhoto);
-            },300);
+                if (currentUser.headPhoto == "default"){
+                    $("#headPhoto").attr("src", "../../img/user_default_head.jpg");
+                } else {
+                    $("#headPhoto").attr("src", "../../img/userHeadPhotos/"+currentUser.userId+"/"+currentUser.headPhoto);
+                }
 
+            },100);
+            renderUpload(user);
         });
+
 
         //绑定导航选项的点击事件
         $(".loadPage").click(function (e){
@@ -159,6 +172,30 @@
         });
 
     });
+    function renderUpload(user){
+        layui.upload.render({
+            elem: '#headPhoto',
+            url: 'c/changeHeadPhoto',
+            data: {
+                userId: user.userId
+            },
+            accept: "images",
+            acceptMine: 'image/*',
+            auto: true,
+            field: "headPhoto",
+            done: function(data, index, upload){ //上传后的回调
+
+                console.log(data);
+                if (data.flag){
+                    HanLin.success(data.message);
+                    currentUser.headPhoto = data.message;
+                    $("#headPhoto").attr("src", "../../img/userHeadPhotos/"+user.userId+"/"+data.result);
+                } else {
+                    HanLin.error(data.message);
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

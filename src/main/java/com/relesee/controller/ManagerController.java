@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequiresPermissions( {"managerController"} )
 @RequestMapping("cManager/c/")
@@ -43,7 +45,15 @@ public class ManagerController {
         }
     }
 
-    @RequestMapping("getManager")
+    @RequestMapping(value="changeHeadPhoto", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String changeHeadPhoto(MultipartFile headPhoto, String userId, HttpServletRequest request){
+        String realpath = request.getServletContext().getRealPath("/");
+        Result<String> result = managerService.changeHeadPhoto(headPhoto, userId, realpath);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value="getManager", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String getManager(){
         User user = (User) SecurityUtils.getSubject().getPrincipal();

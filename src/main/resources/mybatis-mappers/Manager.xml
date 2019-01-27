@@ -21,7 +21,14 @@
             )
     </insert>
 
-
+    <update id="updateHeadPhoto">
+        UPDATE
+            user
+        SET
+            headPhoto = #{photoName}
+        WHERE
+            userId = #{userId}
+    </update>
 
 
 
