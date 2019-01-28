@@ -164,8 +164,10 @@
                     HanLin.error("该功能正在施工中");
                     layer.close(index);
                 } else {
-                    $("#contentArea").load(whichPage);
-                    layer.close(index);
+                    $("#contentArea").load(whichPage, function (){
+                        layer.close(index);
+                    });
+
                 }
             },100);
 
