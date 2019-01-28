@@ -1,6 +1,7 @@
 package com.relesee.service;
 
 import com.relesee.dao.ManagerDao;
+import com.relesee.dao.UserDao;
 import com.relesee.domains.Result;
 import com.relesee.domains.User;
 import com.relesee.utils.FileUtil;
@@ -19,6 +20,9 @@ public class ManagerService {
 
     @Autowired
     ManagerDao managerDao;
+
+    @Autowired
+    UserDao userDao;
 
     public Result advice(String content){
         Result result = new Result();
@@ -63,6 +67,44 @@ public class ManagerService {
         return result;
     }
 
+    public Result<User> updatePersonalInformation(User user){
+        String userId = ((User) SecurityUtils.getSubject().getPrincipal()).getUserId();
+        user.setUserId(userId);
+        Result result = new Result();
+        int count = userDao.updatePersonalInformation(user);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("更新个人信息成功");
+            ((User) SecurityUtils.getSubject().getPrincipal()).setEmail(user.getEmail());
+            ((User) SecurityUtils.getSubject().getPrincipal()).setPhone(user.getPhone());
+            result.setResult(SecurityUtils.getSubject().getPrincipal());
+        } else {
+            result.setFlag(false);
+            result.setMessage("更新个人信息出错");
+        }
+        return result;
+    }
 
+    public Result<User> updatePassword(String oldPassword,String newPassword){
+        Result result = new Result();
+        String password = ((User) SecurityUtils.getSubject().getPrincipal()).getPassword();
+        String userId = ((User) SecurityUtils.getSubject().getPrincipal()).getUserId();
+        if (!password.equals(oldPassword)){
+            result.setFlag(false);
+            result.setMessage("修改密码失败，输入的原密码不正确");
+        } else {
+            int count = userDao.updatePassword(userId, newPassword);
+            if (count == 1){
+                result.setFlag(true);
+                result.setMessage("修改密码成功！");
+                password = newPassword;
+                result.setResult(SecurityUtils.getSubject().getPrincipal());
+            } else {
+                result.setFlag(false);
+                result.setMessage("修改密码出错");
+            }
+        }
+        return result;
+    }
 
 }

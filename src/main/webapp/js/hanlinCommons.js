@@ -68,6 +68,20 @@ var HanLin = {
             functionDone(data);
         });
     },
+    requestTypical: function (url, parameters, functionDone, errorMsg){
+        $.ajax({
+            url: url,
+            data: parameters,
+            async:false,
+            method: "post",
+            success:function (data){
+                functionDone(data);
+            },
+            error: function (){
+                HanLin.error(errorMsg);
+            }
+        });
+    },
     //第四个参数targetDivSelector不传的时候则返回Html
     //level有: danger、warning、info、success
     bootstrapAlert: function (level, title, content, targetDivSelector){

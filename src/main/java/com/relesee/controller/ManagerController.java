@@ -69,6 +69,21 @@ public class ManagerController {
         return JSON.toJSONString(result);
     }
 
+    @RequestMapping(value = "modifyPersonalInfo", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String modifyPersonalInfo(User user, HttpServletRequest request){
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        Result<User> result = managerService.updatePersonalInformation(user);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "changePassword", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String changePassword(String oldPassword, String newPassword){
+        Result<User> result = managerService.updatePassword(oldPassword, newPassword);
+        return JSON.toJSONString(result);
+    }
 
     /**
      *  以下是NRA功能

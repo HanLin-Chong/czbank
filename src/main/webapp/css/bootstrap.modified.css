@@ -11348,3 +11348,18 @@ td.visible-print,th.visible-print {
 	display:none!important
 }
 }
+.btn:focus,
+
+.btn:active:focus,
+
+.btn.active:focus,
+
+.btn.focus,
+
+.btn:active.focus,
+
+.btn.active.focus {
+
+	outline: none;
+
+}

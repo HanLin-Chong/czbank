@@ -42,4 +42,22 @@
             PassWord = #{pass}
     </select>
 
+    <update id="updatePersonalInformation" parameterType="com.relesee.domains.User">
+        UPDATE
+            user
+        SET
+            email = #{email},
+            phone = #{phone}
+        WHERE
+            userId = #{userId}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE
+            user
+        SET
+            password = #{password}
+        WHERE
+            userId = #{userId}
+    </update>
 </mapper>
