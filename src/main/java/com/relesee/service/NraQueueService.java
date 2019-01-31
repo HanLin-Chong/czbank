@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class NraQueueService {
+public class  NraQueueService {
 
     private static final Logger logger = Logger.getLogger(NraQueueService.class);
 
@@ -35,10 +35,6 @@ public class NraQueueService {
     @Autowired
     NraFileDao nraFileDao;
 
-    /**
-     * 队列的编号工作再次进行
-     * @return
-     */
     public List<NraFile> getQueue(String fileName, String beginDate, String endDate){
         if (StringUtils.isBlank(fileName)){
             fileName = "";
@@ -136,5 +132,11 @@ public class NraQueueService {
             result.setMessage("文件上传失败:"+message+",详细请查看日志");
         }
         return result;
+    }
+
+    public NraFile getNraFileById(String id) {
+        NraFile nraFile = nraFileDao.selectNraFileById(id);
+
+        return nraFile;
     }
 }

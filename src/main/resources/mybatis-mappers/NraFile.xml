@@ -161,6 +161,23 @@
             id = #{id}
     </update>
 
+    <select id="selectNraFileById" parameterType="String">
+        SELECT
+            id,
+            filename,
+            queueNo,
+            isQualityCustomer,
+            uploadTime,
+            uploader,
+            restorePath,
+            statusCode,
+            isPriority,
+            note
+        FROM
+            nrafile
+        WHERE
+            id = #{id}
+    </select>
 
 
 </mapper>

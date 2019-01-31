@@ -96,9 +96,9 @@ public class PageController {
     }
 
     @RequiresRoles( {"root"} )
-    @RequestMapping("root")
-    public String rootPage(){
-        return "WEB-INF/view/root.html";
+    @RequestMapping("root/{page}")
+    public String rootPage(@PathVariable String page){
+        return "WEB-INF/view/root/"+page+".html";
     }
 
 }

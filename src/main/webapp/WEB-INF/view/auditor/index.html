@@ -13,14 +13,14 @@
     <![endif]-->
 
     <link rel="icon" href="../../img/czyh.png">
-    <!--<link rel="stylesheet" href="../../css/normalize.css"/>
-    <link rel="stylesheet" href="../../css/bootstrap.min.css"/>-->
+
+    <link rel="stylesheet" href="../../css/bootstrap.modified.css"/>
     <!-- iziToast -->
     <link rel="stylesheet" href="../../css/iziToast.min.css"/>
     <link rel="stylesheet" href="../../layui/css/layui.css"/>
 
     <script src="../../js/jquery-1.11.0.min.js"></script>
-    <!--<script src="../../js/bootstrap.min.js"></script>-->
+    <script src="../../js/bootstrap.min.js"></script>
     <script src="../../js/iziToast.min.js"></script>
     <script src="../../js/deferredAjax.js"></script>
     <script src="../../js/hanlinCommons.js"></script>
@@ -60,7 +60,6 @@
                     <dd><a href="/logout" style="color: #ff0000;">安全退出</a></dd>
                 </dl>
             </li>
-
         </ul>
     </div>
 
@@ -71,7 +70,7 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;">NRA业务</a>
                     <dl class="layui-nav-child">
-                        <dd class="loadPage" whichPage="nra"><a href="javascript:;">审核队列管理</a></dd>
+                        <dd class="loadPage" whichPage="nraQueue"><a href="javascript:;">审核队列管理</a></dd>
                         <dd class="loadPage" whichPage="nraUpload"><a href="javascript:;">插队申请管理</a></dd>
                         <!--<dd><a>超链接</a></dd>-->
                     </dl>
@@ -138,9 +137,15 @@
             currentUser = user;
             setTimeout(function (){
                 $("#userName").html(currentUser.userName);
-                $("#headPhoto").attr("src", "../../img/"+currentUser.headPhoto);
-            },300);
+                var photoName = currentUser.headPhoto;
+                if (photoName == "default") {
+                    $("#headPhoto").attr("src", "../../img/userHeadPhotos/user_default_head.jpg");
+                } else {
+                    $("#headPhoto").attr("src", "../../img/userHeadPhotos/"+currentUser.userId+"/"+currentUser.headPhoto);
+                }
 
+            },300);
+            renderUpload(user);
         });
 
         //绑定导航选项的点击事件
@@ -154,14 +159,40 @@
                     HanLin.error("该功能正在施工中");
                     layer.close(index);
                 } else {
-                    $("#contentArea").load(whichPage);
-                    layer.close(index);
+                    $("#contentArea").load(whichPage, function (){
+                        layer.close(index);
+                    });
+
                 }
             },200);
 
         });
 
     });
+    function renderUpload(user){
+        layui.upload.render({
+            elem: '#headPhoto',
+            url: 'c/changeHeadPhoto',
+            data: {
+                userId: user.userId
+            },
+            accept: "images",
+            acceptMine: 'image/*',
+            auto: true,
+            field: "headPhoto",
+            done: function(data, index, upload){ //上传后的回调
+
+                console.log(data);
+                if (data.flag){
+                    HanLin.success(data.message);
+                    currentUser.headPhoto = data.message;
+                    $("#headPhoto").attr("src", "../../img/userHeadPhotos/"+user.userId+"/"+data.result);
+                } else {
+                    HanLin.error(data.message);
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>
