@@ -4,5 +4,5 @@ Authorization：授权，验证某个已认证的用户是否拥有某个权限
 
 数据库需要三张表：
 1. 用户表user：账号、密码(userId,passWord)
-2. 用户角色表role：账号、角色(manager,auditor,root)
+2. --用户角色表role：账号、角色(manager,auditor,root)--由于此系统一个用户只有一种角色，所以无需此表
 3. 用户权限表permission：角色、功能权限

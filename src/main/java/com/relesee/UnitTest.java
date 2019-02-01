@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.relesee.dao.NraFileDao;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
+import com.relesee.service.AuditorService;
 import com.relesee.service.ManagerService;
 import com.relesee.service.NraQueueService;
 import com.relesee.utils.FileUtil;
@@ -29,9 +30,12 @@ public class UnitTest {
     @Autowired
     NraFileDao dao;
 
+    @Autowired
+    AuditorService auditorService;
+
     @Test
     public void doTest() {
-        File file = new File("E:/新建文本文档.txt");
+        /*File file = new File("E:/新建文本文档.txt");
         String path = null;
         try {
             path = FileUtils.readFileToString(file, "gbk");
@@ -42,7 +46,8 @@ public class UnitTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(path);
+        System.out.println(path);*/
+        auditorService.testTransaction();
     }
 
 }

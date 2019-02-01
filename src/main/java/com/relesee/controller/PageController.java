@@ -2,6 +2,7 @@ package com.relesee.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.relesee.aspect.AccessLogAspect;
 import com.relesee.domains.User;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -10,6 +11,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.subject.support.WebDelegatingSubject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,9 @@ public class PageController {
 
     private static final Logger logger = Logger.getLogger(PageController.class);
 
+    @Autowired
+    AccessLogAspect accessLog;
+
     /**
      * 页面控制器
      * @param page
@@ -35,7 +40,7 @@ public class PageController {
 
 
     @RequestMapping("/")
-    public String login1(HttpServletResponse response){
+    public String login1(){
         logger.info("\n----------------------       通过根（/）进入网站,重定向至（/login）      -------------------------");
         return "redirect:/login";
     }
@@ -69,15 +74,19 @@ public class PageController {
 
         if (subject.hasRole("manager")){
             logger.info("重定向至客户经理主页");
+            accessLog.distributeLog("cManager/index");
             return "redirect:cManager/index";
         } else if (subject.hasRole("auditor")){
             logger.info("重定向至审核员主页");
+            accessLog.distributeLog("auditor/index");
             return "redirect:auditor/index";
         } else if (subject.hasRole("root")){
             logger.info("重定向至root主页");
+            //root暂时不记录
             return "redirect:root";
         } else {
             logger.info("分发器分发时用户不具备权限，跳转至错误页，错误码：1");
+            accessLog.distributeLog("页面分发出错，重定向至error/1");
             return "redirect:error/1";
         }
 
@@ -86,12 +95,14 @@ public class PageController {
     @RequiresPermissions( {"managerPage"} )
     @RequestMapping("cManager/{page}")
     public String managerPage(@PathVariable String page){
+        accessLog.pageLog("WEB-INF/view/manager/"+page+".html");
         return "WEB-INF/view/manager/"+page+".html";
     }
 
     @RequiresPermissions( {"auditorPage"} )
     @RequestMapping("auditor/{page}")
     public String auditorPage(@PathVariable String page){
+        accessLog.pageLog("WEB-INF/view/auditor/"+page+".html");
         return "WEB-INF/view/auditor/"+page+".html";
     }
 

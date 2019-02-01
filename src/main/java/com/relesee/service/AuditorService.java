@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -45,5 +47,11 @@ public class AuditorService {
             result.setMessage("头像更改出错");
         }
         return result;
+    }
+
+    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public void testTransaction(){
+        auditorDao.aOperation();
+        auditorDao.bOperation();
     }
 }

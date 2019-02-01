@@ -30,7 +30,25 @@
             userId = #{userId}
     </update>
 
+    <update id="aOperation">
+        UPDATE
+            draft
+        SET
+            b = 'what?'
+        WHERE
+            a = 'a'
+    </update>
 
+    <insert id="bOperation">
+        INSERT INTO
+            draft(
+                a,b
+            )
+        VALUES
+            (
+                'a','2'
+            )
 
+    </insert>
 
 </mapper>

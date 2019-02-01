@@ -29,6 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("auditor/c/")
@@ -52,16 +55,24 @@ public class AuditorController {
 
     @RequestMapping("downloadNraFile/{id}")
     public ResponseEntity<?> downloadNraFile(@PathVariable String id, HttpServletResponse response){
-        System.out.println(id);
+
         String DIRECTORY = OUTPUT_ROOT_PATH+"/files/nra";
         String FILE_URI = DIRECTORY+"/"+id;
         NraFile nraFile = nraQueueService.getNraFileById(id);
+        nraFile.setFileName(StringUtils.trim(nraFile.getFileName()));
         File file = new File(FILE_URI);
         HttpHeaders headers = new HttpHeaders();
 
         if (file.exists()){
-            headers.setContentDispositionFormData("attachment", nraFile.getFileName());
+            String filename = null;
+            try {
+                filename = new String(nraFile.getFileName().getBytes(), "ISO8859-1");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            headers.setContentDispositionFormData("attachment", filename);
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
             ResponseEntity<byte[]> resultTrue = null;
             try {
                 resultTrue = new ResponseEntity(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);

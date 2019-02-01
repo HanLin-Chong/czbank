@@ -7,12 +7,18 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Aspect
+//@Aspect
 @Component
+/**
+ * 在对PageController进行环切的时候失败，同时导致一些路径无法访问，
+ * 于是决定不使用代理，使用最笨的函数式方法解决。。
+ */
 public class AccessLogAspect {
 
     private static final Logger logger = Logger.getLogger(AccessLogAspect.class);
@@ -20,32 +26,31 @@ public class AccessLogAspect {
     @Autowired
     AccessLogDao accessLogDao;
 
-    @After("execution(String com.relesee.controller.PageController.distribute(..))")
-    public Object distributeLog(ProceedingJoinPoint joinPoint) throws Throwable{
+
+    public void distributeLog(String path){
         AccessLog log = new AccessLog();
 
-        String s = (String) joinPoint.proceed();
-        log.setPageName(s);
+
+        log.setPageName(path);
         log.setUserId(((User) SecurityUtils.getSubject().getPrincipal()).getUserId());
         int count = accessLogDao.insertLog(log);
         if (count != 1){
-            logger.info("分发器日志切面在向数据库写入日志时失败，日志信息：（pageName:"+s+",userId:"+log.getUserId()+"）");
+            logger.info("分发器日志切面在向数据库写入日志时失败，日志信息：（pageName:"+path+",userId:"+log.getUserId()+"）");
         }
-        return s;
+
     }
 
-    @After("execution(String com.relesee.controller.PageController.*Page(..))")
-    public Object PageLog(ProceedingJoinPoint joinPoint) throws Throwable{
+    public void pageLog(String path){
         AccessLog log = new AccessLog();
 
-        String s = (String) joinPoint.proceed();
-        log.setPageName(s);
+
+        log.setPageName(path);
         log.setUserId(((User) SecurityUtils.getSubject().getPrincipal()).getUserId());
         int count = accessLogDao.insertLog(log);
         if (count != 1){
-            logger.info("页面转发器在向数据库写入日志时失败，日志信息：（pageName:"+s+",userId:"+log.getUserId()+"）");
+            logger.info("页面转发器在向数据库写入日志时失败，日志信息：（pageName:"+path+",userId:"+log.getUserId()+"）");
         }
-        return s;
+
     }
 
 }
