@@ -47,7 +47,7 @@ public class UnitTest {
             e.printStackTrace();
         }
         System.out.println(path);*/
-        auditorService.testTransaction();
+
     }
 
 }

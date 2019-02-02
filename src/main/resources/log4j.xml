@@ -46,6 +46,25 @@
         </layout>
     </appender>
 
+    <appender name="ACCESSLOG" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="&logroot;/访问记录.log"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.txt'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss,SSS}]-[%p]:%m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="com.relesee.controller.PageController" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="ACCESSLOG"/>
+    </logger>
+
+    <logger name="com.relesee.aspect.AccessLogAspect" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="ACCESSLOG"/>
+    </logger>
+
     <logger name="org.springframework" additivity="false">
         <level value="ALL" />
         <appender-ref ref="SPRING" />

@@ -49,9 +49,5 @@ public class AuditorService {
         return result;
     }
 
-    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
-    public void testTransaction(){
-        auditorDao.aOperation();
-        auditorDao.bOperation();
-    }
+
 }

@@ -13,7 +13,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-//@Aspect
+@Aspect
 @Component
 /**
  * 在对PageController进行环切的时候失败，同时导致一些路径无法访问，
@@ -26,8 +26,28 @@ public class AccessLogAspect {
     @Autowired
     AccessLogDao accessLogDao;
 
+    @Around("execution(* com.relesee.service.*.*(..))")
+    public Object ServiceLog(ProceedingJoinPoint joinPoint){
+        String className = joinPoint.getTarget().getClass().getSimpleName();
+        String methodName = joinPoint.getSignature().getName();
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        Object object = null;
+        try {
+            object = joinPoint.proceed();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        joinPoint.getTarget().getClass().getName();
+        try {
+            logger.info("["+user.getUserId()+"-"+user.getUserName()+"]:"+className+"."+methodName);
+        } catch (Exception e){
+            logger.info("[未登录]:"+className+"."+methodName);
+        }
 
-    public void distributeLog(String path){
+        return object;
+    }
+
+    /*public void distributeLog(String path){
         AccessLog log = new AccessLog();
 
 
@@ -51,6 +71,6 @@ public class AccessLogAspect {
             logger.info("页面转发器在向数据库写入日志时失败，日志信息：（pageName:"+path+",userId:"+log.getUserId()+"）");
         }
 
-    }
+    }*/
 
 }

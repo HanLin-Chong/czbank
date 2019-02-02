@@ -80,7 +80,17 @@ $(document).ready(function (){
             defaultToolbar: ["filter", "exports", "print"],
             data: data
         });
+
+
+        $(document).on("click", ".refuse", function (e){
+            alert("refuse");
+        });
+        $(document).on("click", ".pass", function (e){
+            alert("pass");
+        });
     }, "获取NRA队列失败");
+
+
 
 });
 </script>
