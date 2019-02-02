@@ -92,9 +92,6 @@ public class AuditorController {
 
     }
 
-
-
-
     @RequestMapping("checkLogin")
     @ResponseBody
     public String checkLogin(){
@@ -135,5 +132,25 @@ public class AuditorController {
         return JSON.toJSONString(nraQueueService.getQueue(fileName, beginDate, endDate));
     }
 
+    @RequestMapping(value="nraRefuse", produces="text/plane;charset=utf-8")
+    @ResponseBody
+    public String nraRefuse(NraFile nraFile){
+        Result<NraFile> result = nraQueueService.nraRefuse(nraFile);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value="nraPass", produces="text/plane;charset=utf-8")
+    @ResponseBody
+    public String nraPass(NraFile nraFile){
+        Result<NraFile> result = nraQueueService.nraPass(nraFile);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "getNraForAudit", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getNraForAudit(int amount){
+        Result<List<NraFile>> result = nraQueueService.getForAuditor(amount);
+        return JSON.toJSONString(result);
+    }
 
 }

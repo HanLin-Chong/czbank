@@ -10,6 +10,7 @@ import com.relesee.utils.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class  NraQueueService {
     @Autowired
     NraFileDao nraFileDao;
 
+    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public List<NraFile> getQueue(String fileName, String beginDate, String endDate){
         if (StringUtils.isBlank(fileName)){
             fileName = "";
@@ -134,9 +136,77 @@ public class  NraQueueService {
         return result;
     }
 
+    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public NraFile getNraFileById(String id) {
         NraFile nraFile = nraFileDao.selectNraFileById(id);
 
         return nraFile;
+    }
+
+    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @RequiresPermissions( {"auditorController"} )
+    public Result<NraFile> nraRefuse(NraFile nraFile){
+        nraFile.setStatusCode(2);
+        Result<NraFile> result = new Result();
+        int count = nraFileDao.updateStatusRefused(nraFile);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("文件："+nraFile.getFileName()+" 已拒绝");
+            result.setResult(nraFile);
+        } else {
+            result.setFlag(false);
+            result.setMessage("文件："+nraFile.getFileName()+" 在拒绝申请时失败");
+            result.setResult(nraFile);
+        }
+        return result;
+    }
+
+    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @RequiresPermissions( {"auditorController"} )
+    public Result<NraFile> nraPass(NraFile nraFile){
+        nraFile.setStatusCode(1);
+        Result<NraFile> result = new Result();
+        int count = nraFileDao.updateStatusPassed(nraFile);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("文件："+nraFile.getFileName()+" 审核通过");
+            result.setResult(nraFile);
+        } else {
+            result.setFlag(false);
+            result.setMessage("文件："+nraFile.getFileName()+" 在通过审核时失败");
+            result.setResult(nraFile);
+        }
+        return result;
+    }
+
+    /**
+     * 所有审核员都要通过此方法批量取出NRA申请，每次取出的数量由审核员自己决定
+     * 先将NRA文件的状态标为已下载
+     * @return
+     */
+    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @RequiresPermissions( {"auditorController"} )
+    public synchronized Result<List<NraFile>> getForAuditor(int amount){
+        Result<List<NraFile>> result = new Result();
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        //（逻辑上）锁定资源
+        int count = nraFileDao.updateNraAuditor(amount, user.getUserId());
+
+        List<NraFile> list = nraFileDao.selectForAudit(amount, user.getUserId());
+        if (count <= amount && count >= 1){
+            result.setFlag(true);
+            result.setMessage("成功取出"+count+"条申请");
+            result.setResult(list);
+        } else if (count == 0){
+            result.setFlag(true);
+            result.setMessage("没有待审核的申请");
+            result.setResult(list);
+        } else {
+            result.setFlag(false);
+            result.setMessage("获取申请失败");
+            result.setResult(list);
+        }
+
+        return result;
     }
 }

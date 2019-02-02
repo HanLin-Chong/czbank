@@ -19,7 +19,8 @@
                 note,
                 isQualityCustomer,
                 statusCode,
-                isPriority
+                isPriority,
+                auditor
             )
         VALUES
             (
@@ -41,7 +42,8 @@
                 #{note},
                 #{isQualityCustomer},
                 0,
-                0
+                0,
+                NULL
             )
     </insert>
 
@@ -172,12 +174,88 @@
             restorePath,
             statusCode,
             isPriority,
-            note
+            note,
+            auditor
         FROM
             nrafile
         WHERE
             id = #{id}
     </select>
 
+    <update id="updateStatusRefused" parameterType="com.relesee.domains.NraFile">
+        UPDATE
+            nrafile
+        SET
+            statusCode = #{statusCode}
+        WHERE
+            id = #{id}
+    </update>
+
+    <update id="updateStatusPassed" parameterType="com.relesee.domains.NraFile">
+        UPDATE
+            nrafile
+        SET
+            statusCode = #{statusCode}
+        WHERE
+            id = #{id}
+    </update>
+
+    <select id="selectForAudit" resultType="com.relesee.domains.NraFile">
+        SELECT
+            id,
+            queueNo,
+            fileName,
+            isQualityCustomer,
+            uploadTime,
+            uploader,
+            restorePath,
+            statusCode,
+            isPriority,
+            note,
+            auditor
+        FROM
+            nrafile
+        WHERE
+            isDel = 0
+        AND
+            statusCode = 1
+        AND
+            queueNo >= 1
+        AND
+            auditor = #{auditor}
+        ORDER BY
+            queueNo
+        LIMIT
+            0,#{amount}
+    </select>
+
+    <update id="updateNraAuditor">
+        UPDATE
+            nrafile
+        SET
+            statusCode = 1,
+            auditor = #{auditor}
+        WHERE
+            id
+            IN(
+                SELECT id FROM
+                (
+                    SELECT
+                        id
+                    FROM
+                        nrafile
+                    WHERE
+                        isDel = 0
+                    AND
+                        statusCode = 0
+                    AND
+                        queueNo >= 1
+                    ORDER BY
+                        queueNo
+                    LIMIT
+                        0,#{amount}
+                ) temp
+            )
+    </update>
 
 </mapper>

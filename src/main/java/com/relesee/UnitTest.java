@@ -27,26 +27,8 @@ import java.util.List;
 @ContextConfiguration({"classpath:application-context.xml"})
 public class UnitTest {
 
-    @Autowired
-    NraFileDao dao;
-
-    @Autowired
-    AuditorService auditorService;
-
     @Test
     public void doTest() {
-        /*File file = new File("E:/新建文本文档.txt");
-        String path = null;
-        try {
-            path = FileUtils.readFileToString(file, "gbk");
-            byte[] b = path.getBytes();
-            for (byte temp:b){
-                System.out.println(temp);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(path);*/
 
     }
 
