@@ -294,4 +294,33 @@
         ORDER BY
             queueNo
     </select>
+
+    <select id="serializeQueue">
+        --本次查询需要用到的变量
+        SET count = NULL;--状态码大于1的申请数
+        -------------------------------------------------
+        SELECT
+            @count := COUNT(*) AS count
+        FROM
+            nraFile
+        WHERE
+            statusCode > 1
+        AND
+            isDel = 0
+        AND
+            auditor != NULL;
+        --------------------------------------------------
+        --将状态码大于1的（不处于排队中和已锁定状态的申请）队列号设为0
+        UPDATE
+            nrafile
+        SET
+            queueNo = 0
+        WHERE
+            statusCode > 1
+        AND
+            isDel = 0
+        AND
+            auditor IS NOT NULL;
+        ----------------------------------------------------
+    </select>
 </mapper>
