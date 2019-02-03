@@ -3,14 +3,14 @@ package com.relesee.constant;
 /**
  * NRA文件队列状态
  * 排队中 = 0
- * 已下载 = 1
+ * 已锁定 = 1
  * 审核通过 = 2
  * 拒绝申请 = 3
  * 主动取消 = 4
  */
 public enum NraStatus {
     QUEUING(0),
-    DOWNLOADED(1),
+    LOCKED(1),
     PASS(2),
     REFUSED(3),
     CANCELED(4);

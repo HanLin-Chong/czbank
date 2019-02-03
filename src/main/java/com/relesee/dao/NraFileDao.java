@@ -12,7 +12,7 @@ public interface NraFileDao {
 
     List<NraFile> selectNraQueue(@Param("fileName") String fileName,@Param("beginDate") String beginDate,@Param("endDate") String endDate);
 
-    int deleteNraFileById(String id);
+    int deleteNraFileById(@Param("id") String id, @Param("statusCode") int statusCode);
 
     List<NraFile> selectNraHistory(@Param("userId")String userId, @Param("fileName") String fileName,@Param("beginDate") String beginDate,@Param("endDate") String endDate);
 
@@ -36,5 +36,10 @@ public interface NraFileDao {
      * @param auditor
      * @return
      */
-    int updateNraAuditor(@Param("amount")int amount, @Param("auditor") String auditor);
+    int updateNraAuditor(@Param("amount")int amount, @Param("auditor") String auditor, @Param("statusCode") int statusCode);
+
+    /**
+     * 查看是否有已经锁定的资源
+     */
+    List<NraFile> selectLocked(String userId);
 }

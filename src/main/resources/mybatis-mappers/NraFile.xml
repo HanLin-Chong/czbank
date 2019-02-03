@@ -136,8 +136,8 @@
         UPDATE
             nrafile
         SET
-            isDel = 1,
-            statusCode = 3
+            --isDel = 1,不用逻辑删除
+            statusCode = #{statusCode}
         WHERE
             id = #{id};
         UPDATE
@@ -188,7 +188,7 @@
         SET
             statusCode = #{statusCode}
         WHERE
-            id = #{id}
+            id = #{uploader}
     </update>
 
     <update id="updateStatusPassed" parameterType="com.relesee.domains.NraFile">
@@ -197,7 +197,7 @@
         SET
             statusCode = #{statusCode}
         WHERE
-            id = #{id}
+            id = #{uploader}
     </update>
 
     <select id="selectForAudit" resultType="com.relesee.domains.NraFile">
@@ -212,9 +212,14 @@
             statusCode,
             isPriority,
             note,
-            auditor
+            auditor,
+            userName
         FROM
             nrafile
+        INNER JOIN
+            user
+        ON
+            nrafile.uploader = user.userId
         WHERE
             isDel = 0
         AND
@@ -233,7 +238,7 @@
         UPDATE
             nrafile
         SET
-            statusCode = 1,
+            statusCode = #{statusCode},
             auditor = #{auditor}
         WHERE
             id
@@ -258,4 +263,35 @@
             )
     </update>
 
+    <select id="selectLocked" parameterType="String" resultType="com.relesee.domains.NraFile">
+        SELECT
+            id,
+            queueNo,
+            fileName,
+            isQualityCustomer,
+            uploadTime,
+            uploader,
+            restorePath,
+            statusCode,
+            isPriority,
+            note,
+            auditor,
+            userName
+        FROM
+            nrafile
+        INNER JOIN
+            user
+        ON
+            nrafile.uploader = user.userId
+        WHERE
+            isDel = 0
+        AND
+            statusCode = 1
+        AND
+            queueNo >= 1
+        AND
+            auditor = #{userId}
+        ORDER BY
+            queueNo
+    </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.relesee.service;
 
 import com.alibaba.fastjson.JSON;
+import com.relesee.constant.NraStatus;
 import com.relesee.dao.NraFileDao;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class  NraQueueService {
+public class NraQueueService {
 
     private static final Logger logger = Logger.getLogger(NraQueueService.class);
 
@@ -67,15 +68,14 @@ public class  NraQueueService {
 
     /**
      * 删除文件，需要并发锁，虽然每个客户经理只能删除自己的文件，但是以防万一，得加上锁，
-     * 队列重新编号、逻辑删除、状态码调0工作都在同一个update标签中完成
+     * 队列重新编号、状态码调整工作都在同一个update标签中完成
      * @param id
      * @return
      */
     @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public synchronized Result revokeNraFile(String id){
         Result result = new Result();
-        int count = nraFileDao.deleteNraFileById(id);
-        System.out.println(count);
+        int count = nraFileDao.deleteNraFileById(id, NraStatus.CANCELED.getStatusCode());
         if (count >= 1){
             result.setFlag(true);
             result.setMessage("撤销申请成功");
@@ -83,7 +83,6 @@ public class  NraQueueService {
             result.setFlag(false);
             result.setMessage("撤销申请失败");
         }
-        System.out.println(JSON.toJSONString(result));
         return result;
     }
 
@@ -146,7 +145,8 @@ public class  NraQueueService {
     @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     @RequiresPermissions( {"auditorController"} )
     public Result<NraFile> nraRefuse(NraFile nraFile){
-        nraFile.setStatusCode(2);
+        nraFile.setStatusCode(NraStatus.REFUSED.getStatusCode());
+
         Result<NraFile> result = new Result();
         int count = nraFileDao.updateStatusRefused(nraFile);
         if (count == 1){
@@ -164,7 +164,8 @@ public class  NraQueueService {
     @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     @RequiresPermissions( {"auditorController"} )
     public Result<NraFile> nraPass(NraFile nraFile){
-        nraFile.setStatusCode(1);
+        nraFile.setStatusCode(NraStatus.PASS.getStatusCode());
+
         Result<NraFile> result = new Result();
         int count = nraFileDao.updateStatusPassed(nraFile);
         if (count == 1){
@@ -189,24 +190,42 @@ public class  NraQueueService {
     public synchronized Result<List<NraFile>> getForAuditor(int amount){
         Result<List<NraFile>> result = new Result();
         User user = (User) SecurityUtils.getSubject().getPrincipal();
-        //（逻辑上）锁定资源
-        int count = nraFileDao.updateNraAuditor(amount, user.getUserId());
+        //先判断是否有锁定的资源未处理
+        List<NraFile> history = nraFileDao.selectLocked(user.getUserId());
 
-        List<NraFile> list = nraFileDao.selectForAudit(amount, user.getUserId());
-        if (count <= amount && count >= 1){
-            result.setFlag(true);
-            result.setMessage("成功取出"+count+"条申请");
-            result.setResult(list);
-        } else if (count == 0){
-            result.setFlag(true);
-            result.setMessage("没有待审核的申请");
-            result.setResult(list);
-        } else {
+        if (history.size() > 0){
+            logger.fatal("非法操作，在申请未处理完时获取");
             result.setFlag(false);
-            result.setMessage("获取申请失败");
-            result.setResult(list);
-        }
+            result.setMessage("非法操作，当前账号仍有被锁定的申请未处理，请刷新页面重试");
+            //result.setResult(history);
+        } else {
+            //（逻辑上）锁定资源
+            int count = nraFileDao.updateNraAuditor(amount, user.getUserId(), NraStatus.LOCKED.getStatusCode());
 
+            List<NraFile> list = nraFileDao.selectForAudit(amount, user.getUserId());
+            if (count <= amount && count >= 1){
+                result.setFlag(true);
+                result.setMessage("success");
+                result.setResult(list);
+            } else if (count == 0){
+                result.setFlag(true);
+                result.setMessage("null");
+                result.setResult(list);
+            } else {
+                result.setFlag(false);
+                result.setMessage("获取申请失败");
+                result.setResult(list);
+            }
+        }
+        return result;
+    }
+
+    @RequiresPermissions( {"auditorController"} )
+    public Result<List<NraFile>> getLockedFiles(){
+        Result<List<NraFile>> result = new Result();
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        List<NraFile> list = nraFileDao.selectLocked(user.getUserId());
+        result.setResult(list);
         return result;
     }
 }

@@ -2,6 +2,7 @@ package com.relesee;
 
 
 import com.alibaba.fastjson.JSON;
+import com.relesee.constant.NraQueueJumpingStatus;
 import com.relesee.dao.NraFileDao;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
@@ -27,9 +28,12 @@ import java.util.List;
 @ContextConfiguration({"classpath:application-context.xml"})
 public class UnitTest {
 
+    @Autowired
+    NraQueueService service;
+
     @Test
     public void doTest() {
-
+        service.getForAuditor(-1);
     }
 
 }

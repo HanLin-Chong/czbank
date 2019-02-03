@@ -4,6 +4,25 @@
  */
 
 var HanLin = {
+    //常量，防止魔法值
+    nraStatus:{
+        QUEUING:0,
+        LOCKED:1,
+        PASS:2,
+        REFUSED:3,
+        CANCELED:4
+    },
+    userStatus:{
+        BLOCK_UP:0,
+        NORMAL:1,
+        ROOT:2
+    },
+    nraQueueJumpingStatus:{
+        NORMAL_FILE:0,
+        SUBMITTED:1,
+        REFUSED:2,
+        PRIORITY_FILE:3
+    },
     //对iziToast的封装，防止toast重复出现，并且方便更换通知的插件
     info: function (msg){
         iziToast.info({
@@ -120,6 +139,31 @@ var HanLin = {
             }
         } else {
             console.error("hanlinCommons：不合法的bootstrapAlertLevel,合法值为[danger, warning, info, success]");
+        }
+    },
+    isNumber: function (value){
+
+        var patrn = /^(-)?\d+(\.\d+)?$/;
+        if (patrn.exec(value) == null || value == "") {
+            return false;
+        } else {
+            return true;
+        }
+
+    },
+    isIntegerBetween: function (value, min, max){
+        var pattern =  /^\d+$/;
+        console.log(pattern.test(value));
+        if (!pattern.test(value)) {
+            console.log(1);
+            return false
+
+        } else {
+            if (value < min || value > max){
+                console.log(2);
+                return false;
+            }
+            return true;
         }
     }
 };

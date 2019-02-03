@@ -135,6 +135,7 @@ public class AuditorController {
     @RequestMapping(value="nraRefuse", produces="text/plane;charset=utf-8")
     @ResponseBody
     public String nraRefuse(NraFile nraFile){
+        System.out.println(JSON.toJSONString(nraFile));
         Result<NraFile> result = nraQueueService.nraRefuse(nraFile);
         return JSON.toJSONString(result);
     }
@@ -142,6 +143,7 @@ public class AuditorController {
     @RequestMapping(value="nraPass", produces="text/plane;charset=utf-8")
     @ResponseBody
     public String nraPass(NraFile nraFile){
+        System.out.println(JSON.toJSONString(nraFile));
         Result<NraFile> result = nraQueueService.nraPass(nraFile);
         return JSON.toJSONString(result);
     }
@@ -150,6 +152,13 @@ public class AuditorController {
     @ResponseBody
     public String getNraForAudit(int amount){
         Result<List<NraFile>> result = nraQueueService.getForAuditor(amount);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "getLockedNra", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getLockedNra(){
+        Result<List<NraFile>> result = nraQueueService.getLockedFiles();
         return JSON.toJSONString(result);
     }
 

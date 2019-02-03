@@ -123,7 +123,6 @@ public class PageController {
             User user = (User) SecurityUtils.getSubject().getPrincipal();
             return user.getUserId()+"-"+user.getUserName();
         } catch (Exception e){
-            e.printStackTrace();
             return "未登录";
         }
 

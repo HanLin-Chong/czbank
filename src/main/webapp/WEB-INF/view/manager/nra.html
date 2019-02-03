@@ -73,12 +73,16 @@ $.when(request("c/getManager"), {}).done(function (userData){
                 {field: 'statusCode', title: '状态', width: 150, align: 'center',
                     templet: function (d){
                         switch (d.statusCode) {
-                            case 0:
+                            case HanLin.nraStatus.QUEUING:
                                 return "<p style='color: deepskyblue'>排队中</p>";
-                            case 1:
+                            case HanLin.nraStatus.LOCKED:
+                                return "<p style='color: #c5b2d0'>已锁定</p>";
+                            case HanLin.nraStatus.PASS:
                                 return "<p style='color: #5eb95e'>审核通过</p>";
-                            case 2:
+                            case HanLin.nraStatus.REFUSED:
                                 return "<p style='color: red'>审核未通过</p>";
+                            case HanLin.nraStatus.CANCELED:
+                                return "<p style='color: #000;'>主动撤销</p>";
                         }
                     }
                 },
