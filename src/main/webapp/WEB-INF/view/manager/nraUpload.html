@@ -94,8 +94,13 @@ $(document).ready(function(){
     $("#uploadfile").on("fileuploaded", function (event, data, previewId, index) {
         console.log(data);
         var response = data.response;
+        if (response.flag){
+            HanLin.success(response.message);
+        } else {
+            HanLin.error(response.message);
+        }
 
-        HanLin.success(response.message);
+
     });
     /*通过设置uplaodExtraData好像没用，修改源码，在源码上传前的部分调用函数preUpload(this.formdata);
     //上传前

@@ -15,6 +15,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,11 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
+/**
+ * Nra的操作需要很好的并发控制，，所以除了只包含查询的服务，其它的全都用SERIALIZABLE隔离级别
+ */
 
 @Service
 public class NraQueueService {
@@ -37,7 +43,7 @@ public class NraQueueService {
     @Autowired
     NraFileDao nraFileDao;
 
-    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public List<NraFile> getQueue(String fileName, String beginDate, String endDate){
         if (StringUtils.isBlank(fileName)){
             fileName = "";
@@ -72,7 +78,7 @@ public class NraQueueService {
      * @param id
      * @return
      */
-    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public synchronized Result revokeNraFile(String id){
         Result result = new Result();
         int count = nraFileDao.deleteNraFileById(id, NraStatus.CANCELED.getStatusCode());
@@ -92,7 +98,7 @@ public class NraQueueService {
      * @param nraFile
      * @return
      */
-    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result nraUpload(MultipartFile file, NraFile nraFile){
         Result result = new Result();
         String uuid = FileUtil.uuid();
@@ -123,7 +129,8 @@ public class NraQueueService {
             logger.error("NRA文件上传发生异常："+e);
             message = e.getMessage();
         }
-
+        System.out.println(fileWriteSuccess);
+        System.out.println(insert);
         if (fileWriteSuccess && (insert == 1) ){
             result.setFlag(true);
             result.setMessage("文件("+nraFile.getFileName()+")上传成功");
@@ -135,14 +142,14 @@ public class NraQueueService {
         return result;
     }
 
-    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public NraFile getNraFileById(String id) {
         NraFile nraFile = nraFileDao.selectNraFileById(id);
 
         return nraFile;
     }
 
-    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     @RequiresPermissions( {"auditorController"} )
     public Result<NraFile> nraRefuse(NraFile nraFile){
         nraFile.setStatusCode(NraStatus.REFUSED.getStatusCode());
@@ -153,6 +160,8 @@ public class NraQueueService {
             result.setFlag(true);
             result.setMessage("文件："+nraFile.getFileName()+" 已拒绝");
             result.setResult(nraFile);
+            //队列重新编号
+            nraFileDao.serializeQueue();
         } else {
             result.setFlag(false);
             result.setMessage("文件："+nraFile.getFileName()+" 在拒绝申请时失败");
@@ -161,7 +170,7 @@ public class NraQueueService {
         return result;
     }
 
-    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     @RequiresPermissions( {"auditorController"} )
     public Result<NraFile> nraPass(NraFile nraFile){
         nraFile.setStatusCode(NraStatus.PASS.getStatusCode());
@@ -172,6 +181,8 @@ public class NraQueueService {
             result.setFlag(true);
             result.setMessage("文件："+nraFile.getFileName()+" 审核通过");
             result.setResult(nraFile);
+            //队列重新编号
+            nraFileDao.serializeQueue();
         } else {
             result.setFlag(false);
             result.setMessage("文件："+nraFile.getFileName()+" 在通过审核时失败");
@@ -185,7 +196,7 @@ public class NraQueueService {
      * 先将NRA文件的状态标为已下载
      * @return
      */
-    @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     @RequiresPermissions( {"auditorController"} )
     public synchronized Result<List<NraFile>> getForAuditor(int amount){
         Result<List<NraFile>> result = new Result();
@@ -199,10 +210,12 @@ public class NraQueueService {
             result.setMessage("非法操作，当前账号仍有被锁定的申请未处理，请刷新页面重试");
             //result.setResult(history);
         } else {
-            //（逻辑上）锁定资源
+
+            //（逻辑上）锁定资源,锁定后由于只是把状态码从0调为1，队列号并没有改变，故无需重编号
             int count = nraFileDao.updateNraAuditor(amount, user.getUserId(), NraStatus.LOCKED.getStatusCode());
 
-            List<NraFile> list = nraFileDao.selectForAudit(amount, user.getUserId());
+            //取出锁定的申请
+            List<NraFile> list = nraFileDao.selectLocked(user.getUserId());
             if (count <= amount && count >= 1){
                 result.setFlag(true);
                 result.setMessage("success");

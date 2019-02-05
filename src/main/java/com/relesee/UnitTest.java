@@ -29,11 +29,13 @@ import java.util.List;
 public class UnitTest {
 
     @Autowired
-    NraQueueService service;
+    NraFileDao dao;
 
     @Test
     public void doTest() {
-        service.getForAuditor(-1);
+        int count = dao.serializeQueue();
+        System.out.println(count);
+
     }
 
 }

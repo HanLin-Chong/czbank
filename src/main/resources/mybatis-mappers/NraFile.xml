@@ -26,11 +26,10 @@
             (
                 #{id},
                 #{fileName},
-                (SELECT no FROM
+                (SELECT IFNULL(no, 0)+1 amount FROM
                     (
                     SELECT
-                        MAX(queueNo)+1 no
-
+                        MAX(queueNo) no
                     FROM
                         nrafile
                     ) AS temp
@@ -72,6 +71,8 @@
             userState > 0
         AND
             queueNo >= 1
+        AND
+            statusCode &lt;= 1
         AND
             fileName LIKE CONCAT('%', #{fileName} ,'%')
         <if test="beginDate != null and endDate != null">
@@ -136,7 +137,6 @@
         UPDATE
             nrafile
         SET
-            --isDel = 1,不用逻辑删除
             statusCode = #{statusCode}
         WHERE
             id = #{id};
@@ -200,7 +200,7 @@
             id = #{uploader}
     </update>
 
-    <select id="selectForAudit" resultType="com.relesee.domains.NraFile">
+<!--    <select id="selectForAudit" resultType="com.relesee.domains.NraFile">
         SELECT
             id,
             queueNo,
@@ -232,7 +232,7 @@
             queueNo
         LIMIT
             0,#{amount}
-    </select>
+    </select>-->
 
     <update id="updateNraAuditor">
         UPDATE
@@ -295,10 +295,9 @@
             queueNo
     </select>
 
-    <select id="serializeQueue">
-        --本次查询需要用到的变量
-        SET count = NULL;--状态码大于1的申请数
-        -------------------------------------------------
+    <select id="serializeQueue" resultType="int">
+        SET @count = NULL;
+        SET @rowNumber = 0;
         SELECT
             @count := COUNT(*) AS count
         FROM
@@ -308,9 +307,8 @@
         AND
             isDel = 0
         AND
-            auditor != NULL;
-        --------------------------------------------------
-        --将状态码大于1的（不处于排队中和已锁定状态的申请）队列号设为0
+            auditor IS NOT NULL;
+
         UPDATE
             nrafile
         SET
@@ -321,6 +319,33 @@
             isDel = 0
         AND
             auditor IS NOT NULL;
-        ----------------------------------------------------
+
+        UPDATE
+            nrafile
+        SET
+            queueNo = @rowNumber := @rowNumber + 1
+        WHERE
+            id
+        IN(
+            SELECT
+                id
+            FROM
+            (
+                SELECT
+                    *
+                FROM
+                    nrafile
+                WHERE
+                    queueNo != 0
+                AND
+                    isDel = 0
+                AND
+                    statusCode &lt;= 1
+                ORDER BY
+                    queueNo
+            ) temp
+        )
+        ORDER BY
+            queueNo;
     </select>
 </mapper>

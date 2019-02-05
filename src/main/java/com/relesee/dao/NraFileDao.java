@@ -42,4 +42,6 @@ public interface NraFileDao {
      * 查看是否有已经锁定的资源
      */
     List<NraFile> selectLocked(String userId);
+
+    int serializeQueue();
 }
