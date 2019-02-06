@@ -47,4 +47,6 @@ public interface NraFileDao {
 
     int serializeQueue();
 
+    int queueNoMoveForPriority(String id);
+
 }

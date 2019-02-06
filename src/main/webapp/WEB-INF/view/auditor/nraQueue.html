@@ -92,7 +92,9 @@ $(document).ready(function (){
     iziToast.destroy();
     layui.form.render();
 
-
+    $("#getForAudit").attr("disabled", "disabled");
+    $("#getForAudit").html("初始化中。。");
+    
     HanLin.requestTypical("c/getLockedNra", {}, function (data){
         data = JSON.parse(data);
         console.log(data);
@@ -102,8 +104,10 @@ $(document).ready(function (){
         if (length > 0){
             HanLin.warn("您有"+length+"条已锁定的申请未处理");
             renderList(list);
+
         } else {
-            $("#auditorList").html("NRA队列为空");
+            $("#auditList").html("<li style='text-align: center'>没有被锁定的申请</li>");
+            enableGetAudit();
         }
     }, "获取已锁定的申请时出错");
 

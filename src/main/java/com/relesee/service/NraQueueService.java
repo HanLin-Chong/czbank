@@ -95,6 +95,7 @@ public class NraQueueService {
         return result;
     }
 
+    //此操作只是提交申请，不需要改变队列号
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result applyPriority(String id){
         Result result = new Result();
