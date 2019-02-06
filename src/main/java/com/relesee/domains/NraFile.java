@@ -3,17 +3,18 @@ package com.relesee.domains;
 import java.io.Serializable;
 
 public class NraFile implements Serializable {
-    String id;
-    int queueNo;
-    String fileName;
-    String uploadTime;
-    String uploader;
-    String userName;
-    String restorePath;
-    String note;
-    boolean isQualityCustomer;
-    int statusCode;
-    boolean isPriority;
+    private String id;
+    private int queueNo;
+    private String fileName;
+    private String uploadTime;
+    private String uploader;
+    private String userName;
+    private String restorePath;
+    private String note;
+    private boolean isQualityCustomer;
+    private int statusCode;
+    private boolean isPriority;
+    private int priorityStatus;
 
     public String getId() {
         return id;
@@ -101,5 +102,13 @@ public class NraFile implements Serializable {
 
     public void setPriority(boolean priority) {
         isPriority = priority;
+    }
+
+    public int getPriorityStatus() {
+        return priorityStatus;
+    }
+
+    public void setPriorityStatus(int priorityStatus) {
+        this.priorityStatus = priorityStatus;
     }
 }

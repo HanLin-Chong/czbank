@@ -33,9 +33,11 @@ public class UnitTest {
 
     @Test
     public void doTest() {
-        int count = dao.serializeQueue();
+        NraFile nraFile = new NraFile();
+        nraFile.setStatusCode(0);
+        nraFile.setId("e31bc99fe18548869b60f0de7e615537");
+        int count = dao.updateStatusPassed(nraFile);
         System.out.println(count);
-
     }
 
 }

@@ -83,12 +83,21 @@ public class NraQueueService {
         Result result = new Result();
         int count = nraFileDao.deleteNraFileById(id, NraStatus.CANCELED.getStatusCode());
         if (count >= 1){
+            nraFileDao.serializeQueue();
             result.setFlag(true);
             result.setMessage("撤销申请成功");
+
         } else {
             result.setFlag(false);
             result.setMessage("撤销申请失败");
         }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result applyPriority(String id){
+        Result result = new Result();
+
         return result;
     }
 
@@ -186,6 +195,27 @@ public class NraQueueService {
         } else {
             result.setFlag(false);
             result.setMessage("文件："+nraFile.getFileName()+" 在通过审核时失败");
+            result.setResult(nraFile);
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    @RequiresPermissions( {"auditorController"} )
+    public Result<NraFile> nraRelease(NraFile nraFile){
+        nraFile.setStatusCode(NraStatus.QUEUING.getStatusCode());
+
+        Result<NraFile> result = new Result();
+        int count = nraFileDao.updateStatusQueuing(nraFile);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("文件："+nraFile.getFileName()+" 已经释放");
+            result.setResult(nraFile);
+            //队列重新编号
+            nraFileDao.serializeQueue();
+        } else {
+            result.setFlag(false);
+            result.setMessage("文件："+nraFile.getFileName()+" 释放失败");
             result.setResult(nraFile);
         }
         return result;

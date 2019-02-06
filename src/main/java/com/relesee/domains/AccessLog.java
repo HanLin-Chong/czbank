@@ -1,10 +1,10 @@
 package com.relesee.domains;
 
 public class AccessLog {
-    Long id;
-    String pageName;
-    String userId;
-    String time;
+    private Long id;
+    private String pageName;
+    private String userId;
+    private String time;
 
     public Long getId() {
         return id;

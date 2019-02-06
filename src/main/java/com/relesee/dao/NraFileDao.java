@@ -8,8 +8,6 @@ import java.util.List;
 public interface NraFileDao {
     int insertNraFile(NraFile nraFile);
 
-//    List<NraFile> selectNraQueueLimit(@Param("begin") int begin, @Param("size") int size);
-
     List<NraFile> selectNraQueue(@Param("fileName") String fileName,@Param("beginDate") String beginDate,@Param("endDate") String endDate);
 
     int deleteNraFileById(@Param("id") String id, @Param("statusCode") int statusCode);
@@ -22,13 +20,15 @@ public interface NraFileDao {
 
     int updateStatusPassed(NraFile nraFile);
 
+    int updateStatusQueuing(NraFile nraFile);
+
     /**
      * 在锁定资源以后，就要取出锁定的资源，与锁定资源属于同一个事物，由synchronized锁定
      * @param amount
      * @param auditor
      * @return
      */
-    List<NraFile> selectForAudit(@Param("amount")int amount, @Param("auditor") String auditor);
+    //List<NraFile> selectForAudit(@Param("amount")int amount, @Param("auditor") String auditor);
 
     /**
      * 锁定资源，审核员自定义取走队列的前amount个文件
@@ -44,4 +44,5 @@ public interface NraFileDao {
     List<NraFile> selectLocked(String userId);
 
     int serializeQueue();
+
 }

@@ -70,9 +70,9 @@ $.when(request("c/getManager"), {}).done(function (userData){
             autoSort: false,
             cols: [[
                 {field: 'queueNo', title: '-', width: 40, fixed: 'left'},
-                {field: 'statusCode', title: '状态', width: 150, align: 'center',
+                {field: 'statusCode', title: '状态', width: 140, align: 'center',
                     templet: function (d){
-                        switch (d.statusCode) {
+                        switch (d.statusCode){
                             case HanLin.nraStatus.QUEUING:
                                 return "<p style='color: deepskyblue'>排队中</p>";
                             case HanLin.nraStatus.LOCKED:
@@ -86,12 +86,34 @@ $.when(request("c/getManager"), {}).done(function (userData){
                         }
                     }
                 },
-                {title: '操作', width:140, align: 'center',
+                {field: 'priorityStatus', title: '插队', width: 100, align:'center',
+                    templet: function (d){
+                        switch (d.priorityStatus){
+                            case HanLin.nraPriorityStatus.NORMAL:
+                                return "<p>-</p>";
+                            case HanLin.nraPriorityStatus.WAITING:
+                                return "<p>申请中</p>";
+                            case HanLin.nraPriorityStatus.PRIORITY:
+                                return "<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>";
+                            case HanLin.nraPriorityStatus.REFUSED:
+                                return "<span class='glyphicon glyphicon-remove' style='color: #be2924;'</span>";
+                        }
+                    }
+                },
+                {title: '操作', width:160, align: 'center',
                     templet: function (d){
 
                         if (d.userName == currentUser.userName){
-                            return "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>撤销</button> " +
-                                "<button class='applyPriority btn btn-success' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>插队</button>";
+                            var html = "";
+                            if (d.statusCode != 0){
+                                html += "不能操作已锁定申请";
+                            } else {
+                                html += "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>撤销</button> ";
+                                html += "<button class='applyPriority btn btn-success' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>插队</button>";
+                            }
+
+                            return html;
+
                         }
                     }
                 },
@@ -194,7 +216,7 @@ $.when(request("c/getManager"), {}).done(function (userData){
                 //do something
 
                 var index = layui.layer.load(2);
-                $.when(request("c/applyPriority", {id:id})).done(function(dataPriority){
+                /*$.when(request("c/applyPriority", {id:id})).done(function(dataPriority){
 
                     dataPriority = JSON.parse(dataPriority);
                     layui.layer.close(index);
@@ -204,7 +226,18 @@ $.when(request("c/getManager"), {}).done(function (userData){
                         HanLin.error("申请失败");
                     }
                     reloadTableData({});
-                });
+                });*/
+                HanLin.requestTypical("c/applyPriority", {id:id}, function(data){
+                    data = JSON.parse(data);
+                    layui.layer.close(index);
+                    if (data.flag){
+                        HanLin.success("已提交插队申请：("+fileName+":"+uploadTime+")");
+                    } else {
+                        HanLin.error("申请优先失败");
+                    }
+                    reloadTableData({});
+                }, "申请优先时服务器端出错");
+
 
                 layui.layer.close(index2);
             });

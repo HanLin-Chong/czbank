@@ -124,6 +124,20 @@
                             }
                         }
                     },
+                    {field: 'priorityStatus', title: '插队', width: 100, align:'center',
+                        templet: function (d){
+                            switch (d.priorityStatus){
+                                case HanLin.nraPriorityStatus.NORMAL:
+                                    return "<p>-</p>";
+                                case HanLin.nraPriorityStatus.WAITING:
+                                    return "<p>申请中</p>";
+                                case HanLin.nraPriorityStatus.PRIORITY:
+                                    return "<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>";
+                                case HanLin.nraPriorityStatus.REFUSED:
+                                    return "<span class='glyphicon glyphicon-remove' style='color: #be2924;'</span>";
+                            }
+                        }
+                    },
                     {field: 'fileName', title: '文件名', width:300},
                     {field: 'qualityCustomer', title: '优质客户', width:100, align: 'center',
                         templet: function (d){

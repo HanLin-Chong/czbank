@@ -54,7 +54,7 @@
 <div class="col-lg-12">
 
     <ul id="auditList" class="list-group">
-        <li style="text-align: center">没有锁定的申请，请锁定并获取申请</li>
+        <li style="text-align: center">加载中。。。</li>
     </ul>
 </div>
 <hr/>
@@ -85,10 +85,13 @@
 </div>
 
 <script>
+
 var lockedCount = 0;
 var listData = null;
 $(document).ready(function (){
+    iziToast.destroy();
     layui.form.render();
+
 
     HanLin.requestTypical("c/getLockedNra", {}, function (data){
         data = JSON.parse(data);
@@ -99,9 +102,12 @@ $(document).ready(function (){
         if (length > 0){
             HanLin.warn("您有"+length+"条已锁定的申请未处理");
             renderList(list);
+        } else {
+            $("#auditorList").html("NRA队列为空");
         }
-
     }, "获取已锁定的申请时出错");
+
+
 
     HanLin.request("c/getNraQueue", {}, function (data){
         data = JSON.parse(data);
@@ -128,6 +134,20 @@ $(document).ready(function (){
                                 return "<p style='color: red'>审核未通过</p>";
                             case HanLin.nraStatus.CANCELED:
                                 return "<p style='color: #000;'>主动撤销</p>";
+                        }
+                    }
+                },
+                {field: 'priorityStatus', title: '插队', width: 100, align:'center',
+                    templet: function (d){
+                        switch (d.priorityStatus){
+                            case HanLin.nraPriorityStatus.NORMAL:
+                                return "<p>-</p>";
+                            case HanLin.nraPriorityStatus.WAITING:
+                                return "<p>申请中</p>";
+                            case HanLin.nraPriorityStatus.PRIORITY:
+                                return "<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>";
+                            case HanLin.nraPriorityStatus.REFUSED:
+                                return "<span class='glyphicon glyphicon-remove' style='color: #be2924;'</span>";
                         }
                     }
                 },
@@ -166,7 +186,7 @@ $(document).ready(function (){
 
 
         $(document).on("click", ".refuse", function (e){
-            var id = $(e.currentTarget).attr("id");
+            var id = $(e.currentTarget).attr("fid");
             var uploadTime = $(e.currentTarget).attr("uploadTime");
             var fileName = $(e.currentTarget).attr("fileName");
             var checked = $("#askBeforeRefuse").is(":checked");
@@ -183,13 +203,9 @@ $(document).ready(function (){
             } else {
                 refuse(id, fileName);
             }
-
-
-
-
         });
         $(document).on("click", ".pass", function (e){
-            var id = $(e.currentTarget).attr("id");
+            var id = $(e.currentTarget).attr("fid");
             var uploadTime = $(e.currentTarget).attr("uploadTime");
             var fileName = $(e.currentTarget).attr("fileName");
             var checked = $("#askBeforePass").is(":checked");
@@ -206,8 +222,21 @@ $(document).ready(function (){
             } else {
                 pass(id, fileName);
             }
+        });
+        $(document).on("click", ".release", function (e){
+            var id = $(e.currentTarget).attr("fid");
+            var uploadTime = $(e.currentTarget).attr("uploadTime");
+            var fileName = $(e.currentTarget).attr("fileName");
 
-
+            var passIndex = layui.layer.confirm("即将释放申请：<br/>文件名:"+fileName+"<br/>上传时间:"+uploadTime+"<br/>确定？", {
+                title: "释放申请",
+                btn: ['确定', '取消']
+            }, function (){
+                release(id, fileName);
+                layer.close(passIndex);
+            }, function (){
+                layer.close(passIndex);
+            });
 
         });
     }, "获取NRA队列失败");
@@ -241,9 +270,7 @@ $(document).ready(function (){
             beginDate:$("#dateFilterBegin").val(),
             endDate:$("#dateFilterEnd").val()
         };
-
         reloadTableData(data);
-
     });
     $("#refresh").click(function (){
         reloadTableData({});
@@ -275,22 +302,22 @@ $(document).ready(function (){
 });
 function pass(id, fileName){
     var index = layer.load(2, {time: 10*1000});
-    HanLin.requestTypical("c/nraPass", {uploader:id, fileName:fileName}, function (data){
+    HanLin.requestTypical("c/nraPass", {id:id, fileName:fileName}, function (data){
         data = JSON.parse(data);
         layer.close(index);
         if (data.flag){
             HanLin.success(data.message);
-            if (listData.length <= 0){
-                enableGetAudit();
-            } else {
-                for (var i in listData){
-                    if (listData[i].id == id){
-                        listData.splice(i, 1);
-                    }
+
+            for (var i in listData){
+                if (listData[i].id == id){
+                    listData.splice(i, 1);
                 }
-                renderList(listData);
             }
+            renderList(listData);
             reloadTableData({});
+            if (listData.length <= 0){
+                enableGetAudit()
+            }
         } else {
             HanLin.error(data.message);
         }
@@ -298,26 +325,50 @@ function pass(id, fileName){
 }
 function refuse(id, fileName){
     var index = layer.load(2, {time: 10*1000});
-    HanLin.requestTypical("c/nraRefuse", {uploader:id, fileName:fileName}, function (data){
+    HanLin.requestTypical("c/nraRefuse", {id:id, fileName:fileName}, function (data){
         data = JSON.parse(data);
         layer.close(index);
         if (data.flag){
             HanLin.success(data.message);
+
+            for (var i in listData){
+                if (listData[i].id == id){
+                    listData.splice(i, 1);
+                }
+            }
+            renderList(listData);
+            reloadTableData({});
             if (listData.length <= 0){
                 enableGetAudit();
-            } else {
-                for (var i in listData){
-                    if (listData[i].id == id){
-                        listData.splice(i, 1);
-                    }
-                }
-                renderList(listData);
             }
-            reloadTableData({});
+
         } else {
             HanLin.error(data.message);
         }
     }, "更改nra文件状态为拒绝时请求服务器发生错误");
+}
+function release(id, fileName){
+    var index = layer.load(2, {time: 10*1000});
+    HanLin.requestTypical("c/nraRelease", {id:id, fileName:fileName}, function (data){
+        data = JSON.parse(data);
+        layer.close(index);
+        if (data.flag){
+            HanLin.success(data.message);
+
+            for (var i in listData){
+                if (listData[i].id == id){
+                    listData.splice(i, 1);
+                }
+            }
+            renderList(listData);
+            reloadTableData({});
+            if (listData.length <= 0){
+                enableGetAudit();
+            }
+        } else {
+            HanLin.error(data.message);
+        }
+    }, "释放申请时服务器端发生错误");
 }
 function renderList(data){
     lockedCount = data.length;
@@ -348,7 +399,8 @@ function renderList(data){
             html += '<div class="overflow-nextline" style="margin-top: 20px"><strong>备注：</strong>'+d.note+'</div>';
             html += '<div class="overflow-nextline"><strong>上传时间：</strong>'+d.uploadTime+'</div>';
             html += '<div class="overflow-nextline"><strong>客户经理（工号 | 姓名）：</strong>'+d.uploader+" | "+d.userName+'</div>';
-            html += '<br/><button id="'+d.id+'" fileName="'+d.fileName+'" uploadTime="'+d.uploadTime+'" class="pass btn btn-success">通过</button> <button id="'+d.id+'" fileName="'+d.fileName+'" uploadTime="'+d.uploadTime+'" class="refuse btn btn-danger">拒绝</button>';
+            html += '<br/><button fid="'+d.id+'" fileName="'+d.fileName+'" uploadTime="'+d.uploadTime+'" class="pass btn btn-success">通过</button> <button fid="'+d.id+'" fileName="'+d.fileName+'" uploadTime="'+d.uploadTime+'" class="refuse btn btn-danger">拒绝</button>';
+            html += ' <button fid="'+d.id+'" fileName="'+d.fileName+'" uploadTime="'+d.uploadTime+'" class="release btn btn-warning">释放</button>';
             html += '</li>';
         }
     } else {
@@ -363,7 +415,7 @@ function disableGetAudit(){
     $("#getForAudit").html("请处理完已经取出的申请才能获取新的申请");
 }
 function enableGetAudit(){
-    $("#getForAudit").removeAttribute("disabled");
+    $("#getForAudit").removeAttr("disabled");
     $("#getForAudit").html("锁定申请并开始审核");
 }
 function reloadTableData(p){

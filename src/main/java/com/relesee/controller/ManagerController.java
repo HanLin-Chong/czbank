@@ -117,7 +117,6 @@ public class ManagerController {
     @RequestMapping(value = "revokeNraFile", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String revokeNraFile(String id){
-
         Result result = nraQueueService.revokeNraFile(id);
         return JSON.toJSONString(result);
     }
@@ -125,8 +124,8 @@ public class ManagerController {
     @RequestMapping(value = "applyPriority", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String applyPriority(String id){
-        //TODO 提交到审核员处，等待审核员功能
-        return "";
+        Result result = nraQueueService.applyPriority(id);
+        return JSON.toJSONString(result);
     }
 
     /**

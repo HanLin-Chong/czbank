@@ -20,7 +20,8 @@
                 isQualityCustomer,
                 statusCode,
                 isPriority,
-                auditor
+                auditor,
+                priorityStatus
             )
         VALUES
             (
@@ -42,7 +43,8 @@
                 #{isQualityCustomer},
                 0,
                 0,
-                NULL
+                NULL,
+                0
             )
     </insert>
 
@@ -58,7 +60,8 @@
             restorePath,
             statusCode,
             isPriority,
-            note
+            note,
+            priorityStatus
         FROM
             nrafile
         INNER JOIN
@@ -104,7 +107,8 @@
             restorePath,
             statusCode,
             isPriority,
-            note
+            note,
+            priorityStatus
         FROM
             nrafile
         INNER JOIN
@@ -133,34 +137,15 @@
             uploadTime
     </select>
 
-    <update id="deleteNraFileById" parameterType="String">
+    <update id="deleteNraFileById">
         UPDATE
             nrafile
         SET
             statusCode = #{statusCode}
         WHERE
-            id = #{id};
-        UPDATE
-            nrafile
-        SET
-            queueNo = queueNo - 1
-        WHERE
-            queueNo > (
-                SELECT queueNo FROM(
-                    SELECT
-                        queueNo
-                    FROM
-                        nrafile
-                    WHERE
-                        id = #{id}
-                ) as temp
-            );
-        UPDATE
-            nrafile
-        SET
-            queueNo = 0
-        WHERE
             id = #{id}
+        AND
+            statusCode = 0
     </update>
 
     <select id="selectNraFileById" parameterType="String" resultType="com.relesee.domains.NraFile">
@@ -175,7 +160,8 @@
             statusCode,
             isPriority,
             note,
-            auditor
+            auditor,
+            priorityStatus
         FROM
             nrafile
         WHERE
@@ -188,7 +174,7 @@
         SET
             statusCode = #{statusCode}
         WHERE
-            id = #{uploader}
+            id = #{id}
     </update>
 
     <update id="updateStatusPassed" parameterType="com.relesee.domains.NraFile">
@@ -197,7 +183,17 @@
         SET
             statusCode = #{statusCode}
         WHERE
-            id = #{uploader}
+            id = #{id}
+    </update>
+
+    <update id="updateStatusQueuing" parameterType="com.relesee.domains.NraFile">
+        UPDATE
+            nrafile
+        SET
+            statusCode = #{statusCode},
+            auditor = NULL
+        where
+            id = #{id}
     </update>
 
 <!--    <select id="selectForAudit" resultType="com.relesee.domains.NraFile">
@@ -276,7 +272,8 @@
             isPriority,
             note,
             auditor,
-            userName
+            userName,
+            priorityStatus
         FROM
             nrafile
         INNER JOIN
@@ -348,4 +345,5 @@
         ORDER BY
             queueNo;
     </select>
+
 </mapper>

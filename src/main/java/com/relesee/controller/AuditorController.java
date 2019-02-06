@@ -132,19 +132,23 @@ public class AuditorController {
         return JSON.toJSONString(nraQueueService.getQueue(fileName, beginDate, endDate));
     }
 
-    @RequestMapping(value="nraRefuse", produces="text/plane;charset=utf-8")
+    @RequestMapping(value = "nraRefuse", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String nraRefuse(NraFile nraFile){
-        System.out.println(JSON.toJSONString(nraFile));
         Result<NraFile> result = nraQueueService.nraRefuse(nraFile);
         return JSON.toJSONString(result);
     }
 
-    @RequestMapping(value="nraPass", produces="text/plane;charset=utf-8")
+    @RequestMapping(value = "nraPass", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String nraPass(NraFile nraFile){
-        System.out.println(JSON.toJSONString(nraFile));
         Result<NraFile> result = nraQueueService.nraPass(nraFile);
+        return JSON.toJSONString(result);
+    }
+    @RequestMapping(value = "nraRelease", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String nraRelease(NraFile nraFile){
+        Result<NraFile> result = nraQueueService.nraRelease(nraFile);
         return JSON.toJSONString(result);
     }
 

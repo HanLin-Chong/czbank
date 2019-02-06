@@ -4,7 +4,7 @@ package com.relesee.domains;
  * 此类局限于前端layui table请求数据后接收的响应
  */
 public class LayTableResponse<T> {
-    private int code;
+/*    private int code;
     private String msg;
     private int count;
     private T data;
@@ -39,5 +39,5 @@ public class LayTableResponse<T> {
 
     public void setData(T data) {
         this.data = data;
-    }
+    }*/
 }

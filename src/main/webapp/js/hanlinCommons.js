@@ -5,23 +5,23 @@
 
 var HanLin = {
     //常量，防止魔法值
-    nraStatus:{
-        QUEUING:0,
-        LOCKED:1,
-        PASS:2,
-        REFUSED:3,
-        CANCELED:4
+    nraStatus:{//Nra状态码
+        QUEUING:0,//排队中
+        LOCKED:1,//已锁定
+        PASS:2,//通过审核
+        REFUSED:3,//拒绝申请
+        CANCELED:4//主动取消申请
     },
-    userStatus:{
-        BLOCK_UP:0,
-        NORMAL:1,
-        ROOT:2
+    userStatus:{//用户状态
+        BLOCK_UP:0,//停用
+        NORMAL:1,//正常
+        ROOT:2//ROOT账号
     },
-    nraQueueJumpingStatus:{
-        NORMAL_FILE:0,
-        SUBMITTED:1,
-        REFUSED:2,
-        PRIORITY_FILE:3
+    nraPriorityStatus:{//插队申请状态
+        NORMAL:0,//未申请优先，普通文件
+        WAITING:1,//申请已经提交
+        REFUSED:2,//拒绝插队
+        PRIORITY:3//插队文件
     },
     //对iziToast的封装，防止toast重复出现，并且方便更换通知的插件
     info: function (msg){
