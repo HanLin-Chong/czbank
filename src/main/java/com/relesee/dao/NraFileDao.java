@@ -12,6 +12,8 @@ public interface NraFileDao {
 
     int deleteNraFileById(@Param("id") String id, @Param("statusCode") int statusCode);
 
+    int updatePriorityStatus(@Param("id") String id, @Param("code") int code);
+
     List<NraFile> selectNraHistory(@Param("userId")String userId, @Param("fileName") String fileName,@Param("beginDate") String beginDate,@Param("endDate") String endDate);
 
     NraFile selectNraFileById(String Id);

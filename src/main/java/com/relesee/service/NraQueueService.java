@@ -1,6 +1,7 @@
 package com.relesee.service;
 
 import com.alibaba.fastjson.JSON;
+import com.relesee.constant.NraPriorityStatus;
 import com.relesee.constant.NraStatus;
 import com.relesee.dao.NraFileDao;
 import com.relesee.domains.NraFile;
@@ -97,7 +98,15 @@ public class NraQueueService {
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result applyPriority(String id){
         Result result = new Result();
-
+        int count = nraFileDao.updatePriorityStatus(id, NraPriorityStatus.WAITING.getCode());
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("插队申请申请已提交");
+            nraFileDao.serializeQueue();
+        } else {
+            result.setFlag(false);
+            result.setMessage("插队申请提交失败");
+        }
         return result;
     }
 

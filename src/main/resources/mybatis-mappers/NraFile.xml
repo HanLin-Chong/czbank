@@ -148,6 +148,15 @@
             statusCode = 0
     </update>
 
+    <update id="updatePriorityStatus">
+        UPDATE
+            nrafile
+        SET
+            priorityStatus = #{code}
+        WHERE
+            id = #{id}
+    </update>
+
     <select id="selectNraFileById" parameterType="String" resultType="com.relesee.domains.NraFile">
         SELECT
             id,
