@@ -102,16 +102,18 @@ $.when(request("c/getManager"), {}).done(function (userData){
                 },
                 {title: '操作', width:160, align: 'center',
                     templet: function (d){
-
+                        console.log(d);
                         if (d.userName == currentUser.userName){
                             var html = "";
                             if (d.statusCode != 0){
                                 html += "不能操作已锁定申请";
                             } else {
-                                html += "<button class='revoke btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>撤销</button> ";
-                                html += "<button class='applyPriority btn btn-success' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>插队</button>";
-                            }
+                                html += "<button class='revoke btn btn-danger' nraFileId='" + d.id + "' uploadTime='" + d.uploadTime + "' fileName='" + d.fileName + "' style='height: 25px;line-height: 10px;'>撤销</button> ";
+                                if (d.priorityStatus == 0) {
+                                    html += "<button class='applyPriority btn btn-success' nraFileId='" + d.id + "' uploadTime='" + d.uploadTime + "' fileName='" + d.fileName + "' style='height: 25px;line-height: 10px;'>插队</button>";
 
+                                }
+                            }
                             return html;
 
                         }

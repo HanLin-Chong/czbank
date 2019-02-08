@@ -49,4 +49,10 @@ public interface NraFileDao {
 
     int queueNoMoveForPriority(String id);
 
+    List<NraFile> selectPriorityApplications();
+
+    int updatePriorityPass(NraFile nraFile);
+
+    int updatePriorityRefused(NraFile nraFile);
+
 }

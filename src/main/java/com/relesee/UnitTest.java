@@ -2,7 +2,7 @@ package com.relesee;
 
 
 import com.alibaba.fastjson.JSON;
-import com.relesee.constant.NraQueueJumpingStatus;
+import com.relesee.constant.NraPriorityStatus;
 import com.relesee.dao.NraFileDao;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
@@ -29,15 +29,12 @@ import java.util.List;
 public class UnitTest {
 
     @Autowired
-    NraFileDao dao;
+    NraQueueService service;
 
     @Test
     public void doTest() {
-        NraFile nraFile = new NraFile();
-        nraFile.setStatusCode(0);
-        nraFile.setId("e31bc99fe18548869b60f0de7e615537");
-        int count = dao.updateStatusPassed(nraFile);
-        System.out.println(count);
+
     }
+
 
 }

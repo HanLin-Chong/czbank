@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  */
 public class AccessLogAspect {
 
-    private static final Logger logger = Logger.getLogger(AccessLogAspect.class);
+/*    private static final Logger logger = Logger.getLogger(AccessLogAspect.class);
 
     @Autowired
     AccessLogDao accessLogDao;
@@ -45,32 +45,7 @@ public class AccessLogAspect {
         }
 
         return object;
-    }
-
-    /*public void distributeLog(String path){
-        AccessLog log = new AccessLog();
-
-
-        log.setPageName(path);
-        log.setUserId(((User) SecurityUtils.getSubject().getPrincipal()).getUserId());
-        int count = accessLogDao.insertLog(log);
-        if (count != 1){
-            logger.info("分发器日志切面在向数据库写入日志时失败，日志信息：（pageName:"+path+",userId:"+log.getUserId()+"）");
-        }
-
-    }
-
-    public void pageLog(String path){
-        AccessLog log = new AccessLog();
-
-
-        log.setPageName(path);
-        log.setUserId(((User) SecurityUtils.getSubject().getPrincipal()).getUserId());
-        int count = accessLogDao.insertLog(log);
-        if (count != 1){
-            logger.info("页面转发器在向数据库写入日志时失败，日志信息：（pageName:"+path+",userId:"+log.getUserId()+"）");
-        }
-
     }*/
+
 
 }

@@ -166,4 +166,25 @@ public class AuditorController {
         return JSON.toJSONString(result);
     }
 
+    @RequestMapping(value = "getPriorityApplications", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getPriorityApplications(){
+        Result<List<NraFile>> result = nraQueueService.getPriorityApplications();
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "priorityPass", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String priorityPass(NraFile nraFile){
+        Result result = nraQueueService.priorityPass(nraFile);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "priorityRefused", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String priorityRefused(NraFile nraFile){
+        Result result = nraQueueService.priorityRefused(nraFile);
+        return JSON.toJSONString(result);
+    }
+
 }

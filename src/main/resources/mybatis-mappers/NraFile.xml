@@ -116,7 +116,7 @@
         ON
             nrafile.uploader = user.userId
         WHERE
-            userId = #{userId}
+            uploader = #{userId}
         AND
         fileName LIKE CONCAT('%', #{fileName} ,'%')
         <if test="beginDate != null and endDate != null">
@@ -355,8 +355,111 @@
             queueNo;
     </select>
 
-    <update id="queueNoMoveForPriority">
+    <select id="selectPriorityApplications" resultType="com.relesee.domains.NraFile">
+        SELECT
+            id,
+            queueNo,
+            fileName,
+            isQualityCustomer,
+            uploadTime,
+            uploader,
+            restorePath,
+            statusCode,
+            isPriority,
+            note,
+            auditor,
+            userName,
+            priorityStatus
+        FROM
+            nrafile
+        INNER JOIN
+            user
+        ON
+            nrafile.uploader = user.userId
+        WHERE
+            queueNo > 0
+        AND
+            isDel = 0
+        AND
+            statusCode = 0
+        AND
+            isPriority = 0
+        AND
+            priorityStatus = 1
+    </select>
 
+    <update id="updatePriorityPass" parameterType="com.relesee.domains.NraFile">
+        UPDATE
+            nrafile
+        SET
+            priorityStatus = #{priorityStatus}
+        WHERE
+            id = #{id}
+        AND
+            queueNo > 0
+        AND
+            isDel = 0
+        AND
+            statusCode = 0
+        AND
+            isPriority = 0
+        AND
+            priorityStatus = 1
     </update>
 
+    <update id="queueNoMoveForPriority" parameterType="String">
+        SET @maxPriority = 0;
+        SET @beMovedQueueNo = 0;
+        SELECT
+            @maxPriority := IFNULL(max, 0) max
+        FROM(
+            SELECT
+                MAX(queueNo) max
+            FROM
+                nraFile
+            WHERE
+                priorityStatus = 3
+            AND
+                id != #{id}
+        ) temp;
+        SELECT
+            @beMovedQueueNo := queueNo
+        FROM
+            nraFile
+        WHERE
+            id = #{id};
+        UPDATE
+            nrafile
+        SET
+            queueNo = queueNo + 1
+        WHERE
+            queueNo
+        BETWEEN
+            @maxPriority + 1 AND @beMovedQueueNo - 1;
+        UPDATE
+            nrafile
+        SET
+            queueNo = @maxPriority + 1
+        WHERE
+            id = #{id};
+    </update>
+
+    <update id="updatePriorityRefused" parameterType="com.relesee.domains.NraFile">
+        UPDATE
+            nrafile
+        SET
+            priorityStatus = #{priorityStatus}
+        WHERE
+            id = #{id}
+        AND
+            queueNo > 0
+        AND
+            isDel = 0
+        AND
+            statusCode = 0
+        AND
+            isPriority = 0
+        AND
+            priorityStatus = 1
+    </update>
 </mapper>

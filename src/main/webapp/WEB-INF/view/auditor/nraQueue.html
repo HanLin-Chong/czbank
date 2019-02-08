@@ -94,7 +94,7 @@ $(document).ready(function (){
 
     $("#getForAudit").attr("disabled", "disabled");
     $("#getForAudit").html("初始化中。。");
-    
+
     HanLin.requestTypical("c/getLockedNra", {}, function (data){
         data = JSON.parse(data);
         console.log(data);
@@ -113,7 +113,7 @@ $(document).ready(function (){
 
 
 
-    HanLin.request("c/getNraQueue", {}, function (data){
+    HanLin.requestTypical("c/getNraQueue", {}, function (data){
         data = JSON.parse(data);
         console.log(data);
         layui.table.render({

@@ -95,7 +95,7 @@ public class NraQueueService {
         return result;
     }
 
-    //此操作只是提交申请，不需要改变队列号
+    //申请插队，此操作只是提交申请，不需要改变队列号
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result applyPriority(String id){
         Result result = new Result();
@@ -103,7 +103,6 @@ public class NraQueueService {
         if (count == 1){
             result.setFlag(true);
             result.setMessage("插队申请申请已提交");
-            nraFileDao.serializeQueue();
         } else {
             result.setFlag(false);
             result.setMessage("插队申请提交失败");
@@ -279,6 +278,48 @@ public class NraQueueService {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         List<NraFile> list = nraFileDao.selectLocked(user.getUserId());
         result.setResult(list);
+        return result;
+    }
+
+    @RequiresPermissions( {"auditorController"} )
+    public Result<List<NraFile>> getPriorityApplications(){
+        Result<List<NraFile>> result = new Result();
+        List<NraFile> list = nraFileDao.selectPriorityApplications();
+        result.setResult(list);
+        return result;
+    }
+
+    @RequiresPermissions( {"auditorController"} )
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public synchronized Result priorityPass(NraFile nraFile){
+        Result result = new Result();
+        nraFile.setPriorityStatus(NraPriorityStatus.PRIORITY.getCode());
+        int count = nraFileDao.updatePriorityPass(nraFile);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("插队成功");
+            nraFileDao.queueNoMoveForPriority(nraFile.getId());
+            //待socket做好后需要通知相应的客户经理
+        } else {
+            result.setFlag(false);
+            result.setMessage("插队操作失败");
+        }
+        return result;
+    }
+
+    @RequiresPermissions( {"auditorController"} )
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public synchronized Result priorityRefused(NraFile nraFile){
+        Result result = new Result();
+        nraFile.setPriorityStatus(NraPriorityStatus.REFUSED.getCode());
+        int count = nraFileDao.updatePriorityRefused(nraFile);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("拒绝插队成功");
+        } else {
+            result.setFlag(false);
+            result.setMessage("拒绝插队操作失败");
+        }
         return result;
     }
 }
