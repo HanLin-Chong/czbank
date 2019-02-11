@@ -187,4 +187,38 @@ public class AuditorController {
         return JSON.toJSONString(result);
     }
 
+    @RequestMapping(value = "searchManager", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String searchManagerAcc(String userName, String phone, String email){
+        Result<List<User>> result = userService.searchManager(userName, phone, email);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "addManager", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String addManager(User user){
+        Result result = userService.addManager(user);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "validateManagerId", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String validateManagerId(String userId){
+        boolean result = userService.validateManagerId(userId);
+        return result?"{\"valid\":true}":"{\"valid\":false}";
+    }
+
+    @RequestMapping(value = "blockManagerAcc", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String blockManagerAcc(String userId){
+        Result result = userService.blockManagerAcc(userId);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "activateManagerAcc", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String activateManagerAcc(String userId){
+        Result result = userService.activateManagerAcc(userId);
+        return JSON.toJSONString(result);
+    }
 }

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>经理账户管</title>
+    <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" href="../../layui/css/layui.css"/>-->
+
+
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+
+    <script src="../../js/hanlinCommons.js"></script>
+    <!--<script src="../../layui/layui.all.js"></script>-->
+    <script src="../../js/deferredAjax.js"></script>
+<style>
+    .cursor-pointer{
+        cursor: pointer;
+    }
+    .small-img{
+        width: 20px;
+    }
+</style>    
+</head>
+<body class="container">
+    <div class="col-lg-12"><br/></div>
+    <div class="col-lg-3">
+        <div class="input-group">
+            <span class="input-group-addon">经理姓名</span>
+            <input name="userName" type="text" class="form-control" placeholder="经理姓名"/>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="input-group">
+            <span class="input-group-addon">手机号</span>
+            <input name="phone" type="text" class="form-control" placeholder="手机号"/>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="input-group">
+            <span class="input-group-addon">邮箱</span>
+            <input name="email" type="text" class="form-control" placeholder="邮箱"/>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <button id="search" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+    </div>
+    <div class="col-lg-12">
+        <table id="managerList" lay-filter="managerList"></table>
+    </div>
+<script>
+    $(document).ready(function (){
+        layui.table.render({
+            elem: "#managerList",
+            title: "经理列表",
+            loading: true,
+            page: true,
+            autoSort: false,
+            toolbar: "#tableTool",
+            defaultToolbar: ["filter", "exports", "print"],
+            data: [],
+            cols: [[
+
+                {field: 'userId', title: '工号', width: 140, align: 'center'},
+                {field: 'userId', title: '操作', width: 100, align: 'center',
+                    templet: function (d){
+                        if (d.userState == HanLin.userStatus.NORMAL){
+                            return "<button class='blockAcc btn btn-danger' userName='"+d.userName+"' userId='"+d.userId+"' style='height: 25px;line-height: 10px;'>停用</button>";
+                        }
+                        if (d.userState == HanLin.userStatus.BLOCK_UP){
+                            return "<button class='activateAcc btn btn-success' userName='"+d.userName+"' userId='"+d.userId+"' style='height: 25px;line-height: 10px;'>启用</button>";
+                        }
+                        if (d.userState == HanLin.userStatus.ROOT){
+                            return "什么，你居然能看到我（这个格子里的字）？？不应该啊，麻烦去帮助中心反馈一下。。--经理账户管理表格（把这段话复制过去就行）"
+                        }
+                    }
+                },
+                {field: 'userName', title: '姓名', width: 150},
+                {field: 'email', title: '邮箱', width: 150},
+                {field: 'userState', title: '账号状态', width: 100, align: 'center',
+                    templet: function (d){
+                        console.log(d);
+                        var html = "-";
+                        if (d.userState == HanLin.userStatus.ROOT){
+                            html = "<strong class='text-danger'>无权查看该账户</strong>";
+                        } else if (d.userState == HanLin.userStatus.NORMAL){
+                            html = "<strong class='text-info'>正常</strong>";
+                        } else if (d.userState == HanLin.userStatus.BLOCK_UP){
+                            html = "<strong class='text-danger'>停用</strong>";
+                        }
+                        return html;
+                    }
+                },
+                {field: 'phone', title: "手机", width: 150},
+                {field: 'headPhoto', title:'头像', width:60, align: 'center',
+                    templet: function (d){
+                        if (d.headPhoto == "default"){
+                            return '<img class="cursor-pointer small-img preview" userName="'+d.userName+'" src="../../img/userHeadPhotos/user_default_head.jpg"/>';
+                        } else {
+                            return '<img class="cursor-pointer small-img preview" userName="'+d.userName+'" src="../../img/userHeadPhotos/'+d.userId+'/'+d.headPhoto+'"/>';
+                        }
+
+                    }
+                },
+                {field: 'registerDate', title: '注册日期'}
+            ]]
+        });
+        $("#search").click(function (){
+            var userName = $("[name='userName']").val();
+            var phone = $("[name='phone']").val();
+            var email = $("[name='email']").val();
+            var p = {
+                userName: userName,
+                phone: phone,
+                email: email
+            }
+            reloadTableData(p);
+        });
+        $(document).on("click", ".preview", function (e){
+            var photoPath = $(e.currentTarget).attr("src");
+            var userName = $(e.currentTarget).attr("userName");
+            var data = {
+                "title": userName, //相册标题
+                //"id": 123, //相册id
+                "start": 0, //初始显示的图片序号，默认0
+                "data": [   //相册包含的图片，数组格式
+                    {
+                        "alt": userName,
+                        "src": photoPath, //原图地址
+                        "thumb": photoPath //缩略图地址
+                    }
+                ]
+            };
+            layer.photos({
+                photos: data,
+                anim: 5
+            });
+        });
+        $(document).on("click", ".blockAcc", function (e){
+            var userName = $(e.currentTarget).attr("userName");
+            var userId = $(e.currentTarget).attr("userId");
+            var getUserName = $("[name='userName']").val();
+            var getPhone = $("[name='phone']").val();
+            var getEmail = $("[name='email']").val();
+            var p = {
+                userName: getUserName,
+                phone: getPhone,
+                email: getEmail
+            }
+            layer.confirm("确定停用经理("+userName+")的账户？", {
+                icon: 3,
+                title: '停用经理账户',
+                btn: ["确定", "取消"]
+            }, function (index){
+                HanLin.requestTypical("c/blockManagerAcc", {userId:userId}, function (data){
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data.flag){
+                        HanLin.success(data.message);
+                    } else {
+                        HanLin.error(data.message);
+                    }
+                    reloadTableData(p);
+                }, "停用经理账户时服务器端出错")
+
+                layer.close(index);
+            }, function (index){
+                layer.close(index);
+            });
+        });
+        $(document).on("click", ".activateAcc", function (e){
+            var userName = $(e.currentTarget).attr("userName");
+            var userId = $(e.currentTarget).attr("userId");
+            var getUserName = $("[name='userName']").val();
+            var getPhone = $("[name='phone']").val();
+            var getEmail = $("[name='email']").val();
+            var p = {
+                userName: getUserName,
+                phone: getPhone,
+                email: getEmail
+            }
+            layer.confirm("确定启用经理("+userName+")的账户？", {
+                icon: 3,
+                title: '启用经理账户',
+                btn: ["确定", "取消"]
+            }, function (index){
+                HanLin.requestTypical("c/activateManagerAcc", {userId:userId}, function (data){
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data.flag){
+                        HanLin.success(data.message);
+                    } else {
+                        HanLin.error(data.message);
+                    }
+                    reloadTableData(p);
+                }, "停用经理账户时服务器端出错")
+
+                layer.close(index);
+            }, function (index){
+                layer.close(index);
+            });
+        });
+    });
+function reloadTableData(p){
+    var index = layer.load(2, {time: 10*1000});
+    HanLin.requestTypical("c/searchManager", p, function (data){
+        data = JSON.parse(data);
+        console.log(data);
+        layui.table.reload("managerList", {
+            data: data.result
+        });
+
+        layer.close(index);
+    }, "获取经理数据时服务端出错");
+
+}
+</script>
+</body>
+</html>

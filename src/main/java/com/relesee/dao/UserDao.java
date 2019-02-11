@@ -3,6 +3,8 @@ package com.relesee.dao;
 import com.relesee.domains.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface UserDao {
     User selectUserById(String userId);
 
@@ -16,4 +18,13 @@ public interface UserDao {
 
     int updatePassword(@Param("userId") String userId,@Param("password") String password);
 
+    int insertManager(User user);
+
+    int selectCountManagerId(String userId);
+
+    List<User> selectManager(@Param("userName") String userName, @Param("phone") String phone, @Param("email") String email);
+
+    int updateManagerBlock(@Param("userId") String userId, @Param("userState") int userState);
+
+    int updateManagerActive(@Param("userId") String userId, @Param("userState") int userState);
 }

@@ -125,12 +125,12 @@ $(document).ready(function (){
         var id = $(btn).attr("nraFileId");
         var uploadTime = $(btn).attr("uploadTime");
         var fileName = $(btn).attr("fileName");
-        var index2 = layui.layer.confirm('确定同意文件“'+fileName+'”插队？', {
+        layer.confirm('确定同意文件“'+fileName+'”插队？', {
             icon: 3,
             title:'同意插队',
-            btn: ["确定", "取消"]
-        }, function(){
-            var index = layui.layer.load(2);
+            btn: ["确定", "取消"],
+        }, function(index){
+            var index = layer.load(2);
             HanLin.requestTypical("c/priorityPass", {id:id}, function(data){
                 data = JSON.parse(data);
                 layui.layer.close(index);
@@ -141,9 +141,9 @@ $(document).ready(function (){
                 }
                 reloadTableData({});
             }, "同意插队时服务器端出现错误");
-            layui.layer.close(index2);
-        }, function(){
-            layui.layer.close(index2);
+            layer.close(index);
+        }, function(index){
+            layer.close(index);
         });
     });
     $(document).on("click", ".refuse", function (e){

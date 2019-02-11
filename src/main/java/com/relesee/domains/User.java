@@ -19,7 +19,7 @@ public class User {
     private String userId;
     private String email;
     private String role;
-    private String userState;//-1为已删除,0为暂停使用,1为正常账户,2为root用户
+    private int userState;//-1为已删除,0为暂停使用,1为正常账户,2为root用户
     private String phone;
     private String headPhoto;
     private String deptId;
@@ -65,11 +65,11 @@ public class User {
         this.role = role;
     }
 
-    public String getUserState() {
+    public int getUserState() {
         return userState;
     }
 
-    public void setUserState(String userState) {
+    public void setUserState(int userState) {
         this.userState = userState;
     }
 

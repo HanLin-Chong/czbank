@@ -15,6 +15,13 @@
     <script src="../../js/deferredAjax.js"></script>
 </head>
 <body>
-
+<button id="btn" class="btn btn-primary">anniu</button>
+<script>
+    $(document).ready(function (){
+        $(document).on("click", "#btn", function (e){
+            $(e.currentTarget).attr("disabled", "disabled");
+        });
+    });
+</script>
 </body>
 </html>

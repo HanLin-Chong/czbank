@@ -60,4 +60,86 @@
         WHERE
             userId = #{userId}
     </update>
+
+    <insert id="insertManager" parameterType="com.relesee.domains.User">
+        INSERT INTO
+            user(
+               userName,
+               password,
+               userId,
+               email,
+               role,
+               userState,
+               phone,
+               headPhoto,
+               deptId,
+               registerDate,
+               permissionId
+            )
+        VALUES(
+            #{userName},
+            '000000',
+            #{userId},
+            #{email},
+            'manager',
+            1,
+            #{phone},
+            'default',
+            #{deptId},
+            NOW(),
+            0
+        )
+    </insert>
+
+    <select id="selectCountManagerId" parameterType="String" resultType="int">
+        SELECT
+            COUNT(*) count
+        FROM
+            user
+        WHERE
+            userId = #{userId}
+    </select>
+
+    <select id="selectManager" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId
+        FROM
+            user
+        WHERE
+            role IN ('manager', 'auditor')
+        AND
+            userName LIKE CONCAT('%', #{userName}, '%')
+        AND
+            phone LIKE CONCAT('%', #{phone} ,'%')
+        AND
+            email LIKE CONCAT('%', #{email}, '%')
+    </select>
+
+    <update id="updateManagerBlock">
+        UPDATE
+            user
+        SET
+            useRState = #{userState}
+        WHERE
+            userId = #{userId}
+    </update>
+
+    <update id="updateManagerActive">
+        UPDATE
+            user
+        SET
+            useRState = #{userState}
+        WHERE
+            userId = #{userId}
+    </update>
 </mapper>

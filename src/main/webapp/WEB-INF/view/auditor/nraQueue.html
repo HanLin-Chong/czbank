@@ -36,6 +36,9 @@
     <div class="hanlin-vertical-line"></div>
     <label>申请通过询问：</label>
     <input id="askBeforePass" type="checkbox" lay-filter="askBeforePass" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
+    <div class="hanlin-vertical-line"></div>
+    <label>释放申请询问：</label>
+    <input id="askBeforeRelease" type="checkbox" lay-filter="askBeforePass" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
     <br/>
     <br/>
     <div class="input-group">
@@ -231,16 +234,21 @@ $(document).ready(function (){
             var id = $(e.currentTarget).attr("fid");
             var uploadTime = $(e.currentTarget).attr("uploadTime");
             var fileName = $(e.currentTarget).attr("fileName");
-
-            var passIndex = layui.layer.confirm("即将释放申请：<br/>文件名:"+fileName+"<br/>上传时间:"+uploadTime+"<br/>确定？", {
-                title: "释放申请",
-                btn: ['确定', '取消']
-            }, function (){
+            var checked = $("#askBeforeRelease").is(":checked");
+            if (checked){
+                var passIndex = layui.layer.confirm("即将释放申请：<br/>文件名:"+fileName+"<br/>上传时间:"+uploadTime+"<br/>确定？", {
+                    title: "释放申请",
+                    btn: ['确定', '取消']
+                }, function (){
+                    release(id, fileName);
+                    layer.close(passIndex);
+                }, function (){
+                    layer.close(passIndex);
+                });
+            } else {
                 release(id, fileName);
-                layer.close(passIndex);
-            }, function (){
-                layer.close(passIndex);
-            });
+            }
+
 
         });
     }, "获取NRA队列失败");
@@ -318,7 +326,7 @@ function pass(id, fileName){
                 }
             }
             renderList(listData);
-            reloadTableData({});
+            //reloadTableData({});
             if (listData.length <= 0){
                 enableGetAudit()
             }
@@ -341,7 +349,7 @@ function refuse(id, fileName){
                 }
             }
             renderList(listData);
-            reloadTableData({});
+            //reloadTableData({});
             if (listData.length <= 0){
                 enableGetAudit();
             }
@@ -359,7 +367,7 @@ function release(id, fileName){
         if (data.flag){
             HanLin.success(data.message);
 
-            for (var i in listData){
+            /*for (var i in listData){
                 if (listData[i].id == id){
                     listData.splice(i, 1);
                 }
@@ -368,7 +376,22 @@ function release(id, fileName){
             reloadTableData({});
             if (listData.length <= 0){
                 enableGetAudit();
-            }
+            }*/
+            HanLin.requestTypical("c/getLockedNra", {}, function (data){
+                data = JSON.parse(data);
+                var list = data.result;
+                var length = list.length;
+                listData = list;
+                if (length > 0){
+                    //HanLin.warn("您有"+length+"条已锁定的申请未处理");
+                    renderList(list);
+
+                } else {
+                    $("#auditList").html("<li style='text-align: center'>没有被锁定的申请</li>");
+                    enableGetAudit();
+                    renderList(list);
+                }
+            }, "获取已锁定的申请时出错");
         } else {
             HanLin.error(data.message);
         }
@@ -408,10 +431,11 @@ function renderList(data){
             html += '</li>';
         }
     } else {
-        html += "NRA队列为空";
+        html += "<li class='center-block' style='text-align: center'>NRA队列为空，或没有被锁定的申请</li>";
 
     }
     destination.html(html);
+
     reloadTableData({});
 }
 function disableGetAudit(){
@@ -423,6 +447,7 @@ function enableGetAudit(){
     $("#getForAudit").html("锁定申请并开始审核");
 }
 function reloadTableData(p){
+
     var index = layer.load(2, {time: 10*1000});
 
     $.when(request("c/getNraQueue", p)).done(function (dataReload){
