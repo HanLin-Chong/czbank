@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,12 +41,12 @@ public class ForeignAccService {
      * @return
      */
     @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
-    public Result<String> ebayAcc(EbayApplication ebayApplication){
+    public Result<String> ebayAcc(EbayApplication ebayApplication, String realpath){
 
         String uuid = FileUtil.uuid();
         //手动注入uuid
         ebayApplication.setId(uuid);
-        String DIRECTORY = OUTPUT_ROOT_PATH+"/files/ebay/"+uuid;
+        String DIRECTORY = realpath+"/files/ebay/"+uuid;
 
         MultipartFile applicationFile = ebayApplication.getApplicationFile();
         MultipartFile transactionRecord = ebayApplication.getTransactionRecord();
@@ -156,4 +157,12 @@ public class ForeignAccService {
         return result;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result<EbayApplication> getOneEbayApplication(){
+        Result<EbayApplication> result = new Result();
+        EbayApplication resultDo = ebayApplicationDao.selectOneEbayApplication();
+        System.out.println(resultDo.getId());
+        result.setResult(resultDo);
+        return result;
+    }
 }

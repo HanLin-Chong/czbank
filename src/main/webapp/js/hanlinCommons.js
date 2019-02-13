@@ -4,6 +4,10 @@
  */
 
 var HanLin = {
+    //第三方服务配置信息
+    //  officeweb365.com
+    SERVER_ID: 17855,
+    SERVER_HOST: "120.79.246.240",//文件服务器，这样子不安全，最好绑定一个域名
     //常量，防止魔法值
     nraStatus:{//Nra状态码
         QUEUING:0,//排队中
@@ -53,6 +57,21 @@ var HanLin = {
     },
     getFrom: function (formSelector){
         return $(formSelector).serializeArray();
+    },
+    setForm: function (data, formSelector){
+        var inputArray = $(formSelector).find("input");
+        console.log(data);
+        $(inputArray).each(function (index, e){
+            var name = $(e).attr("name");
+            var value = eval("data."+name);
+            $(e).val(value);
+        });
+        /*$(formSelector+" input").each(function (e, index){
+            console.log(e);
+            var name = e.attr("name");
+
+            console.log(name);
+        });*/
     },
     request: function (url, parameters, functionDone, errorMsg){
         $.ajax({

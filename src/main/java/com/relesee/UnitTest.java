@@ -7,6 +7,7 @@ import com.relesee.dao.NraFileDao;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
 import com.relesee.service.AuditorService;
+import com.relesee.service.ForeignAccService;
 import com.relesee.service.ManagerService;
 import com.relesee.service.NraQueueService;
 import com.relesee.utils.FileUtil;
@@ -29,11 +30,12 @@ import java.util.List;
 public class UnitTest {
 
     @Autowired
-    NraQueueService service;
+    ForeignAccService service;
 
     @Test
     public void doTest() {
-
+        Result r = service.getOneEbayApplication();
+        System.out.println(JSON.toJSONString(r));
     }
 
 

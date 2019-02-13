@@ -78,10 +78,10 @@
                 <li class="layui-nav-item">
                     <a href="javascript:;">境外账户申请审核</a>
                     <dl class="layui-nav-child">
-                        <dd class="loadPage"><a href="javascript:;">Amazon(US)</a></dd>
-                        <dd class="loadPage"><a href="javascript:;">Amazon(EU)</a></dd>
-                        <dd class="loadPage"><a href="javascript:;">ebay</a></dd>
-
+                        <dd class="loadPage" whichPage="amazonUS"><a href="javascript:;">Amazon(US)</a></dd>
+                        <dd class="loadPage" whichPage="amazonEU"><a href="javascript:;">Amazon(EU)</a></dd>
+                        <dd class="loadPage" whichPage="ebay"><a href="javascript:;">ebay</a></dd>
+                        <dd class="loadPage"><a href="javascript:;">申请查询</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
@@ -94,9 +94,6 @@
                 <li class="layui-nav-item">
                     <a class="loadPage" whichPage="ledger" href="javascript:;">总台账信息</a>
                 </li>
-                <li class="layui-nav-item">
-                    <a class="loadPage" whichPage="draft" href="javascript:;">总台账信息</a>
-                </li>
             </ul>
         </div>
     </div>
@@ -107,8 +104,6 @@
 
 
     <div class="layui-footer">
-        &lt;!&ndash; 底部固定区域 &ndash;&gt;
-        © layui.com - 底部固定区域
     </div>
 </div>
 <script>

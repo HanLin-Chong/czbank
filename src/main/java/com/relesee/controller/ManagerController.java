@@ -133,17 +133,10 @@ public class ManagerController {
      */
     @RequestMapping(value = "ebayApplication", produces = "text/plane;charset=utf-8")
     @ResponseBody
-    public String ebayApplication(EbayApplication ebayApplication){
-        /*MultipartFile a = ebayApplication.getTransactionRecord();
-        MultipartFile b = ebayApplication.getApplicationFile();
-        System.out.println(a);
-        System.out.println(b);
-        System.out.println(a == null);
-        System.out.println(b == null);*/
-        Result<String> result = foreignAccService.ebayAcc(ebayApplication);
-        /*Result result = new Result();
-        result.setFlag(true);
-        result.setMessage("调试中");*/
+    public String ebayApplication(EbayApplication ebayApplication, HttpServletRequest request){
+
+        String realpath = request.getServletContext().getRealPath("/");
+        Result<String> result = foreignAccService.ebayAcc(ebayApplication, realpath);
         return JSON.toJSONString(result);
     }
 
@@ -157,7 +150,6 @@ public class ManagerController {
     @RequestMapping(value = "amazonEUapplication", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String amazonEUapplication(AmazonEUapplication amazonEU){
-
         amazonEU.valueFormat();
         Result result = foreignAccService.amazonEUacc(amazonEU);
         return JSON.toJSONString(result);

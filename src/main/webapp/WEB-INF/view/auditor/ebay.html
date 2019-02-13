@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ebay开户申请管理</title>
+    <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" href="../../layui/css/layui.css"/>-->
+
+
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+
+    <script src="../../js/hanlinCommons.js"></script>
+    <!--<script src="../../layui/layui.all.js"></script>-->
+    <script src="../../js/deferredAjax.js"></script>
+<style>
+    .layui-form-switch{/* 解决layui与bootstrap的样式冲突 */
+        height:25px!important;
+        margin-top: 0px;
+    }
+    .hanlin-vertical-line{
+        display: inline !important;
+        border-right: solid 1px #c2c2c2;
+        height: auto;
+        margin: 0px 10px 0px 10px;
+    }
+</style>
+</head>
+<body>
+    <div class="col-lg-12">
+        <br/><br/>
+    </div>
+    <div class="col-lg-8 layui-form">
+        <label>当前申请操作完成后自动加载新的申请：</label>
+        <input id="autoLoadSetting" type="checkbox" lay-filter="validatorSetting" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
+        <div class="hanlin-vertical-line"></div>
+        <!--<label>查看模式：</label>
+        <input id="viewModeSetting" type="checkbox" lay-filter="viewModeSetting" name="null" lay-skin="switch" lay-text="流式布局|窗口模式" checked/>-->
+    </div>
+
+    <div class="col-lg-1">
+        <button id="newApp" class="btn btn-primary">获取申请</button>
+    </div>
+    <div class="col-lg-1">
+        <button class="btn btn-danger">作废申请</button>
+    </div>
+    <div class="col-lg-1">
+        <button class="btn btn-success">申请通过</button>
+    </div>
+    <div class="col-lg-1"></div>
+    <div class="col-lg-12">
+        <hr/>
+    </div>
+    <div id="formArea" class="col-lg-4">
+        <form id="form">
+            <div class="input-group form-group">
+                <span class="input-group-addon">Paypal注册ID</span>
+                <input name="paypalId" type="text" class="form-control" placeholder="example@org.domain"/>
+            </div>
+            <div id="container1"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">境外账户名称(商家信息内容)</span>
+                <input name="businessName" type="text" class="form-control" placeholder="若为中文名称请以拼音格式填写" aria-describedby="basic-addon3"/>
+            </div>
+            <div id="container2"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">Ebay店铺链接</span>
+                <input name="shopUrl" type="text" class="form-control" placeholder="https://www.ebay.com/usr/...."/>
+            </div>
+            <div id="container3"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">Ebay店铺名称</span>
+                <input name="shopName" type="text" class="form-control" placeholder="请填写Ebay店铺名称"/>
+            </div>
+            <div id="container4"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">境外账户申请人姓名</span>
+                <input name="applicantName" type="text" class="form-control" placeholder="请填写境外账户申请人姓名"/>
+            </div>
+            <div id="container5"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">境外账户申请人证件号码</span>
+                <input name="applicantId" type="text" class="form-control" placeholder="请填写申请人证件号"/>
+            </div>
+            <div id="container6"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">境内收款账号</span>
+                <input name="recipientAcc" type="text" class="form-control" placeholder="请填写境内收款账号"/>
+            </div>
+            <div id="container7"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">境内收款人户名</span>
+                <input name="recipientAccName" type="text" class="form-control" placeholder="请填写境内收款人户名"/>
+            </div>
+            <div id="container8"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">境内收款人证件号码</span>
+                <input name="recipientId" type="text" class="form-control" placeholder="请填写收款人证件号"/>
+            </div>
+            <div id="container9"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">详细联系地址</span>
+                <input name="address" type="text" class="form-control" placeholder="请填写联系地址"/>
+            </div>
+            <div id="container10"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">所属客户经理</span>
+                <input name="managerName" placeholder="请填写客户经理姓名" type="text" class="form-control"/>
+            </div>
+            <div id="container11"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">客户经理所属机构</span>
+                <input name="managerDepartment" placeholder="请填写XX支行字样" type="text" class="form-control"/>
+            </div>
+            <div id="container12"></div>
+            <div class="input-group form-group margin-top-20">
+                <span class="input-group-addon">客户经理工号</span>
+                <input name="managerId" placeholder="请填写客户经理工号" type="text" class="form-control"/>
+            </div>
+            <div id="container13"></div>
+        </form>
+    </div>
+    <div id="iframeArea" class="col-lg-8" style="height: 100%">
+        <button class="btn btn-primary" id="reloadApplicationFile">重新加载申请文件</button>
+        <div id="frameHeight"></div>
+        <iframe id="iframe" style="height: 100%;width: 100%;">
+
+        </iframe>
+    </div>
+    <div id="transactionRecordArea" class="col-lg-12" style="height: 100%;">
+        <button class="btn btn-primary" id="reloadTransactionRecord">重新加载交易记录</button>
+        <div id="frameHeight2"></div>
+        <iframe id="iframeTransactionRecord" style="height: 100%;width: 100%;">
+
+        </iframe>
+    </div>
+
+
+<script>
+    var temp = "http://ow365.cn/?i=17855&furl=http://120.79.246.240:8080/files/ebay/d51ac6548861431aa0c53976850c996a/规则汇总.docx";
+    var temp2 = "http://ow365.cn/?i=17855&furl=http://120.79.246.240:8080/files/ebay/d51ac6548861431aa0c53976850c996a/＊if(2).xls";
+var applicationFileUrl = null;
+var transactionRecordUrl = null;
+$(document).ready(function (){
+    layui.form.render();
+    $("#newApp").click(function (){
+        newEbayApplication();
+    });
+    layui.slider.render({
+        elem: "#frameHeight",
+        value: 50,
+        change: function (value){
+            $("#iframeArea").css("height", (100+(value-50))*1+"%");
+        }
+    });
+    layui.slider.render({
+        elem: "#frameHeight2",
+        value: 50,
+        change: function (value){
+            $("#transactionRecordArea").css("height", (100+(value-50))*1+"%");
+        }
+    });
+    $("#reloadApplicationFile").click(function (){
+        $("#iframe").attr("src", applicationFileUrl);
+    });
+    $("#reloadTransactionRecord").click(function (){
+        $("#iframeTransactionRecord").attr("src", transactionRecordUrl);
+    });
+    //暂时不需要窗口模式，因为这样会占用word查看的次数
+    /*layui.form.on('switch(viewModeSetting)', function(data){
+        if (data.elem.checked){
+            //左右分屏
+            normalMode();
+        } else {
+            //窗口
+            windowMode();
+        }
+    });*/
+
+
+});
+function newEbayApplication(){
+    var index = layer.load(2, {time: 10*1000});
+    HanLin.requestTypical("c/getOneEbayApplication", {}, function (data){
+        data = JSON.parse(data);
+
+        //先给表单赋值
+        var formData = data.result;
+        HanLin.setForm(formData, "#form");
+        layer.close(index);
+
+        //加载word
+        var applicationFileName = formData.applicationFileName;
+        applicationFileUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/ebay/"+formData.id+"/"+applicationFileName;
+        $("#iframe").attr("src", applicationFileUrl);
+        //交易记录
+        var transactionRecordName = formData.transactionRecordName;
+        transactionRecordUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/ebay/"+formData.id+"/"+transactionRecordName;
+        $("#iframeTransactionRecord").attr("src", transactionRecordUrl);
+
+    }, "获取未处理的申请数量时服务器端出错，可能的原因是没有可以处理的申请");
+
+}
+/*//调整为窗口模式
+function windowMode(){
+
+    layer.open({
+        type: 2,
+        title: '申请文件(光标移到窗体右下角拖动调整大小)',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['893px', '600px'],
+        content: applicationFileUrl
+    });
+    layer.open({
+        type: 3,
+        title: '申请文件(光标移到窗体右下角拖动调整大小)',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['893px', '600px'],
+        content: transactionRecordUrl
+    });
+    //隐藏表单右侧的iframe
+    $("#iframeArea").addClass("hidden");
+    $("#transactionRecordArea").addClass("hidden");
+    //表单区拉大
+    $("#formArea").removeClass("col-lg-4");
+    $("#formArea").addClass("col-lg-12");
+}
+//普通模式
+function normalMode(){
+    //关闭所有layer
+    layer.closeAll();
+    //显示右侧iframe
+    $("#iframeArea").removeClass("hidden");
+    $("#transactionRecordArea").removeClass("hidden");
+    //缩小表单区
+    $("#formArea").removeClass("col-lg-12");
+    $("#formArea").addClass("col-lg-4");
+
+}*/
+
+</script>
+</body>
+</html>

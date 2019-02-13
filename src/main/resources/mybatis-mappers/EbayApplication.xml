@@ -25,7 +25,8 @@
                 managerId,
                 transactionRecordName,
                 applicationFileName,
-                uploadTime
+                uploadTime,
+                status
             )
         VALUES
             (
@@ -45,11 +46,47 @@
                 #{managerId},
                 #{transactionRecordName},
                 #{applicationFileName},
-                NOW()
+                NOW(),
+                0
             )
     </insert>
 
-
+    <select id="selectOneEbayApplication" resultType="com.relesee.domains.EbayApplication">
+        SET @id = '';
+        SELECT
+            @id := id,
+            id,
+            paypalId,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime
+        FROM
+            ebayapplication
+        WHERE
+            status = 0
+        ORDER BY
+            uploadTime
+        LIMIT
+            0, 1;
+        UPDATE
+            ebayapplication
+        SET
+            status = 1
+        WHERE
+            id = @id;
+    </select>
 
 
 

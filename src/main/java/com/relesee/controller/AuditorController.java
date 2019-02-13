@@ -1,10 +1,12 @@
 package com.relesee.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.relesee.domains.EbayApplication;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
 import com.relesee.domains.User;
 import com.relesee.service.AuditorService;
+import com.relesee.service.ForeignAccService;
 import com.relesee.service.NraQueueService;
 import com.relesee.service.UserService;
 import org.apache.commons.io.FileUtils;
@@ -48,6 +50,9 @@ public class AuditorController {
 
     @Autowired
     NraQueueService nraQueueService;
+
+    @Autowired
+    ForeignAccService foreignAccService;
 
     @Value("#{projectProperties['output.rootpath']}")//projectProperties是在spring的配置文件中配置的一个bean
     private String OUTPUT_ROOT_PATH;
@@ -221,4 +226,12 @@ public class AuditorController {
         Result result = userService.activateManagerAcc(userId);
         return JSON.toJSONString(result);
     }
+
+    @RequestMapping(value = "getOneEbayApplication", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getOneEbayApplication(){
+        Result<EbayApplication> result = foreignAccService.getOneEbayApplication();
+        return JSON.toJSONString(result);
+    }
+
 }
