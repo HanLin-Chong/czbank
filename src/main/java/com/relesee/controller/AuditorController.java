@@ -1,10 +1,7 @@
 package com.relesee.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.relesee.domains.EbayApplication;
-import com.relesee.domains.NraFile;
-import com.relesee.domains.Result;
-import com.relesee.domains.User;
+import com.relesee.domains.*;
 import com.relesee.service.AuditorService;
 import com.relesee.service.ForeignAccService;
 import com.relesee.service.NraQueueService;
@@ -234,4 +231,44 @@ public class AuditorController {
         return JSON.toJSONString(result);
     }
 
+    @RequestMapping(value = "ebayPassed", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String ebayPassed(EbayApplication ebayApplication){
+        Result result = foreignAccService.ebayPassed(ebayApplication);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "ebayRefused", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String ebayRefused(EbayApplication ebayApplication){
+        Result result = foreignAccService.ebayRefused(ebayApplication);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "amazonUSPassed", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String amazonUSpassed(AmazonUSapplication amazonUSapplication){
+        Result result = foreignAccService.amazonUSpassed(amazonUSapplication);
+        return JSON.toJSONString(result);
+    }
+    @RequestMapping(value = "amazonUSRefused", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String amazonUSrefused(AmazonUSapplication amazonUSapplication){
+        Result result = foreignAccService.amazonUSrefused(amazonUSapplication);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "amazonEUPassed", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String amazonEUpassed(AmazonEUapplication amazonEUapplication){
+        Result result = foreignAccService.amazonEUpassed(amazonEUapplication);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "amazonEURefused", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String amazonEUrefused(AmazonEUapplication amazonEUapplication){
+        Result result = foreignAccService.amazonEUrefused(amazonEUapplication);
+        return JSON.toJSONString(result);
+    }
 }

@@ -23,6 +23,8 @@ public class EbayApplication {
     private String uploadTime;
     private String transactionRecordName;
     private String applicationFileName;
+    private int status;
+    private String auditor;
 
     private MultipartFile transactionRecord;
     private MultipartFile applicationFile;
@@ -177,5 +179,21 @@ public class EbayApplication {
 
     public void setApplicationFile(MultipartFile applicationFile) {
         this.applicationFile = applicationFile;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getAuditor() {
+        return auditor;
+    }
+
+    public void setAuditor(String auditor) {
+        this.auditor = auditor;
     }
 }

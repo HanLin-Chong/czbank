@@ -6,4 +6,5 @@ public interface AmazonUSdao {
 
     int insertApplication(AmazonUSapplication amazonUS);
 
+    int updateStatus(AmazonUSapplication amazonUS);
 }

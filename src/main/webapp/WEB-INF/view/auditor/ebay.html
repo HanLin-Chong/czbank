@@ -42,10 +42,10 @@
         <button id="newApp" class="btn btn-primary">获取申请</button>
     </div>
     <div class="col-lg-1">
-        <button class="btn btn-danger">作废申请</button>
+        <button id="refuseApplication" class="btn btn-danger">作废申请</button>
     </div>
     <div class="col-lg-1">
-        <button class="btn btn-success">申请通过</button>
+        <button id="passApplication" class="btn btn-success">申请通过</button>
     </div>
     <div class="col-lg-1"></div>
     <div class="col-lg-12">
@@ -123,7 +123,7 @@
     <div id="iframeArea" class="col-lg-8" style="height: 100%">
         <button class="btn btn-primary" id="reloadApplicationFile">重新加载申请文件</button>
         <div id="frameHeight"></div>
-        <iframe id="iframe" style="height: 100%;width: 100%;">
+        <iframe id="iframeApplicationFile" style="height: 100%;width: 100%;">
 
         </iframe>
     </div>
@@ -141,6 +141,7 @@
     var temp2 = "http://ow365.cn/?i=17855&furl=http://120.79.246.240:8080/files/ebay/d51ac6548861431aa0c53976850c996a/＊if(2).xls";
 var applicationFileUrl = null;
 var transactionRecordUrl = null;
+var currentData = null;
 $(document).ready(function (){
     layui.form.render();
     $("#newApp").click(function (){
@@ -161,7 +162,7 @@ $(document).ready(function (){
         }
     });
     $("#reloadApplicationFile").click(function (){
-        $("#iframe").attr("src", applicationFileUrl);
+        $("#iframeApplicationFile").attr("src", applicationFileUrl);
     });
     $("#reloadTransactionRecord").click(function (){
         $("#iframeTransactionRecord").attr("src", transactionRecordUrl);
@@ -176,32 +177,80 @@ $(document).ready(function (){
             windowMode();
         }
     });*/
+    $("#refuseApplication").click(function (){
+        if (currentData == null){
 
+        } else {
+            HanLin.requestTypical("c/ebayRefused", {id: currentData.id}, function (data){
+                data = JSON.parse(data);
+                if (data.flag){
+                    HanLin.success(data.message);
+                    if ($("#autoLoadSetting").is(":checked")){
+                        clearAll();
+                        newEbayApplication();
+                    } else {
+                        clearAll();
+                    }
+                    currentData = null;
+                } else {
+                    HanLin.error(data.message);
+                }
+            }, "拒绝ebay申请时服务器端出错");
+        }
+
+    });
+    $("#passApplication").click(function (){
+         HanLin.requestTypical("c/ebayPassed", {id: currentData.id}, function (data){
+             data =  JSON.parse(data);
+             if (data.flag){
+                 HanLin.success(data.message);
+                 if ($("#autoLoadSetting").is(":checked")){
+                     clearAll();
+                     newEbayApplication();
+                 } else {
+                     clearAll();
+                 }
+             } else {
+                 HanLin.error(data.message);
+             }
+         }, "通过ebay申请时服务器端出错");
+    });
 
 });
 function newEbayApplication(){
     var index = layer.load(2, {time: 10*1000});
     HanLin.requestTypical("c/getOneEbayApplication", {}, function (data){
         data = JSON.parse(data);
+        if (data.flag){
+            HanLin.success(data.message);
+            //先给表单赋值
+            var formData = data.result;
+            currentData = formData;
+            HanLin.setForm(formData, "#form");
+            //加载word
+            var applicationFileName = formData.applicationFileName;
+            applicationFileUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/ebay/"+formData.id+"/"+applicationFileName;
+            //$("#iframeApplicationFile").attr("src", applicationFileUrl);
 
-        //先给表单赋值
-        var formData = data.result;
-        HanLin.setForm(formData, "#form");
+            $("#iframeApplicationFile").attr("src", applicationFileUrl);
+            //交易记录
+            var transactionRecordName = formData.transactionRecordName;
+            transactionRecordUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/ebay/"+formData.id+"/"+transactionRecordName;
+            //$("#iframeTransactionRecord").attr("src", transactionRecordUrl);
+
+            $("#iframeTransactionRecord").attr("src", transactionRecordUrl);
+        } else {
+            HanLin.error(data.message);
+        }
         layer.close(index);
-
-        //加载word
-        var applicationFileName = formData.applicationFileName;
-        applicationFileUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/ebay/"+formData.id+"/"+applicationFileName;
-        $("#iframe").attr("src", applicationFileUrl);
-        //交易记录
-        var transactionRecordName = formData.transactionRecordName;
-        transactionRecordUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/ebay/"+formData.id+"/"+transactionRecordName;
-        $("#iframeTransactionRecord").attr("src", transactionRecordUrl);
-
     }, "获取未处理的申请数量时服务器端出错，可能的原因是没有可以处理的申请");
-
 }
-/*//调整为窗口模式
+function clearAll(){
+    $("#form")[0].reset();
+    //$("#iframeTransactionRecord").removeAttr("src");
+    //$("#iframeApplicationFile").removeAttr("src");
+}
+/*//调整为窗口模式，考虑到word浏览服务次数限制，就尽量减少请求的次数
 function windowMode(){
 
     layer.open({
@@ -241,7 +290,6 @@ function normalMode(){
     $("#formArea").addClass("col-lg-4");
 
 }*/
-
 </script>
 </body>
 </html>

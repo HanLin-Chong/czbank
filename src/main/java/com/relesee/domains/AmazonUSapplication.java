@@ -20,6 +20,7 @@ public class AmazonUSapplication {
     private String uploadTime;
     private String transactionRecordName;
     private String applicationFileName;
+    private int status;
 
     private MultipartFile transactionRecord;
     private MultipartFile applicationFile;
@@ -174,5 +175,13 @@ public class AmazonUSapplication {
 
     public void setApplicationFile(MultipartFile applicationFile) {
         this.applicationFile = applicationFile;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

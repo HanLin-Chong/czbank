@@ -1,14 +1,14 @@
 package com.relesee.service;
 
+import com.alibaba.fastjson.JSON;
+import com.relesee.constant.ForeignApplicationStatus;
 import com.relesee.dao.AmazonEUdao;
 import com.relesee.dao.AmazonUSdao;
 import com.relesee.dao.EbayApplicationDao;
-import com.relesee.domains.AmazonEUapplication;
-import com.relesee.domains.AmazonUSapplication;
-import com.relesee.domains.EbayApplication;
-import com.relesee.domains.Result;
+import com.relesee.domains.*;
 import com.relesee.utils.FileUtil;
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -159,10 +159,127 @@ public class ForeignAccService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result<EbayApplication> getOneEbayApplication(){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
         Result<EbayApplication> result = new Result();
-        EbayApplication resultDo = ebayApplicationDao.selectOneEbayApplication();
-        System.out.println(resultDo.getId());
-        result.setResult(resultDo);
+        EbayApplication temp = new EbayApplication();
+        temp.setStatus(ForeignApplicationStatus.LOCKED.getCode());
+        temp.setAuditor(user.getUserId());
+        EbayApplication locked = ebayApplicationDao.selectLocked(temp);
+        if (locked == null){
+            EbayApplication resultDo = ebayApplicationDao.selectOneEbayApplication();
+            if (resultDo == null){
+                result.setFlag(false);
+                result.setMessage("没有可以处理的申请");
+            } else {
+                resultDo.setAuditor(user.getUserId());
+                resultDo.setStatus(ForeignApplicationStatus.LOCKED.getCode());
+                System.out.println(JSON.toJSONString(resultDo));
+                ebayApplicationDao.updateStatus(resultDo);
+                ebayApplicationDao.updateAuditor(resultDo);
+                result.setFlag(true);
+                result.setMessage("获取申请成功，即将加载");
+                result.setResult(resultDo);
+            }
+        } else {
+            result.setFlag(true);
+            result.setMessage("您有锁定的申请未处理，即将加载");
+            result.setResult(locked);
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result ebayPassed(EbayApplication input){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        input.setAuditor(user.getUserId());
+        Result result = new Result();
+        input.setStatus(ForeignApplicationStatus.SUBMITTED.getCode());
+        int count = ebayApplicationDao.updateStatus(input);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("通过申请成功，即将打包下载");
+        } else {
+            result.setFlag(false);
+            result.setMessage("通过申请失败");
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result ebayRefused(EbayApplication input){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        input.setAuditor(user.getUserId());
+        Result result = new Result();
+        input.setStatus(ForeignApplicationStatus.RETREAT.getCode());
+        int count = ebayApplicationDao.updateStatus(input);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("申请已拒绝");
+        } else {
+            result.setFlag(false);
+            result.setMessage("申请拒绝失败");
+        }
+        return result;
+    }
+
+    //TODO 别忘了把下面4个的auditor的id设置好
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result amazonUSpassed(AmazonUSapplication input){
+        Result result = new Result();
+        input.setStatus(ForeignApplicationStatus.SUBMITTED.getCode());
+        int count = amazonUSdao.updateStatus(input);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("通过申请成功，即将打包下载");
+        } else {
+            result.setFlag(false);
+            result.setMessage("通过申请失败");
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result amazonUSrefused(AmazonUSapplication input){
+        Result result = new Result();
+        input.setStatus(ForeignApplicationStatus.RETREAT.getCode());
+        int count = amazonUSdao.updateStatus(input);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("申请已拒绝");
+        } else {
+            result.setFlag(false);
+            result.setMessage("申请拒绝失败");
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result amazonEUpassed(AmazonEUapplication input){
+        Result result = new Result();
+        input.setStatus(ForeignApplicationStatus.SUBMITTED.getCode());
+        int count = amazonEUdao.updateStatus(input);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("通过申请成功，即将打包下载");
+        } else {
+            result.setFlag(false);
+            result.setMessage("通过申请失败");
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result amazonEUrefused(AmazonEUapplication input){
+        Result result = new Result();
+        input.setStatus(ForeignApplicationStatus.RETREAT.getCode());
+        int count = amazonEUdao.updateStatus(input);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("申请已拒绝");
+        } else {
+            result.setFlag(false);
+            result.setMessage("申请拒绝失败");
+        }
         return result;
     }
 }

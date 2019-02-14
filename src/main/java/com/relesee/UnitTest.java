@@ -3,7 +3,9 @@ package com.relesee;
 
 import com.alibaba.fastjson.JSON;
 import com.relesee.constant.NraPriorityStatus;
+import com.relesee.dao.EbayApplicationDao;
 import com.relesee.dao.NraFileDao;
+import com.relesee.domains.EbayApplication;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
 import com.relesee.service.AuditorService;
@@ -30,12 +32,12 @@ import java.util.List;
 public class UnitTest {
 
     @Autowired
-    ForeignAccService service;
+    EbayApplicationDao dao;
 
     @Test
     public void doTest() {
-        Result r = service.getOneEbayApplication();
-        System.out.println(JSON.toJSONString(r));
+        EbayApplication e = dao.selectOneEbayApplication();
+        System.out.println(e);
     }
 
 

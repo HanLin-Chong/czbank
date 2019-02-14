@@ -77,7 +77,16 @@
         )
     </insert>
 
-
+    <update id="updateStatus" parameterType="com.relesee.domains.AmazonEUapplication">
+        UPDATE
+            amazoneuapplication
+        SET
+            status = #{status}
+        WHERE
+            id = #{id}
+        AND
+            status = 1
+    </update>
 
 
 

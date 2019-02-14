@@ -51,10 +51,35 @@
             )
     </insert>
 
-    <select id="selectOneEbayApplication" resultType="com.relesee.domains.EbayApplication">
-        SET @id = '';
+    <select id="selectLocked" resultType="com.relesee.domains.EbayApplication">
         SELECT
-            @id := id,
+            id,
+            paypalId,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime
+        FROM
+            ebayapplication
+        WHERE
+            status = #{status}
+        AND
+            auditor = #{auditor}
+    </select>
+
+    <select id="selectOneEbayApplication" resultType="com.relesee.domains.EbayApplication">
+        SELECT
             id,
             paypalId,
             businessName,
@@ -79,14 +104,26 @@
         ORDER BY
             uploadTime
         LIMIT
-            0, 1;
+            0, 1
+    </select>
+
+    <update id="updateStatus" parameterType="com.relesee.domains.EbayApplication">
         UPDATE
             ebayapplication
         SET
-            status = 1
+            status = #{status}
         WHERE
-            id = @id;
-    </select>
+            id = #{id}
+    </update>
+
+    <update id="updateAuditor" parameterType="com.relesee.domains.EbayApplication">
+        UPDATE
+            ebayapplication
+        SET
+            auditor = #{auditor}
+        WHERE
+            id = #{id}
+    </update>
 
 
 

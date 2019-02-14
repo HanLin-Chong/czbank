@@ -42,6 +42,7 @@ public class AmazonEUapplication {
     private String managerDepartment;
     private String managerId;
     private String uploadTime;
+    private int status;
 
     private String applicationFileName;
     private MultipartFile applicationFile;
@@ -335,6 +336,14 @@ public class AmazonEUapplication {
 
     public void setApplicationFile(MultipartFile applicationFile) {
         this.applicationFile = applicationFile;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
 
