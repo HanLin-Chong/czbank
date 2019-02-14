@@ -49,6 +49,66 @@
         )
     </insert>
 
+    <select id="selectLocked" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+            id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            status,
+            auditor
+        FROM
+            amazonusapplication
+        WHERE
+            status = #{status}
+        AND
+            auditor = #{auditor}
+    </select>
+
+    <select id="selectOneApplication" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+            id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            status,
+            auditor
+        FROM
+            amazonusapplication
+        WHERE
+            status = 0
+        ORDER BY
+            uploadTime
+        LIMIT
+            0,1
+    </select>
+
     <update id="updateStatus" parameterType="com.relesee.domains.AmazonUSapplication">
         UPDATE
             amazonusapplication
@@ -58,6 +118,15 @@
             id = #{id}
         AND
             status = 1
+    </update>
+
+    <update id="updateAuditor">
+        UPDATE
+            amazonusapplication
+        SET
+            auditor = #{auditor}
+        WHERE
+            id = #{id}
     </update>
 
 

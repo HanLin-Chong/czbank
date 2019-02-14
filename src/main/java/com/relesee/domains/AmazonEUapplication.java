@@ -43,6 +43,7 @@ public class AmazonEUapplication {
     private String managerId;
     private String uploadTime;
     private int status;
+    private String auditor;
 
     private String applicationFileName;
     private MultipartFile applicationFile;
@@ -344,6 +345,14 @@ public class AmazonEUapplication {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getAuditor() {
+        return auditor;
+    }
+
+    public void setAuditor(String auditor) {
+        this.auditor = auditor;
     }
 }
 

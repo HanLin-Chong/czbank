@@ -142,16 +142,18 @@ public class ManagerController {
 
     @RequestMapping(value = "amazonUSapplication", produces = "text/plane;charset=utf-8")
     @ResponseBody
-    public String amazonUSapplication(AmazonUSapplication amazonUS){
-        Result result = foreignAccService.amazonUSacc(amazonUS);
+    public String amazonUSapplication(AmazonUSapplication amazonUS, HttpServletRequest request){
+        String realpath = request.getServletContext().getRealPath("/");
+        Result result = foreignAccService.amazonUSacc(amazonUS, realpath);
         return JSON.toJSONString(result);
     }
 
     @RequestMapping(value = "amazonEUapplication", produces = "text/plane;charset=utf-8")
     @ResponseBody
-    public String amazonEUapplication(AmazonEUapplication amazonEU){
+    public String amazonEUapplication(AmazonEUapplication amazonEU, HttpServletRequest request){
+        String realpath = request.getServletContext().getRealPath("/");
         amazonEU.valueFormat();
-        Result result = foreignAccService.amazonEUacc(amazonEU);
+        Result result = foreignAccService.amazonEUacc(amazonEU, realpath);
         return JSON.toJSONString(result);
     }
 

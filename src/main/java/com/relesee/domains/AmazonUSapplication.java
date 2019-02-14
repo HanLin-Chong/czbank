@@ -21,6 +21,7 @@ public class AmazonUSapplication {
     private String transactionRecordName;
     private String applicationFileName;
     private int status;
+    private String auditor;
 
     private MultipartFile transactionRecord;
     private MultipartFile applicationFile;
@@ -183,5 +184,13 @@ public class AmazonUSapplication {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getAuditor() {
+        return auditor;
+    }
+
+    public void setAuditor(String auditor) {
+        this.auditor = auditor;
     }
 }

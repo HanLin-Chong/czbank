@@ -82,12 +82,12 @@ public class ForeignAccService {
     }
 
     @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
-    public Result amazonUSacc(AmazonUSapplication amazonUS){
+    public Result amazonUSacc(AmazonUSapplication amazonUS, String realpath){
         String uuid = FileUtil.uuid();
         //手动注入uuid
         amazonUS.setId(uuid);
 
-        String DIRECTORY = OUTPUT_ROOT_PATH+"/files/amazon/us/"+uuid;
+        String DIRECTORY = realpath+"/files/amazon/us/"+uuid;
 
         MultipartFile applicationFile = amazonUS.getApplicationFile();
         MultipartFile transactionRecord = amazonUS.getTransactionRecord();
@@ -122,12 +122,12 @@ public class ForeignAccService {
     }
 
     @Transactional(propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
-    public Result amazonEUacc(AmazonEUapplication amazonEU){
+    public Result amazonEUacc(AmazonEUapplication amazonEU, String realpath){
         String uuid = FileUtil.uuid();
         //手动注入uuid
         amazonEU.setId(uuid);
 
-        String DIRECTORY = OUTPUT_ROOT_PATH+"/files/amazon/eu/"+uuid;
+        String DIRECTORY = realpath+"/files/amazon/eu/"+uuid;
 
         MultipartFile applicationFile = amazonEU.getApplicationFile();
         boolean fileWriteSuccess = false;
@@ -222,9 +222,41 @@ public class ForeignAccService {
         return result;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result<AmazonUSapplication> getOneAmazonUSapplication(){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        Result<AmazonUSapplication> result = new Result();
+        AmazonUSapplication temp = new AmazonUSapplication();
+        temp.setStatus(ForeignApplicationStatus.LOCKED.getCode());
+        temp.setAuditor(user.getUserId());
+        AmazonUSapplication locked = amazonUSdao.selectLocked(temp);
+        if (locked == null){
+            AmazonUSapplication resultDo = amazonUSdao.selectOneApplication();
+            if (resultDo == null){
+                result.setFlag(false);
+                result.setMessage("没有可以处理的申请");
+            } else {
+                resultDo.setAuditor(user.getUserId());
+                resultDo.setStatus(ForeignApplicationStatus.LOCKED.getCode());
+                amazonUSdao.updateStatus(resultDo);
+                amazonUSdao.updateAuditor(resultDo);
+                result.setFlag(true);
+                result.setMessage("获取申请成功，即将加载");
+                result.setResult(resultDo);
+            }
+        } else {
+            result.setFlag(true);
+            result.setMessage("您有锁定的申请未处理，即将加载");
+            result.setResult(locked);
+        }
+        return result;
+    }
+
     //TODO 别忘了把下面4个的auditor的id设置好
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result amazonUSpassed(AmazonUSapplication input){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        input.setAuditor(user.getUserId());
         Result result = new Result();
         input.setStatus(ForeignApplicationStatus.SUBMITTED.getCode());
         int count = amazonUSdao.updateStatus(input);
@@ -240,6 +272,8 @@ public class ForeignAccService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result amazonUSrefused(AmazonUSapplication input){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        input.setAuditor(user.getUserId());
         Result result = new Result();
         input.setStatus(ForeignApplicationStatus.RETREAT.getCode());
         int count = amazonUSdao.updateStatus(input);
@@ -254,7 +288,39 @@ public class ForeignAccService {
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result getOneAmazonEUapplication(){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        Result<AmazonEUapplication> result = new Result();
+        AmazonEUapplication temp = new AmazonEUapplication();
+        temp.setStatus(ForeignApplicationStatus.LOCKED.getCode());
+        temp.setAuditor(user.getUserId());
+        AmazonEUapplication locked = amazonEUdao.selectLocked(temp);
+        if (locked == null){
+            AmazonEUapplication resultDo = amazonEUdao.selectOneApplication();
+            if (resultDo == null){
+               result.setFlag(false);
+               result.setMessage("没有可以处理的申请");
+            } else {
+                resultDo.setAuditor(user.getUserId());
+                resultDo.setStatus(ForeignApplicationStatus.LOCKED.getCode());
+                amazonEUdao.updateStatus(resultDo);
+                amazonEUdao.updateAuditor(resultDo);
+                result.setFlag(true);
+                result.setMessage("获取申请成功，即将加载");
+                result.setResult(resultDo);
+            }
+        } else {
+            result.setFlag(true);
+            result.setMessage("您有锁定的申请未处理，即将加载");
+            result.setResult(locked);
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result amazonEUpassed(AmazonEUapplication input){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        input.setAuditor(user.getUserId());
         Result result = new Result();
         input.setStatus(ForeignApplicationStatus.SUBMITTED.getCode());
         int count = amazonEUdao.updateStatus(input);
@@ -270,6 +336,8 @@ public class ForeignAccService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result amazonEUrefused(AmazonEUapplication input){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        input.setAuditor(user.getUserId());
         Result result = new Result();
         input.setStatus(ForeignApplicationStatus.RETREAT.getCode());
         int count = amazonEUdao.updateStatus(input);

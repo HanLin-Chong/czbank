@@ -245,6 +245,13 @@ public class AuditorController {
         return JSON.toJSONString(result);
     }
 
+    @RequestMapping(value = "getOneAmazonUSapplication", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getOneAmazonUSapplication(){
+        Result<AmazonUSapplication> result = foreignAccService.getOneAmazonUSapplication();
+        return JSON.toJSONString(result);
+    }
+
     @RequestMapping(value = "amazonUSPassed", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String amazonUSpassed(AmazonUSapplication amazonUSapplication){
@@ -255,6 +262,13 @@ public class AuditorController {
     @ResponseBody
     public String amazonUSrefused(AmazonUSapplication amazonUSapplication){
         Result result = foreignAccService.amazonUSrefused(amazonUSapplication);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "getOneAmazonEUapplication", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getOneAmazonEUapplication(){
+        Result<AmazonEUapplication> result = foreignAccService.getOneAmazonEUapplication();
         return JSON.toJSONString(result);
     }
 
@@ -271,4 +285,6 @@ public class AuditorController {
         Result result = foreignAccService.amazonEUrefused(amazonEUapplication);
         return JSON.toJSONString(result);
     }
+
+
 }
