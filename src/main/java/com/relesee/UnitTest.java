@@ -36,8 +36,23 @@ public class UnitTest {
 
     @Test
     public void doTest() {
-        EbayApplication e = dao.selectOneEbayApplication();
-        System.out.println(e);
+        EbayApplication input = new EbayApplication();
+        input.setId("temp");
+        input.setPaypalId("3");
+        input.setBusinessName("3");
+        input.setShopUrl("3");
+        input.setShopName("3");
+        input.setApplicantName("3");
+        input.setApplicantId("3");
+        input.setRecipientAcc("3");
+        input.setRecipientAccName("3");
+        input.setRecipientId("3");
+        input.setAddress("3");
+        input.setManagerName("3");
+        input.setManagerDepartment("3");
+        input.setManagerId("3");
+        dao.updateApplication(input);
+
     }
 
 

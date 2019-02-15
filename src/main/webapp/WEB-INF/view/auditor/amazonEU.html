@@ -2,24 +2,545 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>亚马逊欧洲开户申请管理</title>
+    <title>AmazonUS开户申请管理</title>
     <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
-    <!--<link rel="stylesheet" href="../../layui/css/layui.css"/>-->
-
 
     <script src="../../js/jquery-1.11.0.min.js"></script>
     <script src="../../js/bootstrap.min.js"></script>
-
     <script src="../../js/hanlinCommons.js"></script>
-    <!--<script src="../../layui/layui.all.js"></script>-->
     <script src="../../js/deferredAjax.js"></script>
+    <script src="../../js/bootstrapValidator.min.js"></script>
+    <style>
+        .layui-form-switch{/* 解决layui与bootstrap的样式冲突 */
+            height:25px!important;
+            margin-top: 0px;
+        }
+        .hanlin-vertical-line{
+            display: inline !important;
+            border-right: solid 1px #c2c2c2;
+            height: auto;
+            margin: 0px 10px 0px 10px;
+        }
+        .form-group{
+            width: 100%
+        }
+    </style>
 </head>
 <body>
+<div class="col-lg-12">
+    <br/><br/>
+</div>
+<div class="col-lg-8 layui-form">
+    <label>当前申请操作完成后自动加载新的申请：</label>
+    <input id="autoLoadSetting" type="checkbox" lay-filter="validatorSetting" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
+    <div class="hanlin-vertical-line"></div>
+    <!--<label>查看模式：</label>
+    <input id="viewModeSetting" type="checkbox" lay-filter="viewModeSetting" name="null" lay-skin="switch" lay-text="流式布局|窗口模式" checked/>-->
+</div>
 
+<div class="col-lg-1">
+    <button id="newApp" class="btn btn-primary">获取申请</button>
+</div>
+<div class="col-lg-1">
+    <button id="refuseApplication" class="btn btn-danger">作废申请</button>
+</div>
+<div class="col-lg-1">
+    <button id="passApplication" class="btn btn-success">申请通过</button>
+</div>
+<div class="col-lg-1"></div>
+<div class="col-lg-12">
+    <hr/>
+</div>
+<div id="formArea" class="col-lg-4">
+    <button id="submit" class="btn btn-primary">保存修改</button>
+    <br/>
+    <form id="form">
+        <label>店铺链接</label>
+        <div id="container1" class="input-group form-group">
+            <input name="shopUrl" type="text" class="form-control" placeholder="https://www.amazon.com/..."/>
+        </div>
+        <label>店铺ID</label>
+        <div id="container2" class="input-group form-group margin-top-20">
+            <input name="shopId" type="text" class="form-control" placeholder="请填写店铺ID" aria-describedby="basic-addon3"/>
+        </div>
+        <label>店铺名称</label>
+        <div id="container3" class="input-group form-group margin-top-20">
+            <input name="shopName" type="text" class="form-control" placeholder="请填写店铺名称"/>
+        </div>
+        <label>主营商品:</label>
+        <div id="container4" class="input-group form-group margin-top-20" style="width: 100%">
+            <textarea name="mainCommodity" style="resize: vertical; width: 100%;"></textarea>
+        </div>
+        <label>注册公司名称</label>
+        <div id="container5" class="input-group form-group margin-top-20">
+            <input name="companyName" type="text" class="form-control" placeholder="请用中英文填写"/>
+        </div>
+        <label>董事长姓名</label>
+        <div id="container6" class="input-group form-group margin-top-20">
+            <input name="chairManName" type="text" class="form-control" placeholder="请用中英文填写"/>
+        </div>
+        <hr/>
+        <strong>以下股东信息请按持股比例由大到小填写</strong>
+        <hr/>
+        <label>大股东1（25%以上）姓名</label>
+        <div id="container7" class="input-group form-group margin-top-20">
+            <input name="majorShareHolder1" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <label>持股比例</label>
+        <div id="container8" class="input-group form-group margin-top-20">
+            <input name="shareHolderRate1" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <label>生日</label>
+        <div id="container9" class="input-group form-group margin-top-20">
+            <input id="birthday1" name="shareHolderBirthday1" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <label>地址</label>
+        <div id="container10" class="input-group form-group">
+            <input name="shareHolderAddress1" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <label>大股东2（25%以上）姓名</label>
+        <div id="container11" class="input-group form-group margin-top-20">
+            <input name="majorShareHolder2" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <label>持股比例</label>
+        <div id="container12" class="input-group form-group margin-top-20">
+            <input name="shareHolderRate2" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <label>生日</label>
+        <div id="container13" class="input-group form-group margin-top-20">
+            <input id="birthday2" name="shareHolderBirthday2" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <label>地址</label>
+        <div id="container14" class="input-group form-group margin-top-20">
+            <input name="shareHolderAddress2" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <label>大股东3（25%以上）姓名</label>
+        <div id="container15" class="input-group form-group margin-top-20">
+            <input name="majorShareHolder3" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <label>持股比例</label>
+        <div id="container16" class="input-group form-group margin-top-20">
+            <input name="shareHolderRate3" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <label>生日</label>
+        <div id="container17" class="input-group form-group margin-top-20">
+            <input id="birthday3" name="shareHolderBirthday3" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <label>地址</label>
+        <div id="container18" class="input-group form-group margin-top-20">
+            <input name="shareHolderAddress3" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <label>大股东4（25%以上）姓名</label>
+        <div id="container19" class="input-group form-group margin-top-20">
+            <input name="majorShareHolder4" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <label>持股比例</label>
+        <div id="container20" class="input-group form-group margin-top-20">
+            <input name="shareHolderRate4" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <label>生日</label>
+        <div id="container21" class="input-group form-group margin-top-20">
+            <input id="birthday4" name="shareHolderBirthday4" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <label>地址</label>
+        <div id="container22" class="input-group form-group margin-top-20">
+            <input name="shareHolderAddress4" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <hr/>
+
+        <label>稠州银行账号开户网点</label>
+        <div id="container23" class="input-group form-group margin-top-20">
+            <input name="czbankBranch" type="text" class="form-control" placeholder="义乌+{机构名}，例：义乌营业部、义乌广场支行"/>
+        </div>
+        <label>稠州银行账号</label>
+        <div id="container24" class="input-group form-group margin-top-20">
+            <input name="czbankAcc" type="text" class="form-control" placeholder=""/>
+        </div>
+        <label>客户姓名</label>
+        <div id="container25" class="input-group form-group margin-top-20">
+            <input name="customerName" type="text" class="form-control" placeholder="中文+拼音，例：张三zhangsan"/>
+        </div>
+        <label>邮箱</label>
+        <div id="container26" class="input-group form-group margin-top-20">
+            <input name="mail" type="text" class="form-control" placeholder="example@org.domain"/>
+        </div>
+        <label>客户经理姓名</label>
+        <div id="container27" class="input-group form-group margin-top-20">
+            <input name="managerName" type="text" class="form-control" placeholder="。。"/>
+        </div>
+        <label>客户经理所属机构</label>
+        <div id="container28" class="input-group form-group margin-top-20">
+            <input name="managerDepartment" type="text" class="form-control" placeholder="请填写XX支行字样"/>
+        </div>
+        <label>客户经理工号</label>
+        <div id="container29" class="input-group form-group margin-top-20">
+            <input name="managerId" type="text" class="form-control" placeholder="。。"/>
+        </div>
+    </form>
+</div>
+<div id="iframeArea" class="col-lg-8" style="height: 100%">
+    <button class="btn btn-primary" id="reloadApplicationFile">重新加载申请文件</button>
+    <div id="frameHeight"></div>
+    <iframe id="iframeApplicationFile" style="height: 100%;width: 100%;">
+
+    </iframe>
+</div>
+<div id="transactionRecordArea" class="col-lg-12" style="height: 100%;">
+    <button class="btn btn-primary" id="reloadTransactionRecord">重新加载交易记录</button>
+    <div id="frameHeight2"></div>
+    <iframe id="iframeTransactionRecord" style="height: 100%;width: 100%;">
+
+    </iframe>
+</div>
 <script>
+    var applicationFileUrl = null;
+    var transactionRecordUrl = null;
+    var currentData = null;
     $(document).ready(function (){
+        layui.form.render();
+        $("#newApp").click(function (){
+            newApplication();
+        });
+        layui.slider.render({
+            elem: "#frameHeight",
+            value: 50,
+            change: function (value){
+                $("#iframeArea").css("height", (100+(value-50))*1+"%");
+            }
+        });
+        layui.slider.render({
+            elem: "#frameHeight2",
+            value: 50,
+            change: function (value){
+                $("#transactionRecordArea").css("height", (100+(value-50))*1+"%");
+            }
+        });
+        var validator = $("#form").bootstrapValidator({
+            live: 'enabled',
+            container: 'tooltip',
+            excluded: [':disabled', ':hidden', ':not(:visible)'],
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                shopUrl: {
+                    container: "#container1",
+                    validators: {
+                        notEmpty: {
+                            message: '店铺链接为必填项'
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                        uri: {
+                            message: "请输入正确的URL地址，如：https://www.amazon.com..."
+                        },
+                        callback: {
+                            callback: function (value, validatorIn){
+                                if (!value.match("amazon.com")){
+                                    return {
+                                        valid: false,
+                                        message: "URL地址需要包含amazon.com"
+                                    };
+                                } else {
+                                    return true;
+                                }
 
+                            }
+                        },
+                    },
+                },
+                shopId: {
+                    container: "#container2",
+                    validators: {
+                        notEmpty: {
+                            message: '店铺Id为必填项'
+                        },
+                        stringLength: {
+                            message: "长度不得超过50",
+                            max: 50
+                        },
+                    }
+                },
+                shopName: {
+                    container: "#container3",
+                    validators: {
+                        notEmpty: {
+                            message: '店铺名称为必填项'
+                        },
+                        stringLength: {
+                            message: "长度不得超过50",
+                            max: 50
+                        },
+                    }
+                },
+                mainCommodity: {
+                    container: "#container4",
+                    validators: {
+                        notEmpty: {
+                            message: "主营商品为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    },
+
+                },
+                companyName: {
+                    container: "#container5",
+                    validators: {
+                        notEmpty: {
+                            message: "注册公司名称为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        },
+                    },
+
+                },
+                chairManName: {
+                    container: "#container6",
+                    validators: {
+                        notEmpty: {
+                            message: "董事长姓名为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过50",
+                            max: 50
+                        },
+                    }
+                },
+                majorShareHolder1: {
+                    container: "#container7",
+                    validators: {
+                        stringLength: {
+                            message: '长度不超过50',
+                            max: 50,
+                        },
+                        notEmpty: {
+                            message: "股东1为必填项"
+                        },
+                    }
+                },
+                shareHolderRate1: {
+                    container: "#container8",
+                    validators: {
+                        notEmpty: {
+                            message: "境内收款人户名为必填项"
+                        },
+                        digits: {
+                            message: "非数字输入"
+                        },
+                        between: {
+                            inclusive: true,
+                            min: 25,
+                            max: 100,
+                            message: "只允许填写25-100的数字"
+                        }
+                    }
+                },
+                shareHolderAddress1: {
+                    container: "#container10",
+                    validators: {
+                        notEmpty: {
+                            message: "详细联系地址为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        },
+                    }
+                },
+                czbankBranch: {
+                    container: "#container23",
+                    validators: {
+                        notEmpty: {
+                            message: "稠州银行开户网点为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过20",
+                            max: 20
+                        }
+                    }
+                },
+                czbankAcc: {
+                    container: "#container24",
+                    validators: {
+                        notEmpty: {
+                            message: "稠州银行账号为必填项"
+                        },
+                        StringLength: {
+                            message: "长度不得超过30",
+                            max: 30
+                        }
+                    }
+                },
+                customerName: {
+                    container: "#container25",
+                    validators: {
+                        notEmpty: {
+                            message: "客户姓名为必填项"
+                        },
+                        StringLength: {
+                            message: "长度不得超过30",
+                            max: 30
+                        }
+                    }
+                },
+                mail: {
+                    container: "#container26",
+                    validators: {
+                        notEmpty: {
+                            message: "邮箱为必填项"
+                        },
+                        StringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        }
+                    }
+                },
+                managerName: {
+                    container: "#container27",
+                    validators: {
+                        notEmpty: {
+                            message: "所属客户经理为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                },
+                managerDepartment: {
+                    container: "#container28",
+                    validators: {
+                        notEmpty: {
+                            message: "客户经理所属机构为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                },
+                managerId: {
+                    container: "#container29",
+                    validators: {
+                        notEmpty: {
+                            message: "客户经理工号为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                }
+            }
+        });
+        $("#form").bootstrapValidator('resetForm');
+        $("#reloadApplicationFile").click(function (){
+            $("#iframeApplicationFile").attr("src", applicationFileUrl);
+        });
+        $("#reloadTransactionRecord").click(function (){
+            $("#iframeTransactionRecord").attr("src", transactionRecordUrl);
+        });
+        $("#refuseApplication").click(function (){
+            if (currentData == null){
+
+            } else {
+                HanLin.requestTypical("c/amazonEURefused", {id: currentData.id}, function (data){
+                    data = JSON.parse(data);
+                    if (data.flag){
+                        HanLin.success(data.message);
+                        if ($("#autoLoadSetting").is(":checked")){
+                            clearAll();
+                            newApplication();
+                        } else {
+                            clearAll();
+                        }
+                        currentData = null;
+                    } else {
+                        HanLin.error(data.message);
+                    }
+                }, "拒绝amazonEU申请时服务器端出错");
+            }
+        });
+        $("#passApplication").click(function (){
+            if (currentData == null){
+                HanLin.error("当前申请为空")
+            } else {
+                HanLin.requestTypical("c/amazonEUPassed", {id: currentData.id}, function (data){
+                    data =  JSON.parse(data);
+                    if (data.flag){
+                        HanLin.success(data.message);
+                        if ($("#autoLoadSetting").is(":checked")){
+                            clearAll();
+                            newApplication();
+                        } else {
+                            clearAll();
+                        }
+                    } else {
+                        HanLin.error(data.message);
+                    }
+                }, "通过AmazonEU申请时服务器端出错");
+            }
+        });
+        $("#submit").click(function (){
+            var data = HanLin.getFrom("#form");
+            var id = currentData.id;
+            data.push({name:"id", value:id});
+            HanLin.requestTypical("c/updateAmazonEUapplication" , data, function(data){
+                data = JSON.parse(data);
+                if (data.flag){
+                    HanLin.success(data.message);
+                } else {
+                    HanLin.error(data.message);
+                }
+            }, "更改申请信息时服务器端出错");
+
+        });
     });
+    function newApplication(){
+        var index = layer.load(2, {time: 10*1000});
+        HanLin.requestTypical("c/getOneAmazonEUapplication", {}, function (data){
+            data = JSON.parse(data);
+            if (data.flag){
+                HanLin.success(data.message);
+                //先给表单赋值
+                var formData = data.result;
+                currentData = formData;
+                HanLin.setForm(formData, "#form");
+
+                //非input元素赋值
+                $("[name=mainCommodity]").val(formData.mainCommodity);
+
+                //加载word
+                var applicationFileName = formData.applicationFileName;
+                applicationFileUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/amazon/eu/"+formData.id+"/"+applicationFileName;
+                $("#iframeApplicationFile").attr("src", applicationFileUrl);
+                //交易记录
+                var transactionRecordName = formData.transactionRecordName;
+                transactionRecordUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/amazon/eu/"+formData.id+"/"+transactionRecordName;
+                $("#iframeTransactionRecord").attr("src", transactionRecordUrl);
+            } else {
+                HanLin.error(data.message);
+            }
+            layer.close(index);
+        }, "获取未处理的申请数量时服务器端出错，可能的原因是没有可以处理的申请");
+    }
+    function clearAll(){
+        $("#form")[0].reset();
+    }
+
 </script>
 </body>
 </html>

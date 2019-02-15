@@ -13,4 +13,6 @@ public interface AmazonEUdao {
     AmazonEUapplication selectOneApplication();
 
     int updateAuditor(AmazonEUapplication amazonEUapplication);
+
+    int updateApplication(AmazonEUapplication amazonEUapplication);
 }

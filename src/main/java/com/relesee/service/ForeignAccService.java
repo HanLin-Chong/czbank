@@ -223,6 +223,20 @@ public class ForeignAccService {
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result updateEbayApplication(EbayApplication input){
+        Result result = new Result();
+        int count = ebayApplicationDao.updateApplication(input);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("更新ebay申请信息成功");
+        } else {
+            result.setFlag(false);
+            result.setMessage("更新ebay申请信息出错");
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result<AmazonUSapplication> getOneAmazonUSapplication(){
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         Result<AmazonUSapplication> result = new Result();
@@ -288,6 +302,20 @@ public class ForeignAccService {
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result updateAmazonUSapplication(AmazonUSapplication input){
+        Result result = new Result();
+        int count = amazonUSdao.updateApplication(input);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("更新AmazonUS申请信息成功");
+        } else {
+            result.setFlag(false);
+            result.setMessage("更新AmazonUS申请信息失败");
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
     public Result getOneAmazonEUapplication(){
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         Result<AmazonEUapplication> result = new Result();
@@ -347,6 +375,21 @@ public class ForeignAccService {
         } else {
             result.setFlag(false);
             result.setMessage("申请拒绝失败");
+        }
+        return result;
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
+    public Result updateAmazonEUapplication(AmazonEUapplication input){
+        input.valueFormat();
+        Result result = new Result();
+        int count = amazonEUdao.updateApplication(input);
+        if (count == 1){
+            result.setFlag(true);
+            result.setMessage("更新AmazonEU申请信息成功");
+        } else {
+            result.setFlag(false);
+            result.setMessage("更新AmazonEU申请信息失败");
         }
         return result;
     }

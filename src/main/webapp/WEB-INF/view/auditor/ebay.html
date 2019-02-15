@@ -9,10 +9,9 @@
 
     <script src="../../js/jquery-1.11.0.min.js"></script>
     <script src="../../js/bootstrap.min.js"></script>
-
     <script src="../../js/hanlinCommons.js"></script>
-    <!--<script src="../../layui/layui.all.js"></script>-->
     <script src="../../js/deferredAjax.js"></script>
+    <script src="../../js/bootstrapValidator.min.js"></script>
 <style>
     .layui-form-switch{/* 解决layui与bootstrap的样式冲突 */
         height:25px!important;
@@ -23,6 +22,9 @@
         border-right: solid 1px #c2c2c2;
         height: auto;
         margin: 0px 10px 0px 10px;
+    }
+    .form-group{
+        width: 100%;
     }
 </style>
 </head>
@@ -52,72 +54,61 @@
         <hr/>
     </div>
     <div id="formArea" class="col-lg-4">
+        <button id="submit" class="btn btn-primary">保存修改</button>
+        <br/>
         <form id="form">
-            <div class="input-group form-group">
-                <span class="input-group-addon">Paypal注册ID</span>
+            <div id="container1" class="input-group form-group">
+                <label>Paypal注册ID</label>
                 <input name="paypalId" type="text" class="form-control" placeholder="example@org.domain"/>
             </div>
-            <div id="container1"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">境外账户名称(商家信息内容)</span>
+            <div id="container2" class="input-group form-group margin-top-20">
+                <label>境外账户名称(商家信息内容)</label>
                 <input name="businessName" type="text" class="form-control" placeholder="若为中文名称请以拼音格式填写" aria-describedby="basic-addon3"/>
             </div>
-            <div id="container2"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">Ebay店铺链接</span>
+            <div id="container3" class="input-group form-group margin-top-20">
+                <label>Ebay店铺链接</label>
                 <input name="shopUrl" type="text" class="form-control" placeholder="https://www.ebay.com/usr/...."/>
             </div>
-            <div id="container3"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">Ebay店铺名称</span>
+            <div id="container4" class="input-group form-group margin-top-20">
+                <label>Ebay店铺名称</label>
                 <input name="shopName" type="text" class="form-control" placeholder="请填写Ebay店铺名称"/>
             </div>
-            <div id="container4"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">境外账户申请人姓名</span>
+            <div id="container5" class="input-group form-group margin-top-20">
+                <label>境外账户申请人姓名</label>
                 <input name="applicantName" type="text" class="form-control" placeholder="请填写境外账户申请人姓名"/>
             </div>
-            <div id="container5"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">境外账户申请人证件号码</span>
+            <div id="container6" class="input-group form-group margin-top-20">
+                <label>境外账户申请人证件号码</label>
                 <input name="applicantId" type="text" class="form-control" placeholder="请填写申请人证件号"/>
             </div>
-            <div id="container6"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">境内收款账号</span>
+            <div id="container7" class="input-group form-group margin-top-20">
+                <label>境内收款账号</label>
                 <input name="recipientAcc" type="text" class="form-control" placeholder="请填写境内收款账号"/>
             </div>
-            <div id="container7"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">境内收款人户名</span>
+            <div id="container8" class="input-group form-group margin-top-20">
+                <label>境内收款人户名</label>
                 <input name="recipientAccName" type="text" class="form-control" placeholder="请填写境内收款人户名"/>
             </div>
-            <div id="container8"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">境内收款人证件号码</span>
+            <div id="container9" class="input-group form-group margin-top-20">
+                <label>境内收款人证件号码</label>
                 <input name="recipientId" type="text" class="form-control" placeholder="请填写收款人证件号"/>
             </div>
-            <div id="container9"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">详细联系地址</span>
+            <div id="container10" class="input-group form-group margin-top-20">
+                <label>详细联系地址</label>
                 <input name="address" type="text" class="form-control" placeholder="请填写联系地址"/>
             </div>
-            <div id="container10"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">所属客户经理</span>
+            <div id="container11" class="input-group form-group margin-top-20">
+                <label>所属客户经理</label>
                 <input name="managerName" placeholder="请填写客户经理姓名" type="text" class="form-control"/>
             </div>
-            <div id="container11"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">客户经理所属机构</span>
+            <div id="container12" class="input-group form-group margin-top-20">
+                <label>客户经理所属机构</label>
                 <input name="managerDepartment" placeholder="请填写XX支行字样" type="text" class="form-control"/>
             </div>
-            <div id="container12"></div>
-            <div class="input-group form-group margin-top-20">
-                <span class="input-group-addon">客户经理工号</span>
+            <div id="container13" class="input-group form-group margin-top-20">
+                <label>客户经理工号</label>
                 <input name="managerId" placeholder="请填写客户经理工号" type="text" class="form-control"/>
             </div>
-            <div id="container13"></div>
         </form>
     </div>
     <div id="iframeArea" class="col-lg-8" style="height: 100%">
@@ -161,6 +152,203 @@ $(document).ready(function (){
             $("#transactionRecordArea").css("height", (100+(value-50))*1+"%");
         }
     });
+    var validator = $("#form").bootstrapValidator({
+        //message: '不正确的内容',
+        live: 'enabled',
+        container: 'tooltip',
+        submitButtons: '#submit',
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            paypalId: {
+                container: "#container1",
+                validators: {
+                    notEmpty: {
+                        message: 'PayPal ID为必填项'
+                    },
+                    emailAddress: {
+                        message: 'PayPalId一定为邮箱格式，请输入正确的邮箱格式'
+                    },
+                    stringLength: {
+                        message: "长度不得超过255",
+                        max: 255
+                    },
+                },
+
+            },
+            businessName: {
+                container: "#container2",
+                validators: {
+                    notEmpty: {
+                        message: '境外账户名称为必填项'
+                    },
+                    stringLength: {
+                        message: "长度不得超过255",
+                        max: 255
+                    },
+                }
+            },
+            shopUrl: {
+                container: "#container3",
+                validators: {
+                    notEmpty: {
+                        message: '店铺链接为必填项'
+                    },
+                    callback: {
+                        callback: function (value, validatorIn){
+                            if (!value.match("https://www.ebay.com/usr/")){
+
+                                return {
+                                    valid: false,
+                                    message: "请输入正确的URL地址：例:https://www.ebay.com/usr/..."
+                                };
+                            } else {
+                                return true;
+                            }
+
+                        }
+                    },
+                    stringLength: {
+                        message: "长度不得超过255",
+                        max: 255
+                    },
+                }
+            },
+            shopName: {
+                container: "#container4",
+                validators: {
+                    notEmpty: {
+                        message: "Ebay店铺名称为必填项"
+                    },
+                    stringLength: {
+                        message: "长度不得超过255",
+                        max: 255
+                    },
+                },
+
+            },
+            applicantName: {
+                container: "#container5",
+                validators: {
+                    notEmpty: {
+                        message: "境外账户申请人姓名为必填项"
+                    },
+                    stringLength: {
+                        message: "长度不得超过255",
+                        max: 255
+                    },
+                },
+
+            },
+            applicantId: {
+                container: "#container6",
+                validators: {
+                    notEmpty: {
+                        message: "境外账户申请人证件号码为必填项"
+                    },
+                    stringLength: {
+                        message: "长度不得超过30",
+                        max: 30
+                    },
+                }
+            },
+            recipientAcc: {
+                container: "#container7",
+                validators: {
+
+                    stringLength: {
+                        message: '长度在20-25之间',
+                        max: 25,
+                        min: 20
+                    },
+                    notEmpty: {
+                        message: "境内收款账号为必填项"
+                    },
+                }
+            },
+            recipientAccName: {
+                container: "#container8",
+                validators: {
+                    notEmpty: {
+                        message: "境内收款人户名为必填项"
+                    },
+                    stringLength: {
+                        message: "长度不得超过255",
+                        max: 255
+                    },
+                }
+            },
+            recipientId: {
+                container: "#container9",
+                validators: {
+
+                    stringLength: {
+                        message: "长度不得超过18",
+                        max: 18
+                    },
+                    notEmpty: {
+                        message: "境内收款人证件号码为必填项"
+                    },
+                }
+            },
+            address: {
+                container: "#container10",
+                validators: {
+                    notEmpty: {
+                        message: "详细联系地址为必填项"
+                    },
+                    stringLength: {
+                        message: "长度不得超过255",
+                        max: 255
+                    },
+                }
+            },
+            managerName: {
+                container: "#container11",
+                validators: {
+                    notEmpty: {
+                        message: "所属客户经理为必填项"
+                    },
+                    stringLength: {
+                        message: "长度不得超过10",
+                        max: 10
+                    },
+                }
+            },
+            managerDepartment: {
+                container: "#container12",
+                validators: {
+                    notEmpty: {
+                        message: "客户经理所属机构为必填项"
+                    },
+                    stringLength: {
+                        message: "长度不得超过8",
+                        max: 8
+                    },
+                }
+            },
+
+            managerId: {
+                container: "#container13",
+                validators: {
+                    notEmpty: {
+                        message: "客户经理工号为必填项"
+                    },
+                    stringLength: {
+                        message: "长度不得超过10",
+                        max: 10
+                    },
+                }
+            }
+
+        }
+
+    });
+    $("#form").bootstrapValidator('resetForm');
     $("#reloadApplicationFile").click(function (){
         $("#iframeApplicationFile").attr("src", applicationFileUrl);
     });
@@ -216,6 +404,21 @@ $(document).ready(function (){
          }, "通过ebay申请时服务器端出错");
     });
 
+    $("#submit").click(function (){
+        var data = HanLin.getFrom("#form");
+        var id = currentData.id;
+        data.push({name:"id", value:id});
+        HanLin.requestTypical("c/updateEbayApplication" , data, function(data){
+            data = JSON.parse(data);
+            if (data.flag){
+                HanLin.success(data.message);
+            } else {
+                HanLin.error(data.message);
+            }
+        }, "更改申请信息时服务器端出错");
+
+    });
+
 });
 function newEbayApplication(){
     var index = layer.load(2, {time: 10*1000});
@@ -247,6 +450,7 @@ function newEbayApplication(){
 }
 function clearAll(){
     $("#form")[0].reset();
+    currentData = null;
     //$("#iframeTransactionRecord").removeAttr("src");
     //$("#iframeApplicationFile").removeAttr("src");
 }

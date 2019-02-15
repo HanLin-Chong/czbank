@@ -125,7 +125,26 @@
             id = #{id}
     </update>
 
+    <update id="updateApplication" parameterType="com.relesee.domains.EbayApplication">
 
 
-
+        UPDATE
+            ebayapplication
+        SET
+            paypalId = #{paypalId},
+            businessName = #{businessName},
+            shopUrl = #{shopUrl},
+            shopName = #{shopName},
+            applicantName = #{applicantName},
+            applicantId = #{applicantId},
+            recipientAcc = #{recipientAcc},
+            recipientAccName = #{recipientAccName},
+            recipientId = #{recipientId},
+            address = #{address},
+            managerName = #{managerName},
+            managerDepartment = #{managerDepartment},
+            managerId = #{managerId}
+        WHERE
+            id = #{id}
+    </update>
 </mapper>

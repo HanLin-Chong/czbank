@@ -14,4 +14,5 @@ public interface EbayApplicationDao {
 
     int updateAuditor(EbayApplication ebayApplication);
 
+    int updateApplication(EbayApplication ebayApplication);
 }

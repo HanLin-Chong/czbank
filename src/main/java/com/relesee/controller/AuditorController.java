@@ -245,6 +245,13 @@ public class AuditorController {
         return JSON.toJSONString(result);
     }
 
+    @RequestMapping(value = "updateEbayApplication", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String updateEbayApplication(EbayApplication input){
+        Result result = foreignAccService.updateEbayApplication(input);
+        return JSON.toJSONString(result);
+    }
+
     @RequestMapping(value = "getOneAmazonUSapplication", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String getOneAmazonUSapplication(){
@@ -262,6 +269,13 @@ public class AuditorController {
     @ResponseBody
     public String amazonUSrefused(AmazonUSapplication amazonUSapplication){
         Result result = foreignAccService.amazonUSrefused(amazonUSapplication);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "updateAmazonUSapplication", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String updateAmazonUSapplication(AmazonUSapplication input){
+        Result result = foreignAccService.updateAmazonUSapplication(input);
         return JSON.toJSONString(result);
     }
 
@@ -286,5 +300,10 @@ public class AuditorController {
         return JSON.toJSONString(result);
     }
 
-
+    @RequestMapping(value = "updateAmazonEUapplication", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String updateAmazonEUapplication(AmazonEUapplication input){
+        Result result = foreignAccService.updateAmazonEUapplication(input);
+        return JSON.toJSONString(result);
+    }
 }

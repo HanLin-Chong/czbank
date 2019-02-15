@@ -25,7 +25,8 @@
                 managerId,
                 transactionRecordName,
                 applicationFileName,
-                uploadTime
+                uploadTime,
+                status
             )
         VALUES
         (
@@ -45,7 +46,8 @@
             #{managerId},
             #{transactionRecordName},
             #{applicationFileName},
-            NOW()
+            NOW(),
+            0
         )
     </insert>
 
@@ -116,8 +118,6 @@
             status = #{status}
         WHERE
             id = #{id}
-        AND
-            status = 1
     </update>
 
     <update id="updateAuditor">
@@ -129,7 +129,24 @@
             id = #{id}
     </update>
 
-
-
-
+    <update id="updateApplication" parameterType="com.relesee.domains.AmazonUSapplication">
+        UPDATE
+            amazonusapplication
+        SET
+            amazonMail = #{amazonMail},
+            businessName = #{businessName},
+            shopUrl = #{shopUrl},
+            shopName = #{shopName},
+            applicantName = #{applicantName},
+            applicantId = #{applicantId},
+            recipientAcc = #{recipientAcc},
+            recipientAccName = #{recipientAccName},
+            recipientId = #{recipientId},
+            address = #{address},
+            managerName = #{managerName},
+            managerDepartment = #{managerDepartment},
+            managerId = #{managerId}
+        WHERE
+            id = #{id}
+    </update>
 </mapper>
