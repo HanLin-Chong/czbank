@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 /**
- * 在对PageController进行环切的时候失败，同时导致一些路径无法访问，
- * 于是决定不使用代理，使用最笨的函数式方法解决。。
+ *
+ *
  */
 public class AccessLogAspect {
 

@@ -2,10 +2,7 @@ package com.relesee.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.relesee.domains.*;
-import com.relesee.service.AuditorService;
-import com.relesee.service.ForeignAccService;
-import com.relesee.service.NraQueueService;
-import com.relesee.service.UserService;
+import com.relesee.service.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -28,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +48,9 @@ public class AuditorController {
 
     @Autowired
     ForeignAccService foreignAccService;
+
+    @Autowired
+    ForeignFeedBackService feedBackService;
 
     @Value("#{projectProperties['output.rootpath']}")//projectProperties是在spring的配置文件中配置的一个bean
     private String OUTPUT_ROOT_PATH;
@@ -304,6 +305,29 @@ public class AuditorController {
     @ResponseBody
     public String updateAmazonEUapplication(AmazonEUapplication input){
         Result result = foreignAccService.updateAmazonEUapplication(input);
+        return JSON.toJSONString(result);
+    }
+
+    /**
+     * 反馈文件处理出错时，是否要启用手动输入？
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "foreignFeedback", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String foreignFeedback(MultipartFile file){
+
+        Result result = null;
+        try {
+            result = feedBackService.process(file.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+            result = new Result();
+            result.setFlag(false);
+            result.setMessage("上传反馈文件失败");
+        }
+
+
         return JSON.toJSONString(result);
     }
 }
