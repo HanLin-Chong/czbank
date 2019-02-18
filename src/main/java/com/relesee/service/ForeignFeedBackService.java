@@ -1,5 +1,6 @@
 package com.relesee.service;
 
+import com.relesee.domains.ForeignFeedback;
 import com.relesee.domains.Result;
 import com.relesee.utils.ExcelUtil;
 import com.relesee.utils.FileUtil;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @Service
 public class ForeignFeedBackService {
@@ -20,8 +22,13 @@ public class ForeignFeedBackService {
 
     public Result process(InputStream stream){
         Result result = new Result();
-        ExcelUtil.readFeedBack(stream);
+        List<ForeignFeedback> list = ExcelUtil.readFeedBack(stream);
+        if (list.size() >= 1){
+            result.setFlag(true);
+            result.setMessage("共读取"+list.size()+"条反馈");
+        } else {
 
+        }
         return result;
     }
 }
