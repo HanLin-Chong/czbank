@@ -147,4 +147,31 @@
         WHERE
             id = #{id}
     </update>
+
+    <select id="selectMachedFeedback" parameterType="String" resultType="com.relesee.domains.EbayApplication">
+        SELECT
+            id,
+            paypalId,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            status,
+            auditor
+        FROM
+            ebayapplication
+        WHERE
+            businessName = #{accName}
+    </select>
 </mapper>

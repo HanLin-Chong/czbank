@@ -62,13 +62,14 @@ $(document).ready(function(){
 
     //异步上传返回结果处理
     $("#uploadfile").on("fileuploaded", function (event, data, previewId, index) {
-        /*console.log(data);
+
         var response = data.response;
-        if (response.flag){
+        if (data.flag){
             HanLin.success(response.message);
         } else {
-            HanLin.error(response.message);
-        }*/
+            HanLin.success(response.message);
+        }
+
 
 
     });

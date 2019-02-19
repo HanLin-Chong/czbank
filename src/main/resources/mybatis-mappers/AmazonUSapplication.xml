@@ -149,4 +149,31 @@
         WHERE
             id = #{id}
     </update>
+
+    <select id="selectMachedFeedback" parameterType="String" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+            id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            status,
+            auditor
+        FROM
+            amazonusapplication
+        WHERE
+            businessName = #{accName}
+    </select>
 </mapper>

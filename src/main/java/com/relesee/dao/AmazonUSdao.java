@@ -2,6 +2,8 @@ package com.relesee.dao;
 
 import com.relesee.domains.AmazonUSapplication;
 
+import java.util.List;
+
 public interface AmazonUSdao {
 
     int insertApplication(AmazonUSapplication amazonUS);
@@ -15,4 +17,6 @@ public interface AmazonUSdao {
     int updateAuditor(AmazonUSapplication amazonUSapplication);
 
     int updateApplication(AmazonUSapplication amazonUSapplication);
+
+    List<AmazonUSapplication> selectMachedFeedback(String accName);
 }

@@ -41,8 +41,6 @@ public class ExcelUtil {
             ForeignFeedback foreignFeedback = new ForeignFeedback();
             for (Cell cell:row){
                 int index = cell.getColumnIndex();
-                System.out.println(index);
-
                 switch(index){
                     case ForeignFeedback.FOUND_TIME:
                         foreignFeedback.setFoundTime(getCellAsString(cell));

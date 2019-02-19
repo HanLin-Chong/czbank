@@ -315,11 +315,11 @@ public class AuditorController {
      */
     @RequestMapping(value = "foreignFeedback", produces = "text/plane;charset=utf-8")
     @ResponseBody
-    public String foreignFeedback(MultipartFile file){
+    public String foreignFeedback(MultipartFile file, HttpServletRequest request){
 
         Result result = null;
         try {
-            result = feedBackService.process(file.getInputStream());
+            result = feedBackService.process(file.getInputStream(), request.getServletContext().getRealPath("/"));
         } catch (IOException e) {
             e.printStackTrace();
             result = new Result();

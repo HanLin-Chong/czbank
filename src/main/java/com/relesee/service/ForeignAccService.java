@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 public class ForeignAccService {
 
@@ -393,4 +395,14 @@ public class ForeignAccService {
         }
         return result;
     }
+
+    /*public List<EbayApplication> selectMatchedEbayFeedback(String accName){
+        List<EbayApplication> result = ebayApplicationDao.selectMachedFeedback(accName);
+        return result;
+    }
+
+    public List<AmazonUSapplication> selectMachedAmazonUSfeedback(String accName){
+        List<AmazonUSapplication> result = amazonUSdao.selectMachedFeedback(accName);
+        return result;
+    }*/
 }
