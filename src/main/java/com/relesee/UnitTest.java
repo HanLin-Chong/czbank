@@ -4,14 +4,17 @@ package com.relesee;
 import com.alibaba.fastjson.JSON;
 import com.relesee.constant.NraPriorityStatus;
 import com.relesee.dao.EbayApplicationDao;
+import com.relesee.dao.ForeignFeedbackDao;
 import com.relesee.dao.NraFileDao;
 import com.relesee.domains.EbayApplication;
+import com.relesee.domains.ForeignFeedback;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
 import com.relesee.service.AuditorService;
 import com.relesee.service.ForeignAccService;
 import com.relesee.service.ManagerService;
 import com.relesee.service.NraQueueService;
+import com.relesee.utils.ExcelUtil;
 import com.relesee.utils.FileUtil;
 import com.relesee.utils.RedisUtil;
 import org.apache.commons.io.FileUtils;
@@ -22,6 +25,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,26 +37,17 @@ import java.util.List;
 public class UnitTest {
 
     @Autowired
-    EbayApplicationDao dao;
+    ForeignFeedbackDao dao;
 
     @Test
     public void doTest() {
-        EbayApplication input = new EbayApplication();
-        input.setId("temp");
-        input.setPaypalId("3");
-        input.setBusinessName("3");
-        input.setShopUrl("3");
-        input.setShopName("3");
-        input.setApplicantName("3");
-        input.setApplicantId("3");
-        input.setRecipientAcc("3");
-        input.setRecipientAccName("3");
-        input.setRecipientId("3");
-        input.setAddress("3");
-        input.setManagerName("3");
-        input.setManagerDepartment("3");
-        input.setManagerId("3");
-        dao.updateApplication(input);
+        try {
+            List<ForeignFeedback> feedbacks = ExcelUtil.readFeedBack(new FileInputStream("E:/毕业设计/文件区/外行反馈文件.xlsx"));
+            int count = dao.insertFeedback(feedbacks);
+            System.out.println(count);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 

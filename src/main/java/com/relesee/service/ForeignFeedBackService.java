@@ -3,6 +3,7 @@ package com.relesee.service;
 import com.itextpdf.text.DocumentException;
 import com.relesee.dao.AmazonUSdao;
 import com.relesee.dao.EbayApplicationDao;
+import com.relesee.dao.ForeignFeedbackDao;
 import com.relesee.domains.*;
 import com.relesee.utils.ExcelUtil;
 import com.relesee.utils.FileUtil;
@@ -40,6 +41,8 @@ public class ForeignFeedBackService {
     @Autowired
     AmazonUSdao amazonUSdao;
 
+    @Autowired
+    ForeignFeedbackDao foreignFeedbackDao;
     /**
      * 长耗时任务
      * process的流程：
@@ -47,7 +50,7 @@ public class ForeignFeedBackService {
      * 1.将反馈文件读取为List
      * 2.根据List生成账户通知书.Pdf
      * 3。给相应的客户发送邮件
-     * 4.以上操作完成后通知客户经理
+     * 4.以上操作完成后将反馈插入数据库通知客户经理
      * *若需要记录日志，用aop来做
      * 接受者的邮箱：ebay使用paypalId，amazonUS使用amazonMail
      * @param stream
@@ -75,6 +78,8 @@ public class ForeignFeedBackService {
                 String businessName = "";
                 String id = "";
                 String recipientMail = "";
+                PdfParameters pdfParameters = new PdfParameters();
+
                 if (StringUtils.isBlank(feedback.getNote())){
                     //若备注为空，是AmazonUS的
                     List<AmazonUSapplication> applications =  amazonUSdao.selectMachedFeedback(accName);
@@ -83,6 +88,8 @@ public class ForeignFeedBackService {
                         businessName = application.getBusinessName();
                         id = application.getId();
                         recipientMail = application.getAmazonMail();
+                        pdfParameters.setCzbankAcc(application.getRecipientAcc());
+                        pdfParameters.setCzbankAccName(application.getRecipientAccName());
                     } else {
                         logger.error("存在两个一样的境外账户名，系统无法处理，报此错误");
                     }
@@ -94,23 +101,28 @@ public class ForeignFeedBackService {
                         businessName = application.getBusinessName();
                         id = application.getId();
                         recipientMail = application.getPaypalId();
+                        pdfParameters.setCzbankAcc(application.getRecipientAcc());
+                        pdfParameters.setCzbankAccName(application.getRecipientAccName());
                     } else {
                         logger.error("存在两个一样的境外账户，系统无法处理，报此错误");
                     }
                 }
-                PdfUtil.generateAccNotifications(feedback, outputPath+"境外账户通知书.pdf");
+                //p.setForeignFullName();TODO
+                //p.setForeignSwiftCode();TODO
+                pdfParameters.setDestination(outputPath+"境外账户通知书.pdf");
+                PdfUtil.generateAccNotifications(feedback, pdfParameters);
 
                 //3.发送邮件
-                MailParameters p = new MailParameters();
-                p.setSenderAccount("1220347113@qq.com");
-                p.setSenderPassword("nlvhvqysugdjjhad");
-                p.setSenderAddress("1220347113@qq.com");
-                p.setMailSubject("稠州银行境外合作银行账户申请《账户通知书》");
-                p.setMailContent("您此前提交的账户申请现已收到境外银行的反馈结果，详情请咨询您的客户经理，如果您之前并没有提交过任何申请，请忽略此邮件");
-                p.setFileAbsolutePosition(outputPath+"境外账户通知书.pdf");
-                p.setRecipientAddress(recipientMail);
+                MailParameters mailParameters = new MailParameters();
+                mailParameters.setSenderAccount("1220347113@qq.com");
+                mailParameters.setSenderPassword("nlvhvqysugdjjhad");
+                mailParameters.setSenderAddress("1220347113@qq.com");
+                mailParameters.setMailSubject("稠州银行境外合作银行账户申请《账户通知书》");
+                mailParameters.setMailContent("您此前提交的账户申请现已收到境外银行的反馈结果，详情请咨询您的客户经理，如果您之前并没有提交过任何申请，请忽略此邮件");
+                mailParameters.setFileAbsolutePosition(outputPath+"境外账户通知书.pdf");
+                mailParameters.setRecipientAddress(recipientMail);
                 try {
-                    MailUtil.send(p);
+                    MailUtil.send(mailParameters);
                 } catch (MessagingException e) {
                     e.printStackTrace();
                     result.setFlag(false);
@@ -121,8 +133,14 @@ public class ForeignFeedBackService {
                     result.setMessage("处理失败");
                 }
             }
-            result.setFlag(true);
-            result.setMessage("处理成功，共"+list.size()+"条数据");
+            int count = foreignFeedbackDao.insertFeedback(list);
+            if (count >= 1){
+                result.setFlag(true);
+                result.setMessage("处理成功，共"+list.size()+"条数据");
+            } else {
+                result.setFlag(false);
+                result.setMessage("处理失败，条数小于1");
+            }
         } catch (IOException e) {
             e.printStackTrace();
             result.setFlag(false);

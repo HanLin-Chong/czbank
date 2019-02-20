@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.relesee.dao.ForeignFeedbackDao">
+    <insert id="insertFeedback" parameterType="java.util.List">
+        INSERT INTO
+            foreignfeedback(
+                foundTime,
+                accName,
+                acc,
+                currency,
+                foreignBank,
+                routing,
+                postScript,
+                note,
+                isDel
+            )
+        VALUE
+        <foreach collection="feedbacks" index="index" item="item" separator=",">
+            (
+                #{item.foundTime},
+                #{item.accName},
+                #{item.acc},
+                #{item.currency},
+                #{item.foreignBank},
+                #{item.routing},
+                #{item.postScript},
+                #{item.note},
+                0
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectMachedFeedback" parameterType="String" resultType="com.relesee.domains.ForeignFeedback">
+        SELECT
+            foundTime,
+            accName,
+            acc,
+            currency,
+            foreignBank,
+            routing,
+            postScript,
+            note
+        FROM
+            foreignfeedback
+        WHERE
+            accName = #{businessName}
+        AND
+            isDel = 0
+    </select>
+</mapper>
