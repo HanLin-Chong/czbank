@@ -60,15 +60,19 @@ $(document).ready(function (){
             {field: 'managerName', title: '经理姓名', width:100},
             {field: 'managerDepartment', title: '经理所在部门', width:120},
             {field: 'managerId', title: '经理工号', width:150},
-            {field: 'applicationFileName', title: '申请文件', width:150
-                /*templet: function(d){
-
-                }*/
+            {field: 'applicationFileName', title: '申请文件', width:150,
+                templet: function(d){
+                    return "<a href='c/downloadEbay/"+d.id+"/"+d.applicationFileName+"'>"+d.applicationFileName+"</a>";
+                }
             },
             {field: 'transactionRecordName', title: '交易记录', width:150,
-                /*templet: function(d){
-
-                }*/
+                templet: function(d){
+                    if (d.transactionRecordName != "" && d.transactionRecordName != null && d.transactionRecordName != undefined) {
+                        return "<a href='c/downloadEbay/" + d.id + "/" + d.transactionRecordName + "'>" + d.transactionRecordName + "</a>";
+                    } else {
+                        return "";
+                    }
+                }
             },
             {field: 'uploadTime', title: '申请提交时间', width:150},
             {field: 'auditor', title: '负责审核员', width:60},
@@ -110,15 +114,19 @@ $(document).ready(function (){
             {field: 'managerName', title: '经理姓名', width:100},
             {field: 'managerDepartment', title: '经理所在部门', width:120},
             {field: 'managerId', title: '经理工号', width:150},
-            {field: 'applicationFileName', title: '申请文件', width:150
-                /*templet: function(d){
-
-                }*/
+            {field: 'applicationFileName', title: '申请文件', width:150,
+                templet: function(d){
+                    return "<a href='c/downloadEbay/"+d.id+"/"+d.applicationFileName+"'>"+d.applicationFileName+"</a>";
+                }
             },
             {field: 'transactionRecordName', title: '交易记录', width:150,
-                /*templet: function(d){
-
-                }*/
+                templet: function(d){
+                    if (d.transactionRecordName != "" && d.transactionRecordName != null && d.transactionRecordName != undefined) {
+                        return "<a href='c/downloadEbay/" + d.id + "/" + d.transactionRecordName + "'>" + d.transactionRecordName + "</a>";
+                    } else {
+                        return "";
+                    }
+                }
             },
             {field: 'uploadTime', title: '申请提交时间', width:150},
             {field: 'auditor', title: '负责审核员', width:60},

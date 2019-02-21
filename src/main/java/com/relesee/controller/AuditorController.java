@@ -375,4 +375,110 @@ public class AuditorController {
         List<AmazonEUapplication> result = foreignAccService.searchAmazonEUhistory(key);
         return JSON.toJSONString(result);
     }
+
+    @RequestMapping("downloadEbay/{id}/{fileName:.+}")//:.+解决后缀名被省略
+    public ResponseEntity<?> downloadEbay(@PathVariable String id, @PathVariable String fileName, HttpServletRequest request){
+        String realpath = request.getServletContext().getRealPath("/");
+        String DIRECTORY = realpath+"/files/ebay/"+id;
+        String FILE_URI = DIRECTORY+"/"+fileName;
+        File file = new File(FILE_URI);
+        HttpHeaders headers = new HttpHeaders();
+        if (file.exists()){
+            String filename = null;
+            try {
+                filename = new String(fileName.getBytes(), "ISO8859-1");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            headers.setContentDispositionFormData("attachment", filename);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+            ResponseEntity<byte[]> resultTrue = null;
+            try {
+                resultTrue = new ResponseEntity(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
+            } catch (IOException e) {
+                logger.error("审核员controller[downloadEbay/{id}/{fileName}]创建ResponseEntity时出错");
+
+            }
+            return resultTrue;
+        } else {
+            //文件不存在
+            logger.error("文件("+FILE_URI+")不存在，可能已经被移除");
+            ResponseEntity<String> resultFalse = null;
+
+            resultFalse = new ResponseEntity("文件（"+fileName+"）不存在，可能已经被移除", headers, HttpStatus.NOT_FOUND);
+            return resultFalse;
+        }
+
+    }
+
+    @RequestMapping("downloadAmazonUS/{id}/{fileName:.+}")//:.+解决后缀名被省略
+    public ResponseEntity<?> downloadAmazonUS(@PathVariable String id, @PathVariable String fileName, HttpServletRequest request){
+        String realpath = request.getServletContext().getRealPath("/");
+        String DIRECTORY = realpath+"/files/amazon/us/"+id;
+        String FILE_URI = DIRECTORY+"/"+fileName;
+        File file = new File(FILE_URI);
+        HttpHeaders headers = new HttpHeaders();
+        if (file.exists()){
+            String filename = null;
+            try {
+                filename = new String(fileName.getBytes(), "ISO8859-1");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            headers.setContentDispositionFormData("attachment", filename);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+            ResponseEntity<byte[]> resultTrue = null;
+            try {
+                resultTrue = new ResponseEntity(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
+            } catch (IOException e) {
+                logger.error("审核员controller[downloadAmazonUS/{id}/{fileName}]创建ResponseEntity时出错");
+
+            }
+            return resultTrue;
+        } else {
+            //文件不存在
+            logger.error("文件("+FILE_URI+")不存在，可能已经被移除");
+            ResponseEntity<String> resultFalse = null;
+
+            resultFalse = new ResponseEntity("文件（"+fileName+"）不存在，可能已经被移除", headers, HttpStatus.NOT_FOUND);
+            return resultFalse;
+        }
+    }
+
+    @RequestMapping("downloadAmazonEU/{id}/{fileName:.+}")//:.+解决后缀名被省略
+    public ResponseEntity<?> downloadAmazonEU(@PathVariable String id, @PathVariable String fileName, HttpServletRequest request){
+        String realpath = request.getServletContext().getRealPath("/");
+        String DIRECTORY = realpath+"/files/amazon/eu/"+id;
+        String FILE_URI = DIRECTORY+"/"+fileName;
+        File file = new File(FILE_URI);
+        HttpHeaders headers = new HttpHeaders();
+        if (file.exists()){
+            String filename = null;
+            try {
+                filename = new String(fileName.getBytes(), "ISO8859-1");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            headers.setContentDispositionFormData("attachment", filename);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+            ResponseEntity<byte[]> resultTrue = null;
+            try {
+                resultTrue = new ResponseEntity(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
+            } catch (IOException e) {
+                logger.error("审核员controller[downloadAmazonEU/{id}/{fileName}]创建ResponseEntity时出错");
+
+            }
+            return resultTrue;
+        } else {
+            //文件不存在
+            logger.error("文件("+FILE_URI+")不存在，可能已经被移除");
+            ResponseEntity<String> resultFalse = null;
+
+            resultFalse = new ResponseEntity("文件（"+fileName+"）不存在，可能已经被移除", headers, HttpStatus.NOT_FOUND);
+            return resultFalse;
+        }
+    }
 }

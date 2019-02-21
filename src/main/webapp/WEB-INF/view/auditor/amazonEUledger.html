@@ -48,6 +48,12 @@
             data: [],
             cols: [[
                 {field: 'shopUrl', title: '店铺链接', width: 160, align: 'center'},
+                {field: "applicationFileName", title: '申请文件', width: 150, align: 'center',
+                    templet: function (d){
+                        console.log(d);
+                        return "<a href='c/downloadAmazonEU/"+d.id+"/"+d.applicationFileName+"'>"+d.applicationFileName+"</a>";
+                    }
+                },
                 {field: 'shopId', title: '店铺ID', width: 150, align: 'center'},
                 {field: 'shopName', title: '店铺名', width: 150},
                 {field: 'mainCommodity', title: '主营商品', width: 150},

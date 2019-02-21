@@ -40,7 +40,8 @@
                 managerDepartment,
                 managerId,
                 uploadTime,
-                status
+                status,
+                applicationFileName
             )
         VALUES
         (
@@ -75,7 +76,8 @@
             #{managerDepartment},
             #{managerId},
             NOW(),
-            0
+            0,
+            #{applicationFileName}
         )
     </insert>
 
@@ -113,7 +115,8 @@
             managerId,
             uploadTime,
             status,
-            auditor
+            auditor,
+            applicationFileName
         FROM
             amazoneuapplication
         WHERE
@@ -156,7 +159,8 @@
             managerId,
             uploadTime,
             status,
-            auditor
+            auditor,
+            applicationFileName
         FROM
             amazoneuapplication
         WHERE
