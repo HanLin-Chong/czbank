@@ -1,6 +1,7 @@
 package com.relesee.dao;
 
 import com.relesee.domains.EbayApplication;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,4 +20,10 @@ public interface EbayApplicationDao {
     int updateApplication(EbayApplication ebayApplication);
 
     List<EbayApplication> selectMachedFeedback(String accName);
+
+    List<EbayApplication> selectHistory(@Param("begin") int begin, @Param("size") int size);
+
+    int selectCount();
+
+    List<EbayApplication> selectSearchHistory(String key);
 }

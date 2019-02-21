@@ -396,14 +396,48 @@ public class ForeignAccService {
         return result;
     }
 
-
-    /*public List<EbayApplication> selectMatchedEbayFeedback(String accName){
-        List<EbayApplication> result = ebayApplicationDao.selectMachedFeedback(accName);
+    public LayTableResult<List<EbayApplication>> getEbayHistory(int begin, int size){
+        LayTableResult<List<EbayApplication>> result = new LayTableResult();
+        List<EbayApplication> list = ebayApplicationDao.selectHistory(begin, size);
+        int count = ebayApplicationDao.selectCount();
+        result.setCount(count);
+        result.setMsg("获取数据成功");
+        result.setCode(0);
+        result.setData(list);
         return result;
     }
 
-    public List<AmazonUSapplication> selectMachedAmazonUSfeedback(String accName){
-        List<AmazonUSapplication> result = amazonUSdao.selectMachedFeedback(accName);
+    public List<EbayApplication> searchEbayHistory(String key){
+        return ebayApplicationDao.selectSearchHistory(key);
+    }
+
+    public LayTableResult<List<AmazonUSapplication>> getAmazonUShistory(int begin, int size){
+        LayTableResult<List<AmazonUSapplication>> result = new LayTableResult();
+        List<AmazonUSapplication> list = amazonUSdao.selectHistory(begin, size);
+        int count = amazonUSdao.selectCount();
+        result.setCount(count);
+        result.setMsg("获取数据成功");
+        result.setCode(0);
+        result.setData(list);
         return result;
-    }*/
+    }
+
+    public List<AmazonUSapplication> searchAmazonUShistory(String key){
+        return amazonUSdao.selectSearchHistory(key);
+    }
+
+    public LayTableResult<List<AmazonEUapplication>> getAmazonEUhistory(int begin, int size){
+        LayTableResult<List<AmazonEUapplication>> result = new LayTableResult();
+        List<AmazonEUapplication> list = amazonEUdao.selectHistory(begin, size);
+        int count = amazonEUdao.selectCount();
+        result.setCount(count);
+        result.setMsg("获取数据成功");
+        result.setCode(0);
+        result.setData(list);
+        return result;
+    }
+
+    public List<AmazonEUapplication> searchAmazonEUhistory(String key){
+        return amazonEUdao.selectSearchHistory(key);
+    }
 }

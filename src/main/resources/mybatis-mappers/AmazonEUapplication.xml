@@ -221,4 +221,113 @@
         WHERE
             id = #{id}
     </update>
+
+    <select id="selectHistory" resultType="com.relesee.domains.AmazonEUapplication">
+        SELECT
+            id,
+            shopUrl,
+            shopId,
+            shopName,
+            mainCommodity,
+            companyName,
+            chairManName,
+            majorShareHolder1,
+            shareHolderRate1,
+            shareHolderBirthday1,
+            shareHolderAddress1,
+            majorShareHolder2,
+            shareHolderRate2,
+            shareHolderBirthday2,
+            shareHolderAddress2,
+            majorShareHolder3,
+            shareHolderRate3,
+            shareHolderBirthday3,
+            shareHolderAddress3,
+            majorShareHolder4,
+            shareHolderRate4,
+            shareHolderBirthday4,
+            shareHolderAddress4,
+            czbankBranch,
+            czbankAcc,
+            customerName,
+            mail,
+            managerName,
+            managerDepartment,
+            managerId,
+            uploadTime,
+            auditor
+        FROM
+            amazoneuapplication
+        ORDER BY
+            uploadTime
+        LIMIT
+            #{begin}, #{size}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        SELECT
+            COUNT(*) count
+        FROM
+            amazoneuapplication
+        WHERE
+            status >= 0
+    </select>
+
+    <select id="selectSearchHistory" parameterType="String" resultType="com.relesee.domains.AmazonEUapplication">
+        SELECT
+            id,
+            shopUrl,
+            shopId,
+            shopName,
+            mainCommodity,
+            companyName,
+            chairManName,
+            majorShareHolder1,
+            shareHolderRate1,
+            shareHolderBirthday1,
+            shareHolderAddress1,
+            majorShareHolder2,
+            shareHolderRate2,
+            shareHolderBirthday2,
+            shareHolderAddress2,
+            majorShareHolder3,
+            shareHolderRate3,
+            shareHolderBirthday3,
+            shareHolderAddress3,
+            majorShareHolder4,
+            shareHolderRate4,
+            shareHolderBirthday4,
+            shareHolderAddress4,
+            czbankBranch,
+            czbankAcc,
+            customerName,
+            mail,
+            managerName,
+            managerDepartment,
+            managerId,
+            uploadTime,
+            auditor
+        FROM
+            amazoneuapplication
+        WHERE
+            shopName LIKE CONCAT('%', #{key}, '%')
+        OR
+            companyName LIKE CONCAT('%', #{key}, '%')
+        OR
+            chairManName LIKE CONCAT('%', #{key}, '%')
+        OR
+            majorShareHolder1 LIKE CONCAT('%', #{key}, '%')
+        OR
+            majorShareHolder2 LIKE CONCAT('%', #{key}, '%')
+        OR
+            majorShareHolder3 LIKE CONCAT('%', #{key}, '%')
+        OR
+            majorShareHolder4 LIKE CONCAT('%', #{key}, '%')
+        OR
+            customerName LIKE CONCAT('%', #{key}, '%')
+        OR
+            managerName LIKE CONCAT('%', #{key}, '%')
+        ORDER BY
+            uploadTime
+    </select>
 </mapper>

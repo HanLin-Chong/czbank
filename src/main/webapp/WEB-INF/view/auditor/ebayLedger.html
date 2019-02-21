@@ -16,88 +16,136 @@
 </head>
 <body>
     <div class="col-lg-12"><br/></div>
-    <div class="col-lg-3">
-        <div class="input-group">
-            <span class="input-group-addon">经理姓名</span>
-            <input name="userName" type="text" class="form-control" placeholder="经理姓名"/>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="input-group">
-            <span class="input-group-addon">手机号</span>
-            <input name="phone" type="text" class="form-control" placeholder="手机号"/>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="input-group">
-            <span class="input-group-addon">邮箱</span>
-            <input name="email" type="text" class="form-control" placeholder="邮箱"/>
-        </div>
-    </div>
-    <div class="col-lg-2">
-        <button id="search" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+
+    <div class="col-lg-12">
+        <table id="ebayHistories"></table>
     </div>
     <div class="col-lg-12">
-        <table id="ebayHistories" lay-filter=""></table>
+        <div class="input-group">
+            <input id="key" type="text" class="form-control" placeholder="支持检索的字段：PayPal账号、境外账户名称、店铺名、申请人姓名、收款人户名、经理姓名"/>
+            <span class="input-group-btn">
+                <button id="search" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <table id="searchResult"></table>
     </div>
 <script>
 $(document).ready(function (){
+
     layui.table.render({
         elem: "#ebayHistories",
         title: "ebay申请历史",
+        url: "c/getEbayHistory",
+        totalRow: true,
+        //where:{},
         loading: true,
         page: true,
         autoSort: false,
-        toolbar: "#tableTool",
+        toolbar: "<strong>所有申请记录</strong>",
         defaultToolbar: ["filter", "exports", "print"],
         data: [],
         cols: [[
+            {field: 'paypalId', title: 'paypal账号', width: 160, align: 'center'},
+            {field: 'businessName', title: '境外账户名称', width: 150, align: 'center'},
+            {field: 'shopUrl', title: '店铺链接', width: 150},
+            {field: 'shopName', title: '店铺名', width: 150},
+            {field: 'applicantName', title: '申请人姓名', width: 100, align: 'center'},
+            {field: 'applicantId', title: "申请人证件号码", width: 150},
+            {field: 'recipientAcc', title:'境内收款账号', width:170, align: 'center'},
+            {field: 'recipientAccName', title: '境内收款户名', width:100},
+            {field: 'recipientId', title: '境内收款人证件号码', width:150},
+            {field: 'address', title: '详细联系地址', width:150},
+            {field: 'managerName', title: '经理姓名', width:100},
+            {field: 'managerDepartment', title: '经理所在部门', width:120},
+            {field: 'managerId', title: '经理工号', width:150},
+            {field: 'applicationFileName', title: '申请文件', width:150
+                /*templet: function(d){
 
-            {field: 'userId', title: '工号', width: 140, align: 'center'},
-            {field: 'userId', title: '操作', width: 100, align: 'center',
-                templet: function (d){
-                    if (d.userState == HanLin.userStatus.NORMAL){
-                        return "<button class='blockAcc btn btn-danger' userName='"+d.userName+"' userId='"+d.userId+"' style='height: 25px;line-height: 10px;'>停用</button>";
-                    }
-                    if (d.userState == HanLin.userStatus.BLOCK_UP){
-                        return "<button class='activateAcc btn btn-success' userName='"+d.userName+"' userId='"+d.userId+"' style='height: 25px;line-height: 10px;'>启用</button>";
-                    }
-                    if (d.userState == HanLin.userStatus.ROOT){
-                        return "什么，你居然能看到我（这个格子里的字）？？不应该啊，麻烦去帮助中心反馈一下。。--经理账户管理表格（把这段话复制过去就行）"
-                    }
-                }
+                }*/
             },
-            {field: 'userName', title: '姓名', width: 150},
-            {field: 'email', title: '邮箱', width: 150},
-            {field: 'userState', title: '账号状态', width: 100, align: 'center',
-                templet: function (d){
-                    console.log(d);
-                    var html = "-";
-                    if (d.userState == HanLin.userStatus.ROOT){
-                        html = "<strong class='text-danger'>无权查看该账户</strong>";
-                    } else if (d.userState == HanLin.userStatus.NORMAL){
-                        html = "<strong class='text-info'>正常</strong>";
-                    } else if (d.userState == HanLin.userStatus.BLOCK_UP){
-                        html = "<strong class='text-danger'>停用</strong>";
-                    }
-                    return html;
-                }
-            },
-            {field: 'phone', title: "手机", width: 150},
-            {field: 'headPhoto', title:'头像', width:60, align: 'center',
-                templet: function (d){
-                    if (d.headPhoto == "default"){
-                        return '<img class="cursor-pointer small-img preview" userName="'+d.userName+'" src="../../img/userHeadPhotos/user_default_head.jpg"/>';
-                    } else {
-                        return '<img class="cursor-pointer small-img preview" userName="'+d.userName+'" src="../../img/userHeadPhotos/'+d.userId+'/'+d.headPhoto+'"/>';
-                    }
+            {field: 'transactionRecordName', title: '交易记录', width:150,
+                /*templet: function(d){
 
-                }
+                }*/
             },
-            {field: 'registerDate', title: '注册日期'}
+            {field: 'uploadTime', title: '申请提交时间', width:150},
+            {field: 'auditor', title: '负责审核员', width:60},
+            {field: 'foundTime', title: '账户开通时间（之后是反馈内容）', width:150},
+            {field: 'accName', title: '境外账户名称', width:150},
+            {field: 'acc', title: '境外账户账号', width:150},
+            {field: 'currency', title: '币种', width:60},
+            {field: 'foreignBank', title: '开户行', width:150},
+            {field: 'routing', title: '境外银行代码', width:150},
+            {field: 'postScript', title: '附言', width:150},
+            {field: 'note', title: '备注', width:150}
         ]]
     });
+
+
+    layui.table.render({
+        elem: "#searchResult",
+        title: "ebay申请历史",
+        //url: "c/searchEbayHistory",
+        totalRow: true,
+        //where:{},
+        loading: true,
+        page: true,
+        autoSort: false,
+        toolbar: "<strong>搜索结果</strong>",
+        defaultToolbar: ["filter", "exports", "print"],
+        data: [],
+        cols: [[
+            {field: 'paypalId', title: 'paypal账号', width: 160, align: 'center'},
+            {field: 'businessName', title: '境外账户名称', width: 150, align: 'center'},
+            {field: 'shopUrl', title: '店铺链接', width: 150},
+            {field: 'shopName', title: '店铺名', width: 150},
+            {field: 'applicantName', title: '申请人姓名', width: 100, align: 'center'},
+            {field: 'applicantId', title: "申请人证件号码", width: 150},
+            {field: 'recipientAcc', title:'境内收款账号', width:170, align: 'center'},
+            {field: 'recipientAccName', title: '境内收款户名', width:100},
+            {field: 'recipientId', title: '境内收款人证件号码', width:150},
+            {field: 'address', title: '详细联系地址', width:150},
+            {field: 'managerName', title: '经理姓名', width:100},
+            {field: 'managerDepartment', title: '经理所在部门', width:120},
+            {field: 'managerId', title: '经理工号', width:150},
+            {field: 'applicationFileName', title: '申请文件', width:150
+                /*templet: function(d){
+
+                }*/
+            },
+            {field: 'transactionRecordName', title: '交易记录', width:150,
+                /*templet: function(d){
+
+                }*/
+            },
+            {field: 'uploadTime', title: '申请提交时间', width:150},
+            {field: 'auditor', title: '负责审核员', width:60},
+            {field: 'foundTime', title: '账户开通时间（之后是反馈内容）', width:150},
+            {field: 'accName', title: '境外账户名称', width:150},
+            {field: 'acc', title: '境外账户账号', width:150},
+            {field: 'currency', title: '币种', width:60},
+            {field: 'foreignBank', title: '开户行', width:150},
+            {field: 'routing', title: '境外银行代码', width:150},
+            {field: 'postScript', title: '附言', width:150},
+            {field: 'note', title: '备注', width:150}
+        ]]
+    });
+    $("#search").click(function (){
+        reloadTableData();
+    });
 });
+function reloadTableData(){
+    var index = layer.load(2, {time: 10*1000});
+    HanLin.requestTypical("c/searchEbayHistory", {key:$("#key").val()}, function (data){
+        data = JSON.parse(data);
+        layer.close(index);
+        layui.table.reload("searchResult", {
+            data: data
+        });
+    }, "请求搜索信息失败");
+}
 </script>
 </body>
 </html>

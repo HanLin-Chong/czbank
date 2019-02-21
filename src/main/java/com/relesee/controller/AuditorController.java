@@ -330,4 +330,49 @@ public class AuditorController {
 
         return JSON.toJSONString(result);
     }
+
+    @RequestMapping(value = "getEbayHistory", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getEbayHistory(int page, int limit){
+        int begin = (page-1)*limit;
+        LayTableResult<List<EbayApplication>> result = foreignAccService.getEbayHistory(begin, limit);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "searchEbayHistory", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String searchEbayHistory(String key){
+        List<EbayApplication> result = foreignAccService.searchEbayHistory(key);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "getAmazonUShistory", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getAmazonUSHistory(int page, int limit){
+        int begin = (page-1)*limit;
+        LayTableResult<List<AmazonUSapplication>> result = foreignAccService.getAmazonUShistory(begin, limit);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "searchAmazonUShistory", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String searchAmazonUSHistory(String key){
+        List<AmazonUSapplication> result = foreignAccService.searchAmazonUShistory(key);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "getAmazonEUhistory", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getAmazonEUhistory(int page, int limit){
+        int begin = (page-1)*limit;
+        LayTableResult<List<AmazonEUapplication>> result = foreignAccService.getAmazonEUhistory(begin, limit);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "searchAmazonEUhistory", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String searchAmazonEUhistory(String key){
+        List<AmazonEUapplication> result = foreignAccService.searchAmazonEUhistory(key);
+        return JSON.toJSONString(result);
+    }
 }

@@ -29,6 +29,17 @@ public class EbayApplication {
     private MultipartFile transactionRecord;
     private MultipartFile applicationFile;
 
+
+    //反馈
+    private String foundTime;
+    private String accName;
+    private String acc;
+    private String currency;
+    private String foreignBank;
+    private String routing;
+    private String postScript;
+    private String note;
+
     public String getId() {
         return id;
     }
@@ -195,5 +206,69 @@ public class EbayApplication {
 
     public void setAuditor(String auditor) {
         this.auditor = auditor;
+    }
+
+    public String getFoundTime() {
+        return foundTime;
+    }
+
+    public void setFoundTime(String foundTime) {
+        this.foundTime = foundTime;
+    }
+
+    public String getAccName() {
+        return accName;
+    }
+
+    public void setAccName(String accName) {
+        this.accName = accName;
+    }
+
+    public String getAcc() {
+        return acc;
+    }
+
+    public void setAcc(String acc) {
+        this.acc = acc;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getForeignBank() {
+        return foreignBank;
+    }
+
+    public void setForeignBank(String foreignBank) {
+        this.foreignBank = foreignBank;
+    }
+
+    public String getRouting() {
+        return routing;
+    }
+
+    public void setRouting(String routing) {
+        this.routing = routing;
+    }
+
+    public String getPostScript() {
+        return postScript;
+    }
+
+    public void setPostScript(String postScript) {
+        this.postScript = postScript;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

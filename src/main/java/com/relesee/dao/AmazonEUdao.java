@@ -1,6 +1,9 @@
 package com.relesee.dao;
 
 import com.relesee.domains.AmazonEUapplication;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface AmazonEUdao {
 
@@ -15,4 +18,10 @@ public interface AmazonEUdao {
     int updateAuditor(AmazonEUapplication amazonEUapplication);
 
     int updateApplication(AmazonEUapplication amazonEUapplication);
+
+    List<AmazonEUapplication> selectHistory(@Param("begin") int begin, @Param("size") int size);
+
+    int selectCount();
+
+    List<AmazonEUapplication> selectSearchHistory(String key);
 }
