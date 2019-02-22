@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.relesee.constant.NraPriorityStatus;
 import com.relesee.constant.NraStatus;
 import com.relesee.dao.NraFileDao;
+import com.relesee.domains.LayTableResult;
 import com.relesee.domains.NraFile;
 import com.relesee.domains.Result;
 import com.relesee.domains.User;
@@ -321,5 +322,20 @@ public class NraQueueService {
             result.setMessage("拒绝插队操作失败");
         }
         return result;
+    }
+
+    public LayTableResult<List<NraFile>> getHistoryAuditor(int begin, int limit){
+        LayTableResult<List<NraFile>> result = new LayTableResult();
+        List<NraFile> data = nraFileDao.selectHistoryAuditor(begin, limit);
+        int count = nraFileDao.selectCountAll();
+        result.setCode(0);
+        result.setMsg("获取数据成功");
+        result.setData(data);
+        result.setCount(count);
+        return result;
+    }
+
+    public List<NraFile> searchHistory(String key){
+        return nraFileDao.selectSearchHistoryAuditor(key);
     }
 }

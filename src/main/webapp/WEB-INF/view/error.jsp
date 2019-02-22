@@ -51,7 +51,7 @@
         <tr id="code2">
             <td style="text-align: center;">2</td>
             <td>500服务器端发生了错误</td>
-            <td>查看日志：[<span class="glyphicon glyphicon-link"></span><a href="#">日志路径</a>]</td>
+            <td>详情查看系统运行日志</td>
         </tr>
         <tr id="code3">
             <td style="text-align: center;">3</td>

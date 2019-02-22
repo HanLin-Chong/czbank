@@ -259,7 +259,8 @@
             managerDepartment,
             managerId,
             uploadTime,
-            auditor
+            auditor,
+            applicationFileName
         FROM
             amazoneuapplication
         ORDER BY
@@ -310,7 +311,8 @@
             managerDepartment,
             managerId,
             uploadTime,
-            auditor
+            auditor,
+            applicationFileName
         FROM
             amazoneuapplication
         WHERE

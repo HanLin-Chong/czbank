@@ -55,4 +55,9 @@ public interface NraFileDao {
 
     int updatePriorityRefused(NraFile nraFile);
 
+    List<NraFile> selectHistoryAuditor(@Param("begin") int begin, @Param("limit") int limit);
+
+    int selectCountAll();
+
+    List<NraFile> selectSearchHistoryAuditor(String key);
 }

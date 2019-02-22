@@ -8,7 +8,8 @@ public class NraFile implements Serializable {
     private String fileName;
     private String uploadTime;
     private String uploader;
-    private String userName;
+    private String userName;//经理名，这是个错误，做经理的时候没想那么多
+    private String auditorName;
     private String restorePath;
     private String note;
     private boolean isQualityCustomer;
@@ -62,6 +63,14 @@ public class NraFile implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getAuditorName() {
+        return auditorName;
+    }
+
+    public void setAuditorName(String auditorName) {
+        this.auditorName = auditorName;
     }
 
     public String getRestorePath() {

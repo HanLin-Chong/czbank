@@ -481,4 +481,19 @@ public class AuditorController {
             return resultFalse;
         }
     }
+
+    @RequestMapping(value = "getNraHistory", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getNraHistory(int page, int limit){
+        int begin = (page-1)*limit;
+        LayTableResult<List<NraFile>> result = nraQueueService.getHistoryAuditor(begin, limit);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "searchNraHistory", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String searchNraHistory(String key){
+        List<NraFile> result = nraQueueService.searchHistory(key);
+        return JSON.toJSONString(result);
+    }
 }

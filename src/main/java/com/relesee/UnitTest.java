@@ -37,22 +37,16 @@ import java.util.List;
 public class UnitTest {
 
     @Autowired
-    ForeignFeedbackDao dao;
+    NraFileDao dao;
 
     @Test
     public void doTest() {
-        try {
-            List<ForeignFeedback> feedbacks = ExcelUtil.readFeedBack(new FileInputStream("E:/毕业设计/文件区/外行反馈文件.xlsx"));
-            int count = dao.insertFeedback(feedbacks);
-            System.out.println(count);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        List<NraFile> result = dao.selectHistoryAuditor(0,5);
+        for (NraFile file:result){
+            System.out.println(1);
+            System.out.println(JSON.toJSONString(file));
         }
 
-    }
-
-    public static void main(String[] args){
-        System.out.println(1);
     }
 
 }

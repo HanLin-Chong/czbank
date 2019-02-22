@@ -92,7 +92,7 @@
 
         layui.table.render({
             elem: "#searchResult",
-            title: "AmazonUS申请历史",
+            title: "AmazonEU申请历史",
             //url: "c/searchEbayHistory",
             totalRow: true,
             //where:{},
@@ -103,39 +103,45 @@
             defaultToolbar: ["filter", "exports", "print"],
             data: [],
             cols: [[
-                {field: 'amazonMail', title: '亚马逊注册邮箱', width: 160, align: 'center'},
-                {field: 'businessName', title: '境外账户名称', width: 150, align: 'center'},
-                {field: 'shopUrl', title: '店铺链接', width: 150},
+                {field: 'shopUrl', title: '店铺链接', width: 160, align: 'center'},
+                {field: "applicationFileName", title: '申请文件', width: 150, align: 'center',
+                    templet: function (d){
+                        console.log(d);
+                        return "<a href='c/downloadAmazonEU/"+d.id+"/"+d.applicationFileName+"'>"+d.applicationFileName+"</a>";
+                    }
+                },
+                {field: 'shopId', title: '店铺ID', width: 150, align: 'center'},
                 {field: 'shopName', title: '店铺名', width: 150},
-                {field: 'applicantName', title: '申请人姓名', width: 100, align: 'center'},
-                {field: 'applicantId', title: "申请人证件号码", width: 150},
-                {field: 'recipientAcc', title:'境内收款账号', width:170, align: 'center'},
-                {field: 'recipientAccName', title: '境内收款户名', width:100},
-                {field: 'recipientId', title: '境内收款人证件号码', width:150},
-                {field: 'address', title: '详细联系地址', width:150},
-                {field: 'managerName', title: '经理姓名', width:100},
-                {field: 'managerDepartment', title: '经理所在部门', width:120},
-                {field: 'managerId', title: '经理工号', width:150},
-                {field: 'applicationFileName', title: '申请文件', width:150
-                    /*templet: function(d){
+                {field: 'mainCommodity', title: '主营商品', width: 150},
+                {field: 'companyName', title: '注册公司名', width: 100, align: 'center'},
+                {field: 'chairManName', title: "董事长姓名", width: 150},
+                {field: 'majorShareHolder1', title:'大股东1', width:170, align: 'center'},
+                {field: 'shareHolderRate1', title: '持股1', width:100},
+                {field: 'shareHolderBirthday1', title: '生日1', width:150},
+                {field: 'shareHolderAddress1', title: '股东联系地址1', width:150},
+                {field: 'majorShareHolder2', title:'大股东2', width:170, align: 'center'},
+                {field: 'shareHolderRate2', title: '持股2', width:100},
+                {field: 'shareHolderBirthday2', title: '生日2', width:150},
+                {field: 'shareHolderAddress2', title: '股东联系地址2', width:150},
+                {field: 'majorShareHolder3', title:'大股东3', width:170, align: 'center'},
+                {field: 'shareHolderRate3', title: '持股3', width:100},
+                {field: 'shareHolderBirthday3', title: '生日3', width:150},
+                {field: 'shareHolderAddress3', title: '股东联系地址3', width:150},
+                {field: 'majorShareHolder4', title:'大股东4', width:170, align: 'center'},
+                {field: 'shareHolderRate4', title: '持股4', width:100},
+                {field: 'shareHolderBirthday4', title: '生日4', width:150},
+                {field: 'shareHolderAddress4', title: '股东联系地址4', width:150},
+                {field: 'czbankBranch', title: '稠州银行开户网点', width:100},
+                {field: 'czbankAcc', title: '稠州银行账号', width:120},
+                {field: 'customerName', title: '客户姓名', width:150},
+                {field: 'mail', title: '邮箱', width:150},
+                {field: 'managerName', title: '客户经理姓名', width:150},
+                {field: 'managerDepartment', title: '客户经理所属机构', width:150},
+                {field: 'customerName', title: '客户姓名', width:150},
+                {field: 'managerId', title: '客户经理工号', width:150},
+                {field: 'uploadTime', title: '上传时间', width:150},
+                {field: 'auditor', title: '审核员', width:150}
 
-                    }*/
-                },
-                {field: 'transactionRecordName', title: '交易记录', width:150,
-                    /*templet: function(d){
-
-                    }*/
-                },
-                {field: 'uploadTime', title: '申请提交时间', width:150},
-                {field: 'auditor', title: '负责审核员', width:60},
-                {field: 'foundTime', title: '账户开通时间（之后是反馈内容）', width:150},
-                {field: 'accName', title: '境外账户名称', width:150},
-                {field: 'acc', title: '境外账户账号', width:150},
-                {field: 'currency', title: '币种', width:60},
-                {field: 'foreignBank', title: '开户行', width:150},
-                {field: 'routing', title: '境外银行代码', width:150},
-                {field: 'postScript', title: '附言', width:150},
-                {field: 'note', title: '备注', width:150}
             ]]
         });
         $("#search").click(function (){
@@ -144,7 +150,7 @@
     });
     function reloadTableData(){
         var index = layer.load(2, {time: 10*1000});
-        HanLin.requestTypical("c/searchAmazonUShistory", {key:$("#key").val()}, function (data){
+        HanLin.requestTypical("c/searchAmazonEUhistory", {key:$("#key").val()}, function (data){
             data = JSON.parse(data);
             layer.close(index);
             layui.table.reload("searchResult", {

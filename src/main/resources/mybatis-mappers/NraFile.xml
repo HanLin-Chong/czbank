@@ -462,4 +462,73 @@
         AND
             priorityStatus = 1
     </update>
+
+    <select id="selectHistoryAuditor" resultType="com.relesee.domains.NraFile">
+        SELECT
+            id,
+            queueNo,
+            fileName,
+            isQualityCustomer,
+            uploadTime,
+            uploader,
+            restorePath,
+            statusCode,
+            isPriority,
+            note,
+            auditor,
+            priorityStatus,
+            userName as auditorName
+        FROM
+            nrafile
+        LEFT JOIN
+            user
+        ON
+            nrafile.auditor = user.userId
+        WHERE
+            isDel = 0
+        ORDER BY
+            uploadTime
+        LIMIT
+            #{begin}, #{limit}
+    </select>
+
+    <select id="selectCountAll" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            nrafile
+        WHERE
+            isDel = 0
+    </select>
+
+    <select id="selectSearchHistoryAuditor" parameterType="String" resultType="com.relesee.domains.NraFile">
+        SELECT
+            id,
+            queueNo,
+            fileName,
+            isQualityCustomer,
+            uploadTime,
+            uploader,
+            restorePath,
+            statusCode,
+            isPriority,
+            note,
+            auditor,
+            priorityStatus,
+            userName as auditorName
+        FROM
+            nrafile
+        LEFT JOIN
+            user
+        ON
+            nrafile.auditor = user.userId
+        WHERE
+            fileName LIKE CONCAT('%', #{key}, '%')
+        OR
+            uploader = #{key}
+        OR
+            queueNo = #{key}
+        OR
+            note LIKE CONCAT('%', #{key}, '%')
+    </select>
 </mapper>
