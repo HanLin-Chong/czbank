@@ -17,14 +17,14 @@
     <link rel="stylesheet" href="../../css/bootstrap.modified.css"/>
     <!-- iziToast -->
     <link rel="stylesheet" href="../../css/iziToast.min.css"/>
-    <link rel="stylesheet" href="../../layui/css/layui.css"/>
+    <link rel="stylesheet" href="../../layuiIM/css/layui.css"/>
 
     <script src="../../js/jquery-1.11.0.min.js"></script>
     <script src="../../js/bootstrap.min.js"></script>
     <script src="../../js/iziToast.min.js"></script>
     <script src="../../js/deferredAjax.js"></script>
     <script src="../../js/hanlinCommons.js"></script>
-    <script src="../../layui/layui.all.js"></script>
+    <script src="../../layuiIM/layui.all.js"></script>
     <style>
         a, a:hover, a:active{
             text-decoration: none !important;
@@ -37,13 +37,15 @@
         <div class="layui-logo" style="color: #9dc1d3;">审核员</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item loadPage"><a>消息中心</a></li>
+            <li class="layui-nav-item"><a href="message" target="_blank">消息中心</a></li>
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img id="headPhoto" src="../../img/czyh.png" class="layui-nav-img">
-                    <jsWrite id="userName"><img src="../../img/load.gif" class="layui-nav-img"/></jsWrite>
+                    <jsWrite id="userName">
+                        <!--<img src="../../img/load.gif" class="layui-nav-img"/>-->
+                    </jsWrite>
                 </a>
                 <dl class="layui-nav-child">
                     <dd class="loadPage"><a>个人资料</a></dd>
@@ -95,10 +97,10 @@
                                 <dd class="loadPage" whichPage="amazonEUledger"><a href="javascript:;">amazonEU申请</a></dd>
                             </dl>
                         </dd>
-                        <li class="loadPage" whichPage="nraHistory">
-                            <a href="javascript:;">Nra历史记录</a>
-                        </li>
-                    </dl>
+                <li class="loadPage" whichPage="nraHistory">
+                    <a href="javascript:;">Nra历史记录</a>
+                </li>
+                </dl>
                 </li>
             </ul>
         </div>
@@ -114,20 +116,52 @@
 </div>
 <script>
 
-    //JavaScript代码区域
-    //layui.use(['element', 'layer', 'form'], function(){
-    //var element = layui.element;
-    //element.init();
-
-    //});
 
 
-    //当前用户的JSON数据
+    /*layui.layim.config({
+
+        init: {
+            url: './message/init',
+            type: 'post',
+            data: {}
+        } //获取主面板列表信息，下文会做进一步介绍
+
+        //获取群员接口（返回的数据格式见下文）
+        ,members: {
+            url: '' //接口地址（返回的数据格式见下文）
+            ,type: 'get' //默认get，一般可不填
+            ,data: {} //额外参数
+        }
+
+        //上传图片接口（返回的数据格式见下文），若不开启图片上传，剔除该项即可
+        ,uploadImage: {
+            url: '' //接口地址
+            ,type: 'post' //默认post
+        }
+
+        //上传文件接口（返回的数据格式见下文），若不开启文件上传，剔除该项即可
+        ,uploadFile: {
+            url: '' //接口地址
+            ,type: 'post' //默认post
+        }
+        //扩展工具栏，下文会做进一步介绍（如果无需扩展，剔除该项即可）
+        ,tool: [{
+            alias: 'code' //工具别名
+            ,title: '代码' //工具名称
+            ,icon: '&#xe64e;' //工具图标，参考图标文档
+        }]
+
+        ,msgbox: layui.cache.dir + 'css/modules/layim/html/msgbox.html' //消息盒子页面地址，若不开启，剔除该项即可
+        ,find: layui.cache.dir + 'css/modules/layim/html/find.html' //发现页面地址，若不开启，剔除该项即可
+        ,chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html' //聊天记录页面地址，若不开启，剔除该项即可
+    });*/
+
+
+
     var currentUser;
     $(document).ready(function(){
         iziToast.destroy();
         layui.element.init();
-
         //加载此页时检查subject是否拥有经理的角色，这样做是为了提高用户体验，并不是为了提高安全性（后台代码已经拦截）
         $.when(request("c/checkLogin", {})).done(function(data){
             if (data){
@@ -151,11 +185,9 @@
                 } else {
                     $("#headPhoto").attr("src", "../../img/userHeadPhotos/"+currentUser.userId+"/"+currentUser.headPhoto);
                 }
-
             },300);
             renderUpload(user);
         });
-
         //绑定导航选项的点击事件
         $(".loadPage").click(function (e){
             $("#contentArea").html("");
@@ -170,12 +202,25 @@
                     $("#contentArea").load(whichPage, function (){
                         layer.close(index);
                     });
-
                 }
             },200);
-
         });
+        var countDownNumber = 5;
+        var countDown = setInterval(function(e){
+            layer.closeAll();
+            layer.msg(countDownNumber+"秒后，自动打开消息中心");
+            if (countDownNumber <= 0){
 
+                clearInterval(countDown);
+                layer.closeAll();
+                layer.msg("如果未弹出，可能是被浏览器拦截了，也可手动打开");
+                window.open("message", '_blank').location;
+            }
+            countDownNumber--;
+        },1000)  //每隔3秒打印一次
+        /*setTimeout(function (){
+            layer.msg("即将");
+        }, 3000);*/
     });
     function renderUpload(user){
         layui.upload.render({
@@ -189,7 +234,6 @@
             auto: true,
             field: "headPhoto",
             done: function(data, index, upload){ //上传后的回调
-
                 console.log(data);
                 if (data.flag){
                     HanLin.success(data.message);
