@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.relesee.dao.MessageDao">
+
+    <select id="selectGroupMembers" parameterType="String" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        WHERE
+            userId
+        IN (
+            SELECT
+                userId
+            FROM
+                usergroup
+            WHERE
+                groupId = #{groupId}
+        )
+    </select>
+
+</mapper>

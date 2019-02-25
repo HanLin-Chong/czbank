@@ -27,4 +27,12 @@ public interface UserDao {
     int updateManagerBlock(@Param("userId") String userId, @Param("userState") int userState);
 
     int updateManagerActive(@Param("userId") String userId, @Param("userState") int userState);
+
+    //一下是消息模块的操作
+
+    List<User> selectAllManager();
+
+    List<User> selectAllAuditor();
+
+    List<User> selectAllRoot();
 }

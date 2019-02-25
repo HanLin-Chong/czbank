@@ -24,6 +24,7 @@ public class User {
     private String headPhoto;
     private String deptId;
     private String registerDate;
+    private String sign;
 
     public String getUserName() {
         return userName;
@@ -103,5 +104,13 @@ public class User {
 
     public void setRegisterDate(String registerDate) {
         this.registerDate = registerDate;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
     }
 }

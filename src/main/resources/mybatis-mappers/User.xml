@@ -15,7 +15,8 @@
             phone,
             headPhoto,
             deptId,
-            registerDate
+            registerDate,
+            sign
         FROM
             user
         WHERE
@@ -33,7 +34,8 @@
             phone,
             headPhoto,
             deptId,
-            registerDate
+            registerDate,
+            sign
         FROM
             user
         WHERE
@@ -74,7 +76,8 @@
                headPhoto,
                deptId,
                registerDate,
-               permissionId
+               permissionId,
+               sign
             )
         VALUES(
             #{userName},
@@ -87,7 +90,8 @@
             'default',
             #{deptId},
             NOW(),
-            0
+            0,
+            ''
         )
     </insert>
 
@@ -112,7 +116,8 @@
             headPhoto,
             deptId,
             registerDate,
-            permissionId
+            permissionId,
+            sign
         FROM
             user
         WHERE
@@ -142,4 +147,90 @@
         WHERE
             userId = #{userId}
     </update>
+
+    <select id="selectAllManager" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        WHERE
+            role = 'manager'
+        AND
+            userState > 0
+    </select>
+
+    <select id="selectAllAuditor" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        WHERE
+            role = 'auditor'
+        AND
+            userState > 0
+    </select>
+
+    <select id="selectAllRoot" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        WHERE
+            role = 'root'
+        AND
+            userState > 0
+    </select>
+
+    <!--<select id="selectGroupMembers" parameterType="String" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        INNER JOIN
+
+    </select>-->
 </mapper>
