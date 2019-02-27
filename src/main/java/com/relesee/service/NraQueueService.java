@@ -126,8 +126,6 @@ public class NraQueueService {
         String uri = OUTPUT_ROOT_PATH+"/files/nra/"+uuid;
         String directory = OUTPUT_ROOT_PATH+"/files/nra";
 
-
-
         //手动注入其它字段
         nraFile.setFileName(file.getOriginalFilename());
         nraFile.setUploader(user.getUserId());

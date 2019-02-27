@@ -167,6 +167,41 @@ var HanLin = {
             }
             return true;
         }
+    },
+    //socket操作
+    socket: {
+        init: function (){
+            var socket = new WebSocket("");
+        },
+        socket: null,
+
+        //与服务器建立socket连接
+        connectServer: function (){
+
+        },
+        onOpen: function (f){//参数f是函数
+            socket.onopen = f;
+        },
+        onMessage: function (f){
+
+        }
+    },
+    getIp: function (){
+        var local = window.location;
+        return local.host;
+    },
+    configSocket: function (path){
+        var websocket;
+        if ('WebSocket' in window) {
+            websocket = new WebSocket("ws://" + path + "socketServer");
+        } else if ('MozWebSocket' in window) {
+            websocket = new MozWebSocket("ws://" + path +  "socketServer");
+        } else {
+            websocket = new SockJS("http://" + path + "socketjs/socketServer");
+        }
+        return websocket;
     }
+
+
 };
 

@@ -4,10 +4,13 @@ import com.relesee.dao.MessageDao;
 import com.relesee.dao.UserDao;
 import com.relesee.domains.User;
 import com.relesee.domains.layim.*;
+import com.relesee.utils.FileUtil;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,5 +139,46 @@ public class MessageService {
         data.setList(memberList);
         members.setData(data);
         return members;
+    }
+
+    public UploadRes uploadImage(MultipartFile file, String path){
+        UploadRes res = new UploadRes();
+        try {
+            FileUtil.createDirIfNotExist(path);
+            FileUtil.writeInputStreamToDirectory(file.getInputStream(), path+file.getOriginalFilename());
+            res.setCode(0);
+            res.setMsg("");
+            Omnipotent data = new Omnipotent();
+            data.setSrc("http://127.0.0.1:8080/img/im/"+file.getOriginalFilename());
+            data.setName(file.getOriginalFilename());
+            res.setData(data);
+        } catch (Exception e){
+            e.printStackTrace();
+            res.setCode(1);
+            res.setMsg("上传图片失败");
+            res.setData(null);
+        }
+
+        return res;
+    }
+
+    public UploadRes uploadFile(MultipartFile file, String path){
+        UploadRes res = new UploadRes();
+        try {
+            FileUtil.createDirIfNotExist(path);
+            FileUtil.writeInputStreamToDirectory(file.getInputStream(), path+file.getOriginalFilename());
+            res.setCode(0);
+            res.setMsg("");
+            Omnipotent data = new Omnipotent();
+            data.setName(file.getOriginalFilename());
+            data.setSrc("http://127.0.0.1:8080/files/im/"+file.getOriginalFilename());
+            res.setData(data);
+        } catch (Exception e){
+            e.printStackTrace();
+            res.setCode(1);
+            res.setMsg("上传文件失败");
+            res.setData(null);
+        }
+        return res;
     }
 }
