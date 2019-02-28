@@ -33,4 +33,12 @@
         )
     </select>
 
+    <update id="updateUserSign">
+        UPDATE
+            user
+        SET
+            sign = #{sign}
+        WHERE
+            userId = #{userId}
+    </update>
 </mapper>

@@ -8,23 +8,23 @@
 
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
-    <script src="../../js/html5.min.js"></script>
-    <script src="../../js/respond.min.js"></script>
+    <script src="../js/html5.min.js"></script>
+    <script src="../js/respond.min.js"></script>
     <![endif]-->
 
-    <link rel="icon" href="../../img/czyh.png">
+    <link rel="icon" href="../img/czyh.png">
 
-    <link rel="stylesheet" href="../../layuiIM/css/layui.css"/>
-    <link rel="stylesheet" href="../../css/iziToast.min.css"/>
-    <link rel="stylesheet" href="../../css/bootstrap.modified.css"/>
+    <link rel="stylesheet" href="../layuiIM/css/layui.css"/>
+    <link rel="stylesheet" href="../css/iziToast.min.css"/>
+    <link rel="stylesheet" href="../css/bootstrap.modified.css"/>
 
-    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/jquery-1.11.0.min.js"></script>
 
-    <script src="../../js/deferredAjax.js"></script>
-    <script src="../../js/hanlinCommons.js"></script>
-    <script src="../../layuiIM/layui.js"></script>
-    <script src="../../js/iziToast.min.js"></script>
-    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../js/deferredAjax.js"></script>
+    <script src="../js/hanlinCommons.js"></script>
+    <script src="../layuiIM/layui.js"></script>
+    <script src="../js/iziToast.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
 </head>
 <body>
 <p>复制浏览器上面的地址，在别的地方也可打开，但需要重新登录，不会将当前登录账号挤下线</p>
@@ -49,27 +49,27 @@
         layim.config({
 
             init: {
-                url: '../message/init',
+                url: 'message/init',
                 type: 'post',
                 data: {}
             }, //获取主面板列表信息，下文会做进一步介绍
 
             //获取群员接口（返回的数据格式见下文）
             members: {
-                url: '../message/members', //接口地址（返回的数据格式见下文）
+                url: 'message/members', //接口地址（返回的数据格式见下文）
                 type: 'post', //默认get，一般可不填
                 data: {} //额外参数
             },
 
             //上传图片接口（返回的数据格式见下文），若不开启图片上传，剔除该项即可
             uploadImage: {
-                url: '../message/uploadImage', //接口地址
+                url: 'message/uploadImage', //接口地址
                 type: 'post' //默认post
             },
 
             //上传文件接口（返回的数据格式见下文），若不开启文件上传，剔除该项即可
             uploadFile: {
-                url: '../message/uploadFile', //接口地址
+                url: 'message/uploadFile', //接口地址
                 type: 'post' //默认post
             },
             //扩展工具栏，下文会做进一步介绍（如果无需扩展，剔除该项即可）
@@ -81,7 +81,7 @@
 
             //msgbox: layui.cache.dir + 'css/modules/layim/html/msgbox.html', //消息盒子页面地址，若不开启，剔除该项即可
             //find: layui.cache.dir + 'css/modules/layim/html/find.html', //发现页面地址，若不开启，剔除该项即可
-            //chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html' //聊天记录页面地址，若不开启，剔除该项即可
+            chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html' //聊天记录页面地址，若不开启，剔除该项即可
         });
         //监听自定义工具栏点击，以添加代码为例
         layim.on('tool(code)', function(insert, send, obj){ //事件中的tool为固定字符，而code则为过滤器，对应的是工具别名（alias）
@@ -123,6 +123,33 @@
 
 
         });
+        layim.on('sign', function(value){
+            console.log(value); //获得新的签名
+            HanLin.requestTypical("message/changeUserSign", {sign:value}, function (data){
+                data = JSON.parse(data);
+                if (data.flag){
+                    HanLin.success(data.message);
+                } else {
+                    HanLin.error(data.message);
+                }
+            }, "修改签名出错！")
+            //此时，你就可以通过Ajax将新的签名同步到数据库中了。
+        });
+        //每次窗口打开或切换，即更新对方的状态
+        /*layim.on('chatChange', function(res){
+            var type = res.data.type;
+            if(type === 'friend'){
+                layim.setChatStatus('<span style="color:#FF5722;">在线</span>'); //模拟标注好友在线状态
+            } else if(type === 'group'){
+                //模拟系统消息
+                layim.getMessage({
+                    system: true //系统消息
+                    ,id: 111111111
+                    ,type: "group"
+                    ,content: '贤心加入群聊'
+                });
+            }
+        });*/
         socket.onmessage = function (event){
             var data = event.data;
             data = JSON.parse(data);

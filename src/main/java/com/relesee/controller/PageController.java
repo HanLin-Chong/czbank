@@ -69,6 +69,12 @@ public class PageController {
         return "WEB-INF/view/advice.html";
     }
 
+    @RequiresPermissions( {"message"} )
+    @RequestMapping("/message")
+    public String message(){
+        logger.info("WEB-INF/view/message.html["+getUserId()+"]");
+        return "WEB-INF/view/message.html";
+    }
 
     @RequestMapping("/distribute")
     public String distribute(){

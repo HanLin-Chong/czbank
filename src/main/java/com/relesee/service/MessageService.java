@@ -2,6 +2,7 @@ package com.relesee.service;
 
 import com.relesee.dao.MessageDao;
 import com.relesee.dao.UserDao;
+import com.relesee.domains.Result;
 import com.relesee.domains.User;
 import com.relesee.domains.layim.*;
 import com.relesee.utils.FileUtil;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,5 +182,20 @@ public class MessageService {
             res.setData(null);
         }
         return res;
+    }
+
+    public Result changeUserSign(String sign){
+        Result result = new Result();
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        int count = messageDao.updateUserSign(sign, user.getUserId());
+        if (count == 1){
+            user.setSign(sign);
+            result.setFlag(true);
+            result.setMessage("签名修改成功");
+        } else {
+            result.setFlag(false);
+            result.setMessage("签名修改失败");
+        }
+        return result;
     }
 }

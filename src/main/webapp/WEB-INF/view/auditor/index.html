@@ -179,12 +179,8 @@
             currentUser = user;
             setTimeout(function (){
                 $("#userName").html(currentUser.userName);
-                var photoName = currentUser.headPhoto;
-                if (photoName == "default") {
-                    $("#headPhoto").attr("src", "../../img/userHeadPhotos/user_default_head.jpg");
-                } else {
-                    $("#headPhoto").attr("src", "../../img/userHeadPhotos/"+currentUser.userId+"/"+currentUser.headPhoto);
-                }
+                $("#headPhoto").attr("src", currentUser.headPhoto);
+
             },300);
             renderUpload(user);
         });
@@ -214,7 +210,7 @@
                 clearInterval(countDown);
                 layer.closeAll();
                 layer.msg("如果未弹出，可能是被浏览器拦截了，也可手动打开");
-                window.open("message", '_blank').location;
+                window.open("../message", '_blank').location;
             }
             countDownNumber--;
         },1000);
@@ -234,11 +230,10 @@
             auto: true,
             field: "headPhoto",
             done: function(data, index, upload){ //上传后的回调
-                console.log(data);
                 if (data.flag){
                     HanLin.success(data.message);
-                    currentUser.headPhoto = data.message;
-                    $("#headPhoto").attr("src", "../../img/userHeadPhotos/"+user.userId+"/"+data.result);
+                    currentUser.headPhoto = data.result;
+                    $("#headPhoto").attr("src", currentUser.headPhoto);
                 } else {
                     HanLin.error(data.message);
                 }

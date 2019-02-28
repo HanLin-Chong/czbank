@@ -168,7 +168,7 @@ public class MessageController {
         return JSON.toJSONString(addressList);
     }*/
 
-    @RequestMapping(value = "message/getUserAddress", produces = "text/plane;charset=utf-8")
+    /*@RequestMapping(value = "message/getUserAddress", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String getUserAddress(String userId, HttpServletRequest request){
         Result result = new Result();
@@ -182,6 +182,13 @@ public class MessageController {
             result.setFlag(true);
             result.setMessage(address);
         }
+        return JSON.toJSONString(result);
+    }*/
+
+    @RequestMapping( value = "message/changeUserSign", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String changeUserSign(String sign){
+        Result result = messageService.changeUserSign(sign);
         return JSON.toJSONString(result);
     }
 }

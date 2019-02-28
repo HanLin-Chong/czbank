@@ -26,15 +26,32 @@ public class SocketHandler implements WebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> webSocketMessage) throws Exception {
         //中转消息
+
         String content = webSocketMessage.getPayload().toString();
 
-        Message message = JSON.parseObject(content, Message.class);
-        message.setTimestamp(new Date());
-        String recipientId = message.getRecipientId();
 
-        TextMessage textMessage = new TextMessage(JSON.toJSONString(message));
-        WebSocketSession targetSession = sessions.get(recipientId);
-        targetSession.sendMessage(textMessage);
+        try {
+            Message message = JSON.parseObject(content, Message.class);
+            message.setTimestamp(new Date());
+            String recipientId = message.getRecipientId();
+
+            //将消息保存至数据库
+
+
+            //如果在线
+            if (sessions.containsKey(recipientId)){
+                TextMessage textMessage = new TextMessage(JSON.toJSONString(message));
+                WebSocketSession targetSession = sessions.get(recipientId);
+                targetSession.sendMessage(textMessage);
+            }
+
+
+        } catch (Exception e){
+
+            logger.info("socket“心跳”："+content);
+        }
+
+
     }
 
     @Override
