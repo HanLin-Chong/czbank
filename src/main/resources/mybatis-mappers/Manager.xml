@@ -8,7 +8,7 @@
 
     <insert id="insertAdvice">
         INSERT INTO
-            managerAdvice(
+            manageradvice(
                 managerId,
                 content,
                 time

@@ -129,6 +129,38 @@ public class AuditorController {
         return JSON.toJSONString(result);
     }
 
+    @RequestMapping(value="getAuditor", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String getAuditor(){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        Result<User> result = new Result<>();
+        if (StringUtils.equals(user.getRole(), "auditor")){
+            result.setFlag(true);
+            result.setMessage("当前Subject的角色为auditor");
+            result.setResult(user);
+        } else {
+            result.setFlag(false);
+            result.setMessage("当前Subject的角色不为auditor，无法获取用户信息，请注销后重新登录");
+        }
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "modifyPersonalInfo", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String modifyPersonalInfo(User user, HttpServletRequest request){
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        Result<User> result = auditorService.updatePersonalInformation(user);
+        return JSON.toJSONString(result);
+    }
+
+    @RequestMapping(value = "changePassword", produces = "text/plane;charset=utf-8")
+    @ResponseBody
+    public String changePassword(String oldPassword, String newPassword){
+        Result<User> result = auditorService.updatePassword(oldPassword, newPassword);
+        return JSON.toJSONString(result);
+    }
+
     @RequestMapping(value = "getNraQueue", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String getNraQueue(String fileName, String beginDate, String endDate){

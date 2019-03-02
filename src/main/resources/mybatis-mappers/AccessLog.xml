@@ -6,7 +6,7 @@
 <mapper namespace="com.relesee.dao.AccessLogDao">
     <insert id="insertLog" parameterType="com.relesee.domains.AccessLog">
         INSERT INTO
-            accessLog(
+            accesslog(
                 pageName,
                 userId,
                 time

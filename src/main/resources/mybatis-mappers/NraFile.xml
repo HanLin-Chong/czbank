@@ -307,7 +307,7 @@
         SELECT
             @count := COUNT(*) AS count
         FROM
-            nraFile
+            nrafile
         WHERE
             statusCode > 1
         AND
@@ -416,7 +416,7 @@
             SELECT
                 MAX(queueNo) max
             FROM
-                nraFile
+                nrafile
             WHERE
                 priorityStatus = 3
             AND
@@ -425,7 +425,7 @@
         SELECT
             @beMovedQueueNo := queueNo
         FROM
-            nraFile
+            nrafile
         WHERE
             id = #{id};
         UPDATE

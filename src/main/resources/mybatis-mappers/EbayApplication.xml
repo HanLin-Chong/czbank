@@ -8,7 +8,7 @@
 
     <insert id="insertApplication" parameterType="com.relesee.domains.EbayApplication">
         INSERT INTO
-            ebayApplication(
+            ebayapplication(
                 id,
                 paypalId,
                 businessName,

@@ -28,7 +28,7 @@
 </head>
 <body>
 <p>复制浏览器上面的地址，在别的地方也可打开，但需要重新登录，不会将当前登录账号挤下线</p>
-
+<button id="button" class="btn btn-primary">button</button>
 <script>
     var socket = HanLin.configSocket("localhost:8080/");
     socket.onopen = function (event){
@@ -151,10 +151,17 @@
             }
         });*/
         socket.onmessage = function (event){
+
             var data = event.data;
             data = JSON.parse(data);
             layim.getMessage(data);
+
+
         };
+        $("#button").click(function (){
+            var json = {"avatar":"http://127.0.0.1:8080/img/userHeadPhotos/a1/0b511fd80855d946de9257890e1ec9dc.jpg","content":"离线消息","fromid":"a1","id":"a1","mine":false,"recipientId":"m1","timestamp":1551523278000,"type":"friend","username":"审核员(开发用账号)"};
+            layim.getMessage(json);
+        });
     });
     $(document).ready(function (){
 

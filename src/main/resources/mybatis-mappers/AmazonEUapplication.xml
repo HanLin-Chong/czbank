@@ -8,7 +8,7 @@
 
     <insert id="insertApplication" parameterType="com.relesee.domains.AmazonEUapplication">
         INSERT INTO
-            amazonEUapplication(
+            amazoneuapplication(
                 id,
                 shopUrl,
                 shopId,

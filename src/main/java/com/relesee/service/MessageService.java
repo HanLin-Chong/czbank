@@ -99,12 +99,12 @@ public class MessageService {
         friendList.add(auditorGroup);
         friendList.add(rootGroup);
 
-        Group allMembers = new Group();
+        /*Group allMembers = new Group();
         allMembers.setId("0");
         allMembers.setGroupname("所有人");
         allMembers.setAvatar("default");
 
-        groupList.add(allMembers);
+        groupList.add(allMembers);*/
 
         data.setMine(mine);
         data.setFriend(friendList);

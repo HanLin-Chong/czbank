@@ -99,4 +99,5 @@
         AND
             status = #{statusCode};
     </select>
+
 </mapper>

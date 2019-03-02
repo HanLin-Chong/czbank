@@ -22,6 +22,10 @@ public class SocketHandler implements WebSocketHandler {
     @Autowired
     MessageDao messageDao;
 
+    public static Map<String, WebSocketSession> getSessions(){
+        return sessions;
+    }
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         User user = (User) session.getAttributes().get("user");
@@ -34,6 +38,8 @@ public class SocketHandler implements WebSocketHandler {
             for (Message message:unreceived){
                 TextMessage textMessage = new TextMessage(JSON.toJSONString(message));
 //                sessions.get(message.getRecipientId()).sendMessage(textMessage);
+                logger.debug("-----------------  发送离线消息  ------------------------------");
+                logger.debug(textMessage.getPayload());
                 session.sendMessage(textMessage);
             }
 
@@ -50,31 +56,43 @@ public class SocketHandler implements WebSocketHandler {
         try {
             Message message = JSON.parseObject(content, Message.class);
             message.setTimestamp(new Date());
-            String recipientId = message.getRecipientId();
+            if (message.getType().equals("group")){
+                //群组暂时不用了
+                /*String groupId = message.getRecipientId();
+                List<User> members = messageDao.selectGroupMembers(groupId);
+                for (User user:members){
+                    String id = user.getUserId();
+                    sessions.get(id).sendMessage(new TextMessage(JSON.toJSONString(message)));
+                }*/
 
-            if (sessions.containsKey(recipientId)){
-                WebSocketSession targetSession = sessions.get(recipientId);
-                if (targetSession.isOpen()){
-                    //如果在线
-                    int count = messageDao.insertMessage(message, MessageStatus.RECEIVED.getCode());
-                    if (count != 1){
-                        logger.error("在线消息插入数据库失败");
+            } else {
+                String recipientId = message.getRecipientId();
+
+                if (sessions.containsKey(recipientId)){
+                    WebSocketSession targetSession = sessions.get(recipientId);
+                    if (targetSession.isOpen()){
+                        //如果在线
+                        int count = messageDao.insertMessage(message, MessageStatus.RECEIVED.getCode());
+                        if (count != 1){
+                            logger.error("在线消息插入数据库失败");
+                        }
+                        TextMessage textMessage = new TextMessage(JSON.toJSONString(message));
+                        targetSession.sendMessage(textMessage);
+                    } else {
+                        int count = messageDao.insertMessage(message, MessageStatus.UNRECEIVED.getCode());
+                        if (count != 1){
+                            logger.error("离线消息插入数据库失败");
+                        }
                     }
-                    TextMessage textMessage = new TextMessage(JSON.toJSONString(message));
-                    targetSession.sendMessage(textMessage);
+
                 } else {
                     int count = messageDao.insertMessage(message, MessageStatus.UNRECEIVED.getCode());
                     if (count != 1){
                         logger.error("离线消息插入数据库失败");
                     }
                 }
-
-            } else {
-                int count = messageDao.insertMessage(message, MessageStatus.UNRECEIVED.getCode());
-                if (count != 1){
-                    logger.error("离线消息插入数据库失败");
-                }
             }
+
 
         } catch (Exception e){
             e.printStackTrace();

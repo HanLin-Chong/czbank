@@ -16,10 +16,23 @@ import org.apache.log4j.Logger;
 import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PdfUtil {
 
     private static final Logger logger = Logger.getLogger(PdfUtil.class);
+
+    private static Map<String, String> region = new HashMap();
+
+    static {
+        region.put("USD", "美元/USD");
+        region.put("EUR", "欧元/EUR");
+        region.put("GBP", "英镑/GBP");
+        region.put("JPY", "日元/JPY");
+        region.put("AUD", "澳大利亚元/AUD");
+        region.put("HKD", "港币/HKD");
+    }
 
     /**
      * destination包括文件名和后缀！！
@@ -157,7 +170,7 @@ public class PdfUtil {
         cell_0_4.setUseAscender(true);
         cell_0_4.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
         table.addCell(cell_0_4);
-        PdfPCell cell_1_4 = new PdfPCell(new Paragraph(feedback.getCurrency(), tableRight));
+        PdfPCell cell_1_4 = new PdfPCell(new Paragraph(region.get(feedback.getCurrency()), tableRight));
         //cell_1_4.setBackgroundColor(BaseColor.RED);
         cell_1_4.setUseAscender(true);
         cell_1_4.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);

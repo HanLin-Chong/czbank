@@ -5,6 +5,7 @@ import com.relesee.dao.AmazonUSdao;
 import com.relesee.dao.EbayApplicationDao;
 import com.relesee.dao.ForeignFeedbackDao;
 import com.relesee.domains.*;
+import com.relesee.socket.SocketHandler;
 import com.relesee.utils.ExcelUtil;
 import com.relesee.utils.FileUtil;
 import com.relesee.utils.MailUtil;
@@ -17,6 +18,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -25,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ForeignFeedBackService {
@@ -76,7 +80,7 @@ public class ForeignFeedBackService {
                     //先判断是ebay的还是AmazonUS的
                 String accName = feedback.getAccName();
                 String businessName = "";
-                String id = "";
+                String managerId = "";
                 String recipientMail = "";
                 PdfParameters pdfParameters = new PdfParameters();
 
@@ -86,7 +90,8 @@ public class ForeignFeedBackService {
                     if (applications.size() == 1){
                         AmazonUSapplication application = applications.get(0);
                         businessName = application.getBusinessName();
-                        id = application.getId();
+
+                        managerId = application.getManagerId();
                         recipientMail = application.getAmazonMail();
                         pdfParameters.setCzbankAcc(application.getRecipientAcc());
                         pdfParameters.setCzbankAccName(application.getRecipientAccName());
@@ -99,7 +104,7 @@ public class ForeignFeedBackService {
                     if (applications.size() == 1){
                         EbayApplication application = applications.get(0);
                         businessName = application.getBusinessName();
-                        id = application.getId();
+                        managerId = application.getManagerId();
                         recipientMail = application.getPaypalId();
                         pdfParameters.setCzbankAcc(application.getRecipientAcc());
                         pdfParameters.setCzbankAccName(application.getRecipientAccName());
@@ -132,6 +137,10 @@ public class ForeignFeedBackService {
                     result.setFlag(false);
                     result.setMessage("处理失败");
                 }
+                //通知客户经理
+                Map<String, WebSocketSession> sessions =  SocketHandler.getSessions();
+                String payload = "{system:true,content:\"您的申请已经收到外行反馈\"}";
+                sessions.get(managerId).sendMessage(new TextMessage(payload));
             }
             int count = foreignFeedbackDao.insertFeedback(list);
             if (count >= 1){
@@ -141,6 +150,9 @@ public class ForeignFeedBackService {
                 result.setFlag(false);
                 result.setMessage("处理失败，条数小于1");
             }
+
+
+
         } catch (IOException e) {
             e.printStackTrace();
             result.setFlag(false);
@@ -151,7 +163,7 @@ public class ForeignFeedBackService {
             result.setMessage("处理失败");
         }
 
-        //通知客户经理，等待消息模块的完成
+
 
         return result;
     }
