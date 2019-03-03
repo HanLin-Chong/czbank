@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AmazonUS开户申请管理</title>
+    <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+
+    <script src="../../js/hanlinCommons.js"></script>
+    <script src="../../js/deferredAjax.js"></script>
+    <script src="../../js/bootstrapValidator.min.js"></script>
+    <style>
+        .layui-form-switch{/* 解决layui与bootstrap的样式冲突 */
+            height:25px!important;
+            margin-top: 0px;
+        }
+        .hanlin-vertical-line{
+            display: inline !important;
+            border-right: solid 1px #c2c2c2;
+            height: auto;
+            margin: 0px 10px 0px 10px;
+        }
+        .form-group{
+            width: 100%
+        }
+    </style>
+</head>
+<body>
+<div class="col-lg-12">
+    <br/><br/>
+</div>
+<div class="col-lg-8 layui-form">
+    <label>当前申请操作完成后自动加载新的申请：</label>
+    <input id="autoLoadSetting" type="checkbox" lay-filter="validatorSetting" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
+    <div class="hanlin-vertical-line"></div>
+</div>
+
+<div class="col-lg-1">
+    <button id="newApp" class="btn btn-primary">获取申请</button>
+</div>
+<div class="col-lg-1">
+    <button id="refuseApplication" class="btn btn-danger">作废申请</button>
+</div>
+<div class="col-lg-1">
+    <button id="passApplication" class="btn btn-success">申请通过</button>
+</div>
+<div class="col-lg-1"></div>
+<div class="col-lg-12">
+    <hr/>
+</div>
+<div id="formArea" class="col-lg-4">
+    <button id="submit" class="btn btn-primary">保存修改</button>
+    <br/>
+    <form id="form">
+        <div id="container1" class="input-group form-group">
+            <label>Amazon注册邮箱</label>
+            <input name="amazonMail" type="text" class="form-control" placeholder="example@org.domain"/>
+        </div>
+        <div id="container2" class="input-group form-group margin-top-20">
+            <label>境外账户名称(Amazon店铺名称)</label>
+            <input name="businessName" type="text" class="form-control" placeholder="若为中文名称请以拼音格式填写" aria-describedby="basic-addon3"/>
+        </div>
+        <div id="container3" class="input-group form-group margin-top-20">
+            <label>Amazon店铺链接</label>
+            <input name="shopUrl" type="text" class="form-control" placeholder="https://www.amazon.com/..."/>
+        </div>
+        <div id="container4" class="input-group form-group margin-top-20">
+            <label>Amazon店铺名称</label>
+            <input name="shopName" type="text" class="form-control" placeholder="请填写amazon店铺名称"/>
+        </div>
+        <div id="container5" class="input-group form-group margin-top-20">
+            <label>境外账户申请人姓名</label>
+            <input name="applicantName" type="text" class="form-control" placeholder="请填写境外账户申请人姓名"/>
+        </div>
+        <div id="container6" class="input-group form-group margin-top-20">
+            <label>境外账户申请人证件号码</label>
+            <input name="applicantId" type="text" class="form-control" placeholder="请填写申请人证件号"/>
+        </div>
+        <div id="container7" class="input-group form-group margin-top-20">
+            <label>境内收款账号</label>
+            <input name="recipientAcc" type="text" class="form-control" placeholder="请填写境内收款账号"/>
+        </div>
+        <div id="container8" class="input-group form-group margin-top-20">
+            <label>境内收款人户名</label>
+            <input name="recipientAccName" type="text" class="form-control" placeholder="请填写境内收款人户名"/>
+        </div>
+        <div id="container9" class="input-group form-group margin-top-20">
+            <label>境内收款人证件号码</label>
+            <input name="recipientId" type="text" class="form-control" placeholder="请填写收款人证件号"/>
+        </div>
+        <div id="cojntainer10" class="input-group form-group margin-top-20">
+            <label>详细联系地址</label>
+            <input name="address" type="text" class="form-control" placeholder="请填写联系地址"/>
+        </div>
+        <div id="container11" class="input-group form-group margin-top-20">
+            <label>所属客户经理</label>
+            <input name="managerName" placeholder="请填写客户经理姓名" type="text" class="form-control"/>
+        </div>
+        <div id="container12" class="input-group form-group margin-top-20">
+            <label>客户经理所属机构</label>
+            <input name="managerDepartment" placeholder="请填写XX支行字样" type="text" class="form-control"/>
+        </div>
+        <div id="container13" class="input-group form-group margin-top-20">
+            <label>客户经理工号</label>
+            <input name="managerId" placeholder="请填写客户经理工号" type="text" class="form-control"/>
+        </div>
+    </form>
+</div>
+<div id="iframeArea" class="col-lg-8" style="height: 100%">
+    <button class="btn btn-primary" id="reloadApplicationFile">重新加载申请文件</button>
+    <div id="frameHeight"></div>
+    <iframe id="iframeApplicationFile" style="height: 100%;width: 100%;">
+
+    </iframe>
+</div>
+<div id="transactionRecordArea" class="col-lg-12" style="height: 100%;">
+    <button class="btn btn-primary" id="reloadTransactionRecord">重新加载交易记录</button>
+    <div id="frameHeight2"></div>
+    <iframe id="iframeTransactionRecord" style="height: 100%;width: 100%;">
+
+    </iframe>
+</div>
+
+
+<script>
+    var temp = "http://ow365.cn/?i=17855&furl=http://120.79.246.240:8080/files/ebay/d51ac6548861431aa0c53976850c996a/规则汇总.docx";
+    var temp2 = "http://ow365.cn/?i=17855&furl=http://120.79.246.240:8080/files/ebay/d51ac6548861431aa0c53976850c996a/＊if(2).xls";
+    var applicationFileUrl = null;
+    var transactionRecordUrl = null;
+    var currentData = null;
+    $(document).ready(function (){
+        layui.form.render();
+        $("#newApp").click(function (){
+            newApplication();
+        });
+        layui.slider.render({
+            elem: "#frameHeight",
+            value: 50,
+            change: function (value){
+                $("#iframeArea").css("height", (100+(value-50))*1+"%");
+            }
+        });
+        layui.slider.render({
+            elem: "#frameHeight2",
+            value: 50,
+            change: function (value){
+                $("#transactionRecordArea").css("height", (100+(value-50))*1+"%");
+            }
+        });
+        var validator = $("#form").bootstrapValidator({
+            //message: '不正确的内容',
+            live: 'enabled',
+            container: 'tooltip',
+            submitButtons: '#submit',
+            excluded: [':disabled', ':hidden', ':not(:visible)'],
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                amazonMail: {
+                    container: "#container1",
+                    validators: {
+                        notEmpty: {
+                            message: 'Amazon邮箱为必填项'
+                        },
+                        emailAddress: {
+                            message: '请输入正确的邮箱格式'
+                        },
+                        stringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        },
+                    },
+
+                },
+                businessName: {
+                    container: "#container2",
+                    validators: {
+                        notEmpty: {
+                            message: '境外账户名称为必填项'
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                shopUrl: {
+                    container: "#container3",
+                    validators: {
+                        notEmpty: {
+                            message: '店铺链接为必填项'
+                        },
+                        uri: {
+                            message: "请输入正确的URL地址"
+                        },
+                        callback: {
+                            callback: function (value, validatorIn){
+                                if (!value.match("amazon.com")){
+
+                                    return {
+                                        valid: false,
+                                        message: "url需要包含amazon.com"
+                                    };
+                                } else {
+                                    return true;
+                                }
+                            }
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                shopName: {
+                    container: "#container4",
+                    validators: {
+                        notEmpty: {
+                            message: "Amazon店铺名称为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    },
+
+                },
+                applicantName: {
+                    container: "#container5",
+                    validators: {
+                        notEmpty: {
+                            message: "境外账户申请人姓名为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    },
+
+                },
+                applicantId: {
+                    container: "#container6",
+                    validators: {
+                        notEmpty: {
+                            message: "境外账户申请人证件号码为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过30",
+                            max: 30
+                        },
+                    }
+                },
+                recipientAcc: {
+                    container: "#container7",
+                    validators: {
+
+                        stringLength: {
+                            message: '长度在20-25之间',
+                            max: 25,
+                            min: 20
+                        },
+                        notEmpty: {
+                            message: "境内收款账号为必填项"
+                        },
+                    }
+                },
+                recipientAccName: {
+                    container: "#container8",
+                    validators: {
+                        notEmpty: {
+                            message: "境内收款人户名为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                recipientId: {
+                    container: "#container9",
+                    validators: {
+
+                        stringLength: {
+                            message: "长度不得超过18",
+                            max: 18
+                        },
+                        notEmpty: {
+                            message: "境内收款人证件号码为必填项"
+                        },
+                    }
+                },
+                address: {
+                    container: "#container10",
+                    validators: {
+                        notEmpty: {
+                            message: "详细联系地址为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    }
+                },
+                managerName: {
+                    container: "#container11",
+                    validators: {
+                        notEmpty: {
+                            message: "所属客户经理为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                },
+                managerDepartment: {
+                    container: "#container12",
+                    validators: {
+                        notEmpty: {
+                            message: "客户经理所属机构为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过8",
+                            max: 8
+                        },
+                    }
+                },
+                managerId: {
+                    container: "#container13",
+                    validators: {
+                        notEmpty: {
+                            message: "客户经理工号为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                }
+
+            }
+
+        });
+        $("#form").bootstrapValidator('resetForm');
+        $("#reloadApplicationFile").click(function (){
+            $("#iframeApplicationFile").attr("src", applicationFileUrl);
+        });
+        $("#reloadTransactionRecord").click(function (){
+            $("#iframeTransactionRecord").attr("src", transactionRecordUrl);
+        });
+        $("#refuseApplication").click(function (){
+            if (currentData == null){
+
+            } else {
+                HanLin.requestTypical("c/amazonUSRefused", {id: currentData.id}, function (data){
+                    data = JSON.parse(data);
+                    if (data.flag){
+                        HanLin.success(data.message);
+                        if ($("#autoLoadSetting").is(":checked")){
+                            clearAll();
+                            newApplication();
+                        } else {
+                            clearAll();
+                        }
+                        currentData = null;
+                    } else {
+                        HanLin.error(data.message);
+                    }
+                }, "拒绝amazonUS申请时服务器端出错");
+            }
+
+        });
+        $("#passApplication").click(function (){
+            if (currentData == null){
+
+            } else {
+                HanLin.requestTypical("c/amazonUSPassed", {id: currentData.id}, function (data){
+                    data =  JSON.parse(data);
+                    if (data.flag){
+                        HanLin.success(data.message);
+                        if ($("#autoLoadSetting").is(":checked")){
+                            clearAll();
+                            newApplication();
+                        } else {
+                            clearAll();
+                        }
+                    } else {
+                        HanLin.error(data.message);
+                    }
+                }, "通过AmazonUS申请时服务器端出错");
+            }
+        });
+
+        $("#submit").click(function (){
+            var data = HanLin.getFrom("#form");
+            var id = currentData.id;
+            data.push({name:"id", value:id});
+            HanLin.requestTypical("c/updateAmazonUSapplication" , data, function(data){
+                data = JSON.parse(data);
+                if (data.flag){
+                    HanLin.success(data.message);
+                } else {
+                    HanLin.error(data.message);
+                }
+            }, "更改申请信息时服务器端出错");
+        });
+    });
+    function newApplication(){
+        var index = layer.load(2, {time: 10*1000});
+        HanLin.requestTypical("c/getOneAmazonUSapplication", {}, function (data){
+            data = JSON.parse(data);
+            if (data.flag){
+                HanLin.success(data.message);
+                //先给表单赋值
+                var formData = data.result;
+                currentData = formData;
+                HanLin.setForm(formData, "#form");
+                //加载word
+                var applicationFileName = formData.applicationFileName;
+                applicationFileUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/amazon/us/"+formData.id+"/"+applicationFileName;
+                $("#iframeApplicationFile").attr("src", applicationFileUrl);
+                //交易记录
+                var transactionRecordName = formData.transactionRecordName;
+                transactionRecordUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/amazon/us/"+formData.id+"/"+transactionRecordName;
+                $("#iframeTransactionRecord").attr("src", transactionRecordUrl);
+            } else {
+                HanLin.error(data.message);
+            }
+            layer.close(index);
+        }, "获取未处理的申请数量时服务器端出错，可能的原因是没有可以处理的申请");
+    }
+    function clearAll(){
+        $("#form")[0].reset();
+    }
+
+</script>
+</body>
+</html>

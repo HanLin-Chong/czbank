@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AmazonUS申请台账</title>
+    <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" href="../../layui/css/layui.css"/>-->
+
+
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+
+    <script src="../../js/hanlinCommons.js"></script>
+    <!--<script src="../../layui/layui.all.js"></script>-->
+    <script src="../../js/deferredAjax.js"></script>
+</head>
+<body>
+<div class="col-lg-12"><br/></div>
+
+<div class="col-lg-12">
+    <table id="amazonUShistories"></table>
+</div>
+<div class="col-lg-12">
+    <div class="input-group">
+        <input id="key" type="text" class="form-control" placeholder="支持检索的字段：amazon注册邮箱、境外账户名称、店铺名、申请人姓名、收款人户名、经理姓名"/>
+        <span class="input-group-btn">
+                <button id="search" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+        </span>
+    </div>
+</div>
+<div class="col-lg-12">
+    <table id="searchResult"></table>
+</div>
+<script>
+    $(document).ready(function (){
+
+        layui.table.render({
+            elem: "#amazonUShistories",
+            title: "AmazonUS申请历史",
+            url: "c/getAmazonUShistory",
+            totalRow: true,
+            //where:{},
+            loading: true,
+            page: true,
+            autoSort: false,
+            toolbar: "<strong>所有申请记录</strong>",
+            defaultToolbar: ["filter", "exports", "print"],
+            data: [],
+            cols: [[
+                {field: 'amazonMail', title: '亚马逊注册邮箱', width: 160, align: 'center'},
+                {field: 'businessName', title: '境外账户名称', width: 150, align: 'center'},
+                {field: 'shopUrl', title: '店铺链接', width: 150},
+                {field: 'shopName', title: '店铺名', width: 150},
+                {field: 'applicantName', title: '申请人姓名', width: 100, align: 'center'},
+                {field: 'applicantId', title: "申请人证件号码", width: 150},
+                {field: 'recipientAcc', title:'境内收款账号', width:170, align: 'center'},
+                {field: 'recipientAccName', title: '境内收款户名', width:100},
+                {field: 'recipientId', title: '境内收款人证件号码', width:150},
+                {field: 'address', title: '详细联系地址', width:150},
+                {field: 'managerName', title: '经理姓名', width:100},
+                {field: 'managerDepartment', title: '经理所在部门', width:120},
+                {field: 'managerId', title: '经理工号', width:150},
+                {field: 'applicationFileName', title: '申请文件', width:150,
+                    templet: function(d){
+                        return "<a href='c/downloadAmazonUS/"+d.id+"/"+d.applicationFileName+"'>"+d.applicationFileName+"</a>";
+                    }
+                },
+                {field: 'transactionRecordName', title: '交易记录', width:150,
+                    templet: function(d){
+                        if (d.transactionRecordName != "" && d.transactionRecordName != null && d.transactionRecordName != undefined) {
+                            return "<a href='c/downloadAmazonUS/" + d.id + "/" + d.transactionRecordName + "'>" + d.transactionRecordName + "</a>";
+                        } else {
+                            return "";
+                        }
+                    }
+                },
+                {field: 'uploadTime', title: '申请提交时间', width:150},
+                {field: 'auditor', title: '负责审核员', width:60},
+                {field: 'foundTime', title: '账户开通时间（之后是反馈内容）', width:150},
+                {field: 'accName', title: '境外账户名称', width:150},
+                {field: 'acc', title: '境外账户账号', width:150},
+                {field: 'currency', title: '币种', width:60},
+                {field: 'foreignBank', title: '开户行', width:150},
+                {field: 'routing', title: '境外银行代码', width:150},
+                {field: 'postScript', title: '附言', width:150},
+                {field: 'note', title: '备注', width:150}
+            ]]
+        });
+
+
+        layui.table.render({
+            elem: "#searchResult",
+            title: "AmazonUS申请历史",
+            //url: "c/searchEbayHistory",
+            totalRow: true,
+            //where:{},
+            loading: true,
+            page: true,
+            autoSort: false,
+            toolbar: "<strong>搜索结果</strong>",
+            defaultToolbar: ["filter", "exports", "print"],
+            data: [],
+            cols: [[
+                {field: 'amazonMail', title: '亚马逊注册邮箱', width: 160, align: 'center'},
+                {field: 'businessName', title: '境外账户名称', width: 150, align: 'center'},
+                {field: 'shopUrl', title: '店铺链接', width: 150},
+                {field: 'shopName', title: '店铺名', width: 150},
+                {field: 'applicantName', title: '申请人姓名', width: 100, align: 'center'},
+                {field: 'applicantId', title: "申请人证件号码", width: 150},
+                {field: 'recipientAcc', title:'境内收款账号', width:170, align: 'center'},
+                {field: 'recipientAccName', title: '境内收款户名', width:100},
+                {field: 'recipientId', title: '境内收款人证件号码', width:150},
+                {field: 'address', title: '详细联系地址', width:150},
+                {field: 'managerName', title: '经理姓名', width:100},
+                {field: 'managerDepartment', title: '经理所在部门', width:120},
+                {field: 'managerId', title: '经理工号', width:150},
+                {field: 'applicationFileName', title: '申请文件', width:150,
+                    templet: function(d){
+                        return "<a href='c/downloadAmazonUS/"+d.id+"/"+d.applicationFileName+"'>"+d.applicationFileName+"</a>";
+                    }
+                },
+                {field: 'transactionRecordName', title: '交易记录', width:150,
+                    templet: function(d){
+                        if (d.transactionRecordName != "" && d.transactionRecordName != null && d.transactionRecordName != undefined) {
+                            return "<a href='c/downloadAmazonUS/" + d.id + "/" + d.transactionRecordName + "'>" + d.transactionRecordName + "</a>";
+                        } else {
+                            return "";
+                        }
+                    }
+                },
+                {field: 'uploadTime', title: '申请提交时间', width:150},
+                {field: 'auditor', title: '负责审核员', width:60},
+                {field: 'foundTime', title: '账户开通时间（之后是反馈内容）', width:150},
+                {field: 'accName', title: '境外账户名称', width:150},
+                {field: 'acc', title: '境外账户账号', width:150},
+                {field: 'currency', title: '币种', width:60},
+                {field: 'foreignBank', title: '开户行', width:150},
+                {field: 'routing', title: '境外银行代码', width:150},
+                {field: 'postScript', title: '附言', width:150},
+                {field: 'note', title: '备注', width:150}
+            ]]
+        });
+        $("#search").click(function (){
+            reloadTableData();
+        });
+    });
+    function reloadTableData(){
+        var index = layer.load(2, {time: 10*1000});
+        HanLin.requestTypical("c/searchAmazonUShistory", {key:$("#key").val()}, function (data){
+            data = JSON.parse(data);
+            layer.close(index);
+            layui.table.reload("searchResult", {
+                data: data
+            });
+        }, "请求搜索信息失败");
+    }
+</script>
+</body>
+</html>

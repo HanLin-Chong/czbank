@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--
+            3.配置shiro过滤器
+            3.1) id必须和web.xml中配置的shiroFilter filterName一致.
+        -->
+    <bean class="org.apache.shiro.spring.web.ShiroFilterFactoryBean" id="shiroFilter">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="unauthorizedUrl" value="/error/1"/>
+        <property name="loginUrl" value="/error/1"/><!-- 可以跳转到登录页/login，但是我强迫症一定要跳到/error/1 -->
+        <property name="filterChainDefinitions">
+            <value>
+                <!--加载静态资源-->
+                / = anon
+                /login = anon
+                /error = anon
+                /forgetPassword = anon
+                /advice = anon
+                /logout = anon
+                <!--除以上配置外，其他请求全部必须认证-->
+                /distribute = authc
+                /manager/** = authc
+                /auditor/** = authc
+            </value>
+        </property>
+    </bean>
+
+
+
+    <!--
+        2.启用Spring IOC容器Shiro注解，但必须配置了lifecycleBeanPostProcessor后才可以使用
+        代理器混乱：https://blog.csdn.net/xw12138/article/details/79802191
+    -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+        <property name="proxyTargetClass" value="true"/>
+    </bean>
+
+    <!--
+        3.开启Spring AOP Shiro注解支持
+    -->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+
+    <!--
+       1.配置SecurityManager
+   -->
+    <bean class="org.apache.shiro.web.mgt.DefaultWebSecurityManager" id="securityManager">
+        <!--<property name="authenticator" ref="shiroRealm"/>-->
+        <property name="realm" ref="shiroRealm"/>
+        <property name="cacheManager" ref="cacheManager"/>
+    </bean>
+
+    <!--
+        2.配置realm
+        2.1) 使用实现了org.apache.shiro.realm.Realm接口的realm
+    -->
+
+    <bean id="shiroRealm" class="com.relesee.service.ShiroService">
+        <property name="cacheManager" ref="cacheManager"/>
+
+    </bean>
+
+    <!-- 用户授权信息系缓存-->
+    <bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"/>
+
+    <!--Shiro配置-->
+    <!--
+        1.配置lifecycleBeanPostProcessor，可以在Spring IOC容器中调用shiro的生命周期方法.
+    -->
+    <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor" id="lifecycleBeanPostProcessor" />
+</beans>

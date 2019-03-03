@@ -1,0 +1,109 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>客户经理主页</title>
+    <!-- 禁止用户缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <link rel="icon" href="../../img/czyh.png">
+    <link rel="stylesheet" href="../../css/normalize.css"/>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css"/>
+    <!-- iziToast -->
+    <link rel="stylesheet" href="../../css/iziToast.min.css"/>
+    <link rel="stylesheet" href="../../css/jquery.mCustomScrollbar.min.css" />
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/iziToast.min.js"></script>
+    <script src="../../js/deferredAjax.js"></script>
+    <script src="../../js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="../../js/custom.js"></script>
+
+</head>
+<body>
+
+<div class="page-wrapper">
+    <nav id="sidebar" class="sidebar-wrapper" style="z-index:999">
+        <div class="sidebar-content">
+            <a href="#" id="toggle-sidebar"><i class="fa fa-bars"></i></a>
+            <div class="sidebar-brand">
+                <a href="#">客户经理</a>
+            </div>
+            <div class="sidebar-header">
+                <div class="user-pic">
+                    <img class="img-responsive img-rounded" src="../../img/user_default_head.jpg" alt="">
+                </div>
+                <div class="user-info">
+                    <span class="user-name">姓名：</span><!-- 名 <strong>姓</strong> -->
+                    <span class="user-role">工号：</span>
+                    <span class="user-role">机构号：</span>
+                    <div class="user-status">
+                        <a href="#"><span class="label label-success mylabelgroup">账号状态：</span></a>
+
+                    </div>
+                </div>
+            </div><!-- sidebar-header  -->
+            <div class="sidebar-search">
+                <div>
+                    <div class="input-group">
+                        <input type="text" class="form-control search-menu" placeholder="搜索功能暂未开放">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div><!-- sidebar-search  -->
+            <div class="sidebar-menu">
+                <ul>
+                    <li class="header-menu"><span>业务处理</span></li>
+
+                    <li class="sidebar-dropdown">
+
+                        <a  href="#" ><i class="fa fa-file"></i><span>NRA模块</span></a>
+                        <div class="sidebar-submenu">
+                            <ul>
+                                <li class="pageloder-trigger"  whichpage="Manager_NRA_upload.html"><a href="#">上传资料 </a> </li>
+
+                                <li class="pageloder-trigger" whichpage="Manager_NRA_queue.html"><a href="#">审核队列</a></li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+
+                    <li class="" whichpage="">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-plus"></i>
+                            <span>账户申请</span>
+                        </a>
+                    </li>
+                    <!--  <li class="header-menu"><span>Simple menu</span></li>
+                    <li><a href="#"><i class="fa fa-tv"></i><span>用户权限管理</span></a></li>
+
+                    -->
+
+                </ul>
+            </div><!-- sidebar-menu  -->
+        </div><!-- sidebar-content  -->
+
+        <div class="sidebar-footer">
+            <a id="notifications-trigger" href="message.jsp" target="_blank" title="消息中心"><i class="fa fa-bell"></i></a>
+            <a id="message_send_and_history_message" title="发送消息"><i class="glyphicon glyphicon-list-alt"></i></a>
+
+            <a title="退出当前账号" href="/logout"><i class="fa fa-power-off"></i></a>
+        </div>
+    </nav><!-- sidebar-wrapper  -->
+    <main class="page-content">
+
+
+
+    </main><!-- page-content" -->
+</div><!-- page-wrapper -->
+
+
+
+<script>
+    $(document).ready(function(){
+
+    });
+</script>
+</body>
+</html>

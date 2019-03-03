@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>审核队列</title>
+    <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" href="../../layui/css/layui.css"/>-->
+
+
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+
+    <script src="../../js/hanlinCommons.js"></script>
+    <!--<script src="../../layui/layui.all.js"></script>-->
+    <script src="../../js/deferredAjax.js"></script>
+    <style>
+        .layui-form-switch{/* 解决layui与bootstrap的样式冲突 */
+            height:25px!important;
+            margin-top: 0px;
+        }
+        .hanlin-vertical-line{
+            display: inline !important;
+            border-right: solid 1px #c2c2c2;
+            height: auto;
+            margin: 0px 10px 0px 10px;
+        }
+        .overflow-nextline { table-layout:fixed; word-break:break-all; overflow:hidden; }
+
+    </style>
+</head>
+<body class="row">
+
+<div class="col-lg-12 layui-form" lay-filter="controlForm" style="margin-top: 30px; margin-bottom: 30px;">
+    <label>拒绝申请询问：</label>
+    <input id="askBeforeRefuse" type="checkbox" lay-filter="askBeforeRefuse" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
+    <div class="hanlin-vertical-line"></div>
+    <label>申请通过询问：</label>
+    <input id="askBeforePass" type="checkbox" lay-filter="askBeforePass" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
+    <div class="hanlin-vertical-line"></div>
+    <label>释放申请询问：</label>
+    <input id="askBeforeRelease" type="checkbox" lay-filter="askBeforePass" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
+    <br/>
+    <br/>
+    <div class="input-group">
+        <span class="input-group-addon">批量获取待审核文件(不超过10，默认5)：</span>
+        <input id="amount" type="text" class="form-control" value="5" placeholder="请输入数量(<=10)"/>
+        <span class="input-group-btn">
+            <button id="getForAudit" class="btn btn-primary" type="button">锁定申请并开始审核</button>
+        </span>
+    </div><!-- /input-group -->
+
+</div><!-- /.col-lg-6 -->
+
+<hr/>
+
+
+<div class="col-lg-12">
+
+    <ul id="auditList" class="list-group">
+        <li style="text-align: center">加载中。。。</li>
+    </ul>
+</div>
+<hr/>
+<div class="col-lg-3">
+    <div class="input-group">
+        <span class="input-group-addon">文件名过滤</span>
+        <input type="text" id="fileNameFilter" class="form-control" placeholder="文件名过滤"/>
+
+        <!--<span class="input-group-btn">
+            <button lay-filter="search" class="btn btn-primary" type="button">查找</button>
+        </span>-->
+    </div><!-- /input-group -->
+</div>
+<div class="col-lg-7">
+    <div class="input-group">
+        <span class="input-group-addon">时间区间过滤</span>
+        <input type="text" id="dateFilterBegin" class="form-control" placeholder="开始时间"/>
+        <span class="input-group-addon">至</span>
+        <input type="text" id="dateFilterEnd" class="form-control" placeholder="不填则搜索开始时间当天的申请"/>
+    </div>
+</div>
+<div class="col-lg-2">
+    <button id="search" class="btn btn-primary">过滤</button>
+    <button id="refresh" class="btn btn-success">刷新队列</button>
+</div>
+<div class="col-lg-12">
+    <table id="queue" lay-filter="nra"></table>
+</div>
+
+<script>
+
+var lockedCount = 0;
+var listData = null;
+$(document).ready(function (){
+    iziToast.destroy();
+    layui.form.render();
+
+    $("#getForAudit").attr("disabled", "disabled");
+    $("#getForAudit").html("初始化中。。");
+
+    HanLin.requestTypical("c/getLockedNra", {}, function (data){
+        data = JSON.parse(data);
+        console.log(data);
+        var list = data.result;
+        var length = list.length;
+        listData = list;
+        if (length > 0){
+            HanLin.warn("您有"+length+"条已锁定的申请未处理");
+            renderList(list);
+
+        } else {
+            $("#auditList").html("<li style='text-align: center'>没有被锁定的申请</li>");
+            enableGetAudit();
+        }
+    }, "获取已锁定的申请时出错");
+
+
+
+    HanLin.requestTypical("c/getNraQueue", {}, function (data){
+        data = JSON.parse(data);
+        console.log(data);
+        layui.table.render({
+            elem: "#queue",
+            title: "NRA队列",
+            loading: true,
+            //url: "/cManager/c/getQueueBetween",
+            page: true,
+            autoSort: false,
+            cols: [[
+                {field: 'queueNo', title: '-', width: 40, fixed: 'left'},
+                {field: 'statusCode', title: '状态', width: 150, align: 'center',
+                    templet: function (d){
+                        switch (d.statusCode) {
+                            case HanLin.nraStatus.QUEUING:
+                                return "<p style='color: deepskyblue'>排队中</p>";
+                            case HanLin.nraStatus.LOCKED:
+                                return "<p style='color: #c5b2d0'>已锁定</p>";
+                            case HanLin.nraStatus.PASS:
+                                return "<p style='color: #5eb95e'>审核通过</p>";
+                            case HanLin.nraStatus.REFUSED:
+                                return "<p style='color: red'>审核未通过</p>";
+                            case HanLin.nraStatus.CANCELED:
+                                return "<p style='color: #000;'>主动撤销</p>";
+                        }
+                    }
+                },
+                {field: 'priorityStatus', title: '插队', width: 100, align:'center',
+                    templet: function (d){
+                        switch (d.priorityStatus){
+                            case HanLin.nraPriorityStatus.NORMAL:
+                                return "<p>-</p>";
+                            case HanLin.nraPriorityStatus.WAITING:
+                                return "<p>申请中</p>";
+                            case HanLin.nraPriorityStatus.PRIORITY:
+                                return "<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>";
+                            case HanLin.nraPriorityStatus.REFUSED:
+                                return "<span class='glyphicon glyphicon-remove' style='color: #be2924;'</span>";
+                        }
+                    }
+                },
+                /*{title: '操作', width:140, align: 'center',
+                    templet: function (d){
+                        return "<button class='refuse btn btn-danger' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>拒绝</button> " +
+                            "<button class='pass btn btn-success' nraFileId='"+d.id+"' uploadTime='"+d.uploadTime+"' fileName='"+d.fileName+"' style='height: 25px;line-height: 10px;'>通过</button>";
+
+                    }
+                },*/
+                {field: 'fileName', title: '文件名', width:200,
+                    /*templet: function (d){
+                        return '<a target="_blank" href="c/downloadNraFile/'+d.id+'">'+d.fileName+'</a>';
+                    }*/
+                },
+                {field: 'note', title: '备注', width: 200},
+                {field: 'qualityCustomer', title: '优质客户', width:100, align: 'center',
+                    templet: function (d){
+                        return d.qualityCustomer?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>":"-";
+                    }
+                },
+                {field: 'priority', title: '插队', width: 80, align: 'center',
+                    templet: function (d){
+                        return d.priority?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e'></span>":"-";
+                    }
+                },
+                {field: 'uploadTime', title: '上传时间', width:160, align: 'center'},
+                {field: 'userName', title: '上传者', width: 120, align: 'center'},
+
+                {field: 'id', title: 'ID', width:280},
+            ]],
+            toolbar: "<strong>审核队列</strong>",
+            defaultToolbar: ["filter", "exports", "print"],
+            data: data
+        });
+
+
+        $(document).on("click", ".refuse", function (e){
+            var id = $(e.currentTarget).attr("fid");
+            var uploadTime = $(e.currentTarget).attr("uploadTime");
+            var fileName = $(e.currentTarget).attr("fileName");
+            var checked = $("#askBeforeRefuse").is(":checked");
+            if (checked){
+                var refuseIndex = layui.layer.confirm("是否拒绝申请：<br/>文件名:"+fileName+"<br/>上传时间:"+uploadTime+"", {
+                    title: "拒绝申请",
+                    btn: ['确定', '取消']
+                }, function (){
+                    refuse(id, fileName);
+                    layer.close(refuseIndex);
+                }, function (){
+                    layer.close(refuseIndex);
+                });
+            } else {
+                refuse(id, fileName);
+            }
+        });
+        $(document).on("click", ".pass", function (e){
+            var id = $(e.currentTarget).attr("fid");
+            var uploadTime = $(e.currentTarget).attr("uploadTime");
+            var fileName = $(e.currentTarget).attr("fileName");
+            var checked = $("#askBeforePass").is(":checked");
+            if (checked){
+                var passIndex = layui.layer.confirm("即将通过申请：<br/>文件名:"+fileName+"<br/>上传时间:"+uploadTime+"", {
+                    title: "申请通过",
+                    btn: ['确定', '取消']
+                }, function (){
+                    pass(id, fileName);
+                    layer.close(passIndex);
+                }, function (){
+                    layer.close(passIndex);
+                });
+            } else {
+                pass(id, fileName);
+            }
+        });
+        $(document).on("click", ".release", function (e){
+            var id = $(e.currentTarget).attr("fid");
+            var uploadTime = $(e.currentTarget).attr("uploadTime");
+            var fileName = $(e.currentTarget).attr("fileName");
+            var checked = $("#askBeforeRelease").is(":checked");
+            if (checked){
+                var passIndex = layui.layer.confirm("即将释放申请：<br/>文件名:"+fileName+"<br/>上传时间:"+uploadTime+"<br/>确定？", {
+                    title: "释放申请",
+                    btn: ['确定', '取消']
+                }, function (){
+                    release(id, fileName);
+                    layer.close(passIndex);
+                }, function (){
+                    layer.close(passIndex);
+                });
+            } else {
+                release(id, fileName);
+            }
+
+
+        });
+    }, "获取NRA队列失败");
+    $("#getForAudit").click(function (){
+        var amount = $("#amount").val();
+        if (HanLin.isIntegerBetween(amount, 1, 10)){
+            HanLin.requestTypical("c/getNraForAudit", {amount:amount}, function (data){
+                data = JSON.parse(data);
+                if (!data.flag){
+                    HanLin.error(data.message);
+
+                } else {
+                    if (data.message == "success"){
+                        HanLin.success("成功锁定"+data.result.length+"条申请");
+                        renderList(data.result);
+                    } else if (data.message == "null"){
+                        HanLin.warn("Nra队列为空，无法锁定申请");
+                    }
+
+                }
+
+            }, "获取申请时出错");
+        } else {
+            HanLin.error("请输入1-10之间的整数");
+        }
+
+    });
+    $("#search").click(function (){
+        var data = {
+            fileName:$("#fileNameFilter").val(),
+            beginDate:$("#dateFilterBegin").val(),
+            endDate:$("#dateFilterEnd").val()
+        };
+        reloadTableData(data);
+    });
+    $("#refresh").click(function (){
+        reloadTableData({});
+    });
+    layui.laydate.render({
+        elem: '#dateFilterBegin',
+        type: "datetime",
+        calendar: true,
+        //range: "至"
+    });
+    layui.laydate.render({
+        elem: '#dateFilterEnd',
+        type: 'datetime',
+        calendar: true
+    });
+    layui.form.on('switch(askBeforeRefuse)', function(data){
+        if (!data.elem.checked){
+            layer.msg("拒绝前询问已关闭");
+
+        }
+    });
+    layui.form.on('switch(askBeforePass)', function(data){
+        if (!data.elem.checked){
+            layer.msg("通过前询问已关闭");
+
+        }
+    });
+
+});
+function pass(id, fileName){
+    var index = layer.load(2, {time: 10*1000});
+    HanLin.requestTypical("c/nraPass", {id:id, fileName:fileName}, function (data){
+        data = JSON.parse(data);
+        layer.close(index);
+        if (data.flag){
+            HanLin.success(data.message);
+
+            for (var i in listData){
+                if (listData[i].id == id){
+                    listData.splice(i, 1);
+                }
+            }
+            renderList(listData);
+            //reloadTableData({});
+            if (listData.length <= 0){
+                enableGetAudit()
+            }
+        } else {
+            HanLin.error(data.message);
+        }
+    }, "更改nra文件状态为通过时请求服务器发生错误");
+}
+function refuse(id, fileName){
+    var index = layer.load(2, {time: 10*1000});
+    HanLin.requestTypical("c/nraRefuse", {id:id, fileName:fileName}, function (data){
+        data = JSON.parse(data);
+        layer.close(index);
+        if (data.flag){
+            HanLin.success(data.message);
+
+            for (var i in listData){
+                if (listData[i].id == id){
+                    listData.splice(i, 1);
+                }
+            }
+            renderList(listData);
+            //reloadTableData({});
+            if (listData.length <= 0){
+                enableGetAudit();
+            }
+
+        } else {
+            HanLin.error(data.message);
+        }
+    }, "更改nra文件状态为拒绝时请求服务器发生错误");
+}
+function release(id, fileName){
+    var index = layer.load(2, {time: 10*1000});
+    HanLin.requestTypical("c/nraRelease", {id:id, fileName:fileName}, function (data){
+        data = JSON.parse(data);
+        layer.close(index);
+        if (data.flag){
+            HanLin.success(data.message);
+
+            /*for (var i in listData){
+                if (listData[i].id == id){
+                    listData.splice(i, 1);
+                }
+            }
+            renderList(listData);
+            reloadTableData({});
+            if (listData.length <= 0){
+                enableGetAudit();
+            }*/
+            HanLin.requestTypical("c/getLockedNra", {}, function (data){
+                data = JSON.parse(data);
+                var list = data.result;
+                var length = list.length;
+                listData = list;
+                if (length > 0){
+                    //HanLin.warn("您有"+length+"条已锁定的申请未处理");
+                    renderList(list);
+
+                } else {
+                    $("#auditList").html("<li style='text-align: center'>没有被锁定的申请</li>");
+                    enableGetAudit();
+                    renderList(list);
+                }
+            }, "获取已锁定的申请时出错");
+        } else {
+            HanLin.error(data.message);
+        }
+    }, "释放申请时服务器端发生错误");
+}
+function renderList(data){
+    lockedCount = data.length;
+    var html = "";
+    var destination = $("#auditList")
+    if (data.length > 0){
+        //禁用按钮
+        disableGetAudit();
+        for (var index in data){
+
+            var d = data[index];
+
+            html += '<li class="list-group-item">';
+            if (d.statusCode == 1){
+                html += '   <span class="label label-primary">已锁定</span>';
+            } else {
+                html += '   <span class="label label-danger">当看到此标签，说明出现了逻辑上的错误</span>';
+            }
+
+            if (d.priority){
+                html += '<span class="label label-danger">插队申请</span>';
+            }
+            if (d.qualityCustomer){
+                html += '<span class="label label-success">优质客户</span>';
+            }
+            html += '&nbsp;&nbsp;点击下载： <a class="ist-group-item-heading" target="_blank" href="c/downloadNraFile/'+d.id+'">'+d.fileName+'</a>';
+            html += '<span class="badge">'+d.queueNo+'</span><p style="float: right;">队列号：</p>';
+            html += '<div class="overflow-nextline" style="margin-top: 20px"><strong>备注：</strong>'+d.note+'</div>';
+            html += '<div class="overflow-nextline"><strong>上传时间：</strong>'+d.uploadTime+'</div>';
+            html += '<div class="overflow-nextline"><strong>客户经理（工号 | 姓名）：</strong>'+d.uploader+" | "+d.userName+'</div>';
+            html += '<br/><button fid="'+d.id+'" fileName="'+d.fileName+'" uploadTime="'+d.uploadTime+'" class="pass btn btn-success">通过</button> <button fid="'+d.id+'" fileName="'+d.fileName+'" uploadTime="'+d.uploadTime+'" class="refuse btn btn-danger">拒绝</button>';
+            html += ' <button fid="'+d.id+'" fileName="'+d.fileName+'" uploadTime="'+d.uploadTime+'" class="release btn btn-warning">释放</button>';
+            html += '</li>';
+        }
+    } else {
+        html += "<li class='center-block' style='text-align: center'>NRA队列为空，或没有被锁定的申请</li>";
+
+    }
+    destination.html(html);
+
+    reloadTableData({});
+}
+function disableGetAudit(){
+    $("#getForAudit").attr("disabled", "disabled");
+    $("#getForAudit").html("请处理完已经取出的申请才能获取新的申请");
+}
+function enableGetAudit(){
+    $("#getForAudit").removeAttr("disabled");
+    $("#getForAudit").html("锁定申请并开始审核");
+}
+function reloadTableData(p){
+
+    var index = layer.load(2, {time: 10*1000});
+
+    $.when(request("c/getNraQueue", p)).done(function (dataReload){
+        layer.close(index);
+        layui.table.reload("queue", {
+            data: JSON.parse(dataReload)
+        });
+    });
+
+
+}
+</script>
+</body>
+</html>

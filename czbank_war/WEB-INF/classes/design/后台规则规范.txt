@@ -1,0 +1,51 @@
+1. 后台分层为：Controller>Service>Dao>Domains
+工具类写在utils包中，如有需要新建其它包，请按功能命名，
+由Controller开始只能逐层调用，不可跨层调用，下层不可调用上层
+
+2. 代码命名规范：变量、方法、配置文件id等均采用驼峰式命名，数据库字段名与domains名字保持一样，
+类名首字大写，getter和setter使用IDEA自动生成的即可。
+所有语言保留字、运算符左右均要空格
+
+3. 所有配置文件必须放在resources中，对应框架的与spring集成的放在resources/spring-applicationcontext中，
+如果用不与spring集成的框架或工具，择婿在resources下新建文件夹，还有向mybatis的SQL mapper这样的也新建一个文件夹存放
+项目全局配置文件（如：log4j、application-context）放在resources根即可，一般所有具体的配置信息都必须写在project.properties中
+以便运行时修改
+
+4. 特别注意，IDEA部署至tomcat调试时Comtroller不能有：/manager，因为会冲突，想eclipse那样部署就不会冲突的，当然也可以直接
+删掉tomcat中的manager目录
+
+5. 数据库中密码的存储使用shiro的md5加密后存入数据库（或者mysql的password函数），注意，加密前字组合为账号（ID）+密码，
+即密码字段存储的是账号（ID）和密码前后拼接之后再加密后的
+
+6.上传的文件和日志文件的路径：
+
+/home/czbank
+    -logs
+        -....各种log4j输出的文件
+    -files
+        -nra
+        -others
+
+
+7. nra文件队列，各种状态码参照
+是否插队字段：
+0：普通文件
+1：插队申请已提交
+2：拒绝插队（出现这种情况过多就是客户经理的责任）
+2：插队文件
+
+文件的状态与状态码对照：
+0：排队中
+1：审核通过
+2：审核未通过
+3: 主动撤销
+4: 已下载
+
+用户状态
+0：停用
+1：正常
+2：root账户
+
+8. nra队列在数据库取出时按时间排序，序列号在service中给出，后续需要筛选数据时需要先取出完整的队列，后再java中过滤后返回
+
+9. 用户头像的保存：/img/userHeadPhotos/{userId}/{photoName}

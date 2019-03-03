@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>队列查看</title>
+
+    <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" href="../../layui/css/layui.css"/>-->
+
+
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+
+    <script src="../../js/hanlinCommons.js"></script>
+    <!--<script src="../../layui/layui.all.js"></script>-->
+    <script src="../../js/deferredAjax.js"></script>
+
+</head>
+<body class="row">
+    <!-- 占位 -->
+    <div class="col-lg-12">
+        <br/>
+        <br/>
+    </div>
+
+    <div class="col-lg-3">
+        <div class="input-group">
+            <span class="input-group-addon">文件名过滤</span>
+            <input type="text" id="fileNameFilter" class="form-control" placeholder="文件名过滤"/>
+
+            <!--<span class="input-group-btn">
+                <button lay-filter="search" class="btn btn-primary" type="button">查找</button>
+            </span>-->
+        </div><!-- /input-group -->
+    </div>
+    <div class="col-lg-7">
+        <div class="input-group">
+            <span class="input-group-addon">时间区间过滤</span>
+            <input type="text" id="dateFilterBegin" class="form-control" placeholder="开始时间"/>
+            <span class="input-group-addon">至</span>
+            <input type="text" id="dateFilterEnd" class="form-control" placeholder="不填则搜索开始时间当天的申请"/>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <button id="search" class="btn btn-primary">过滤</button>
+        <button id="refresh" class="btn btn-success">刷新队列</button>
+    </div>
+    <div class="col-lg-12">
+        <table id="queue" lay-filter="nra"></table>
+    </div>
+
+
+
+<script>
+var currentUser = null;
+
+
+$.when(request("c/getManager"), {}).done(function (userData){
+    currentUser = JSON.parse(userData).result;
+    $.when(request("c/getNraQueue"), {}).done(function (dataQueue){
+        dataQueue = JSON.parse(dataQueue);
+
+        layui.table.render({
+            elem: "#queue",
+            title: "NRA队列",
+            loading: true,
+            //url: "/cManager/c/getQueueBetween",
+            page: true,
+            autoSort: false,
+            cols: [[
+                {field: 'queueNo', title: '-', width: 40, fixed: 'left'},
+                {field: 'statusCode', title: '状态', width: 140, align: 'center',
+                    templet: function (d){
+                        switch (d.statusCode){
+                            case HanLin.nraStatus.QUEUING:
+                                return "<p style='color: deepskyblue'>排队中</p>";
+                            case HanLin.nraStatus.LOCKED:
+                                return "<p style='color: #c5b2d0'>已锁定</p>";
+                            case HanLin.nraStatus.PASS:
+                                return "<p style='color: #5eb95e'>审核通过</p>";
+                            case HanLin.nraStatus.REFUSED:
+                                return "<p style='color: red'>审核未通过</p>";
+                            case HanLin.nraStatus.CANCELED:
+                                return "<p style='color: #000;'>主动撤销</p>";
+                        }
+                    }
+                },
+                {field: 'priorityStatus', title: '插队', width: 100, align:'center',
+                    templet: function (d){
+                        switch (d.priorityStatus){
+                            case HanLin.nraPriorityStatus.NORMAL:
+                                return "<p>-</p>";
+                            case HanLin.nraPriorityStatus.WAITING:
+                                return "<p>申请中</p>";
+                            case HanLin.nraPriorityStatus.PRIORITY:
+                                return "<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>";
+                            case HanLin.nraPriorityStatus.REFUSED:
+                                return "<span class='glyphicon glyphicon-remove' style='color: #be2924;'</span>";
+                        }
+                    }
+                },
+                {title: '操作', width:160, align: 'center',
+                    templet: function (d){
+                        console.log(d);
+                        if (d.userName == currentUser.userName){
+                            var html = "";
+                            if (d.statusCode != 0){
+                                html += "不能操作已锁定申请";
+                            } else {
+                                html += "<button class='revoke btn btn-danger' nraFileId='" + d.id + "' uploadTime='" + d.uploadTime + "' fileName='" + d.fileName + "' style='height: 25px;line-height: 10px;'>撤销</button> ";
+                                if (d.priorityStatus == 0) {
+                                    html += "<button class='applyPriority btn btn-success' nraFileId='" + d.id + "' uploadTime='" + d.uploadTime + "' fileName='" + d.fileName + "' style='height: 25px;line-height: 10px;'>插队</button>";
+
+                                }
+                            }
+                            return html;
+
+                        }
+                    }
+                },
+                {field: 'fileName', title: '文件名', width:300},
+                {field: 'qualityCustomer', title: '优质客户', width:100, align: 'center',
+                    templet: function (d){
+                        return d.qualityCustomer?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>":"-";
+                    }
+                },
+                {field: 'uploadTime', title: '上传时间', width:160, align: 'center'},
+                {field: 'userName', title: '上传者', width: 120, align: 'center',
+                    templet: function (d){
+                        return (d.userName == currentUser.userName)?"<p style='color: red'>"+d.userName+"</p>":"<p>"+d.userName+"</p>";
+                    }
+                },
+
+                {field: 'priority', title: '插队', width: 80, align: 'center',
+                    templet: function (d){
+
+                        return d.priority?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e'></span>":"-";
+                    }
+                },
+                {field: 'note', title: '备注', width: 200},
+                {field: 'id', title: 'ID', width:280},
+            ]],
+            toolbar: "#tableTool",
+            defaultToolbar: ["filter", "exports", "print"],
+            data: dataQueue
+            /*data: [
+                // {"fileName":"nnn", "id":"id", "note":"", priority:true, qualityCustomer:false, queueNo:1, restorePath:"path", statusCode:"0", uploadTime:"2019-01-05 23:03:40", uploader:"m1", userName:""}
+            ]*/
+        });
+
+    });
+    $(document).ready(function (){
+
+        layui.laydate.render({
+            elem: '#dateFilterBegin',
+            type: "datetime",
+            calendar: true,
+            //range: "至"
+        });
+        layui.laydate.render({
+            elem: '#dateFilterEnd',
+            type: 'datetime',
+            calendar: true
+        });
+
+
+        /*
+        $("#search").click(function (){
+            alert(1);
+        });*/
+        $("#search").click(function (){
+            var data = {
+                fileName:$("#fileNameFilter").val(),
+                beginDate:$("#dateFilterBegin").val(),
+                endDate:$("#dateFilterEnd").val()
+            };
+
+            reloadTableData(data);
+
+        });
+        $("#refresh").click(function (){
+            reloadTableData({});
+        });
+
+        $(document).on("click", ".revoke", function (e){
+            var btn = e.currentTarget;
+            var id = $(btn).attr("nraFileId");
+            var uploadTime = $(btn).attr("uploadTime");
+            var fileName = $(btn).attr("fileName");
+            layui.layer.confirm('确定撤销您于<br/>('+uploadTime+')<br/>上传的<br/>('+fileName+')?', {icon: 3, title:'请三思'}, function(index2){
+                //do something
+
+                var index = layui.layer.load(2);
+                $.when(request("c/revokeNraFile", {id:id})).done(function(dataRevoke){
+
+                    dataRevoke = JSON.parse(dataRevoke);
+
+                    if (dataRevoke.flag){
+                        HanLin.success("已撤销("+fileName+":"+uploadTime+")");
+                    } else {
+                        HanLin.error("撤销失败");
+                    }
+                    reloadTableData({});
+                    layui.layer.close(index);
+                });
+
+                layui.layer.close(index2);
+            });
+        });
+
+        $(document).on("click", ".applyPriority", function (e){
+            var btn = e.currentTarget;
+            var id = $(btn).attr("nraFileId");
+            var uploadTime = $(btn).attr("uploadTime");
+            var fileName = $(btn).attr("fileName");
+            layui.layer.confirm('插队需要等待审核员的处理，审核员的处理结果将在消息中心通知<br/>需要插队的申请：<br/>于'+uploadTime+'<br/>上传的<br/>'+fileName+'<br/>确认无误后点击确定提交申请', {icon: 3, title:'听说您要插队？'}, function(index2){
+                //do something
+
+                var index = layui.layer.load(2);
+                /*$.when(request("c/applyPriority", {id:id})).done(function(dataPriority){
+
+                    dataPriority = JSON.parse(dataPriority);
+                    layui.layer.close(index);
+                    if (dataPriority.flag){
+                        HanLin.success("已提交插队申请：("+fileName+":"+uploadTime+")");
+                    } else {
+                        HanLin.error("申请失败");
+                    }
+                    reloadTableData({});
+                });*/
+                HanLin.requestTypical("c/applyPriority", {id:id}, function(data){
+                    data = JSON.parse(data);
+                    layui.layer.close(index);
+                    if (data.flag){
+                        HanLin.success("已提交插队申请：("+fileName+":"+uploadTime+")");
+                    } else {
+                        HanLin.error("申请优先失败");
+                    }
+                    reloadTableData({});
+                }, "申请优先时服务器端出错");
+
+
+                layui.layer.close(index2);
+            });
+        });
+
+
+    });
+
+
+
+
+});
+
+function reloadTableData(p){
+    var index = layer.load(2, {time: 10*1000});
+
+    $.when(request("c/getNraQueue", p)).done(function (dataReload){
+        layer.close(index);
+        layui.table.reload("queue", {
+            data: JSON.parse(dataReload)
+        });
+    });
+
+
+}
+
+
+
+
+</script>
+</body>
+</html>

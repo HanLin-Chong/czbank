@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>历史记录</title>
+
+    <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" href="../../layui/css/layui.css"/>-->
+
+
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+
+    <script src="../../js/hanlinCommons.js"></script>
+    <!--<script src="../../layui/layui.all.js"></script>-->
+    <script src="../../js/deferredAjax.js"></script>
+</head>
+<body class="row">
+<!-- 占位 -->
+<div class="col-lg-12">
+    <br/>
+    <br/>
+</div>
+
+<div class="col-lg-3">
+    <div class="input-group">
+        <span class="input-group-addon">文件名过滤</span>
+        <input type="text" id="fileNameFilter" class="form-control" placeholder="文件名过滤"/>
+
+        <!--<span class="input-group-btn">
+            <button lay-filter="search" class="btn btn-primary" type="button">查找</button>
+        </span>-->
+    </div><!-- /input-group -->
+</div>
+<div class="col-lg-7">
+    <div class="input-group">
+        <span class="input-group-addon">时间区间过滤</span>
+        <input type="text" id="dateFilterBegin" class="form-control" placeholder="开始时间"/>
+        <span class="input-group-addon">至</span>
+        <input type="text" id="dateFilterEnd" class="form-control" placeholder="不填则搜索开始时间当天的申请"/>
+    </div>
+</div>
+<div class="col-lg-2">
+    <button id="search" class="btn btn-primary">过滤</button>
+    <button id="refresh" class="btn btn-success">刷新</button>
+</div>
+<div class="col-lg-12">
+    <table id="queueHistory" lay-filter="nra"></table>
+</div>
+
+
+
+<script>
+$(document).ready(function (){
+
+
+    var currentUser = null;
+    $.when(request("c/getNraHistory"), {}).done(function (data){
+        data = JSON.parse(data);
+
+        layui.table.render({
+            elem: "#queueHistory",
+            title: "历史记录(仅可查看自己的记录)",
+            loading: true,
+            //url: "/cManager/c/getQueueBetween",
+            page: true,
+            autoSort: false,
+            cols: [[
+                {field: 'statusCode', title: '状态', width: 150, align: 'center',
+                    templet: function (d){
+                        switch (d.statusCode) {
+                            case HanLin.nraStatus.QUEUING:
+                                return "<p style='color: deepskyblue'>排队中</p>";
+                            case HanLin.nraStatus.LOCKED:
+                                return "<p style='color: #c5b2d0'>已锁定</p>";
+                            case HanLin.nraStatus.PASS:
+                                return "<p style='color: #5eb95e'>审核通过</p>";
+                            case HanLin.nraStatus.REFUSED:
+                                return "<p style='color: red'>审核未通过</p>";
+                            case HanLin.nraStatus.CANCELED:
+                                return "<p style='color: #000;'>主动撤销</p>";
+                        }
+                    }
+                },
+                {field: 'priorityStatus', title: '插队', width: 100, align:'center',
+                    templet: function (d){
+                        switch (d.priorityStatus){
+                            case HanLin.nraPriorityStatus.NORMAL:
+                                return "<p>-</p>";
+                            case HanLin.nraPriorityStatus.WAITING:
+                                return "<p>申请中</p>";
+                            case HanLin.nraPriorityStatus.PRIORITY:
+                                return "<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>";
+                            case HanLin.nraPriorityStatus.REFUSED:
+                                return "<span class='glyphicon glyphicon-remove' style='color: #be2924;'</span>";
+                        }
+                    }
+                },
+                {field: 'fileName', title: '文件名', width:300},
+                {field: 'qualityCustomer', title: '优质客户', width:100, align: 'center',
+                    templet: function (d){
+                        return d.qualityCustomer?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e;'</span>":"-";
+                    }
+                },
+                {field: 'uploadTime', title: '上传时间', width:160, align: 'center'},
+                {field: 'priority', title: '插队', width: 80, align: 'center',
+                    templet: function (d){
+
+                        return d.priority?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e'></span>":"-";
+                    }
+                },
+                {field: 'note', title: '备注', width: 200},
+                {field: 'id', title: 'ID', width:280},
+            ]],
+            toolbar: "#tableTool",
+            defaultToolbar: ["filter", "exports", "print"],
+            data: data
+            /*data: [
+                // {"fileName":"nnn", "id":"id", "note":"", priority:true, qualityCustomer:false, queueNo:1, restorePath:"path", statusCode:"0", uploadTime:"2019-01-05 23:03:40", uploader:"m1", userName:""}
+            ]*/
+        });
+        //table.render({data:data});
+        //table.data = data;
+    });
+
+    $.when(request("c/getManager"), {}).done(function (data){
+        currentUser = JSON.parse(data).result;
+        layui.laydate.render({
+            elem: '#dateFilterBegin',
+            type: "datetime",
+            calendar: true,
+            //range: "至"
+        });
+        layui.laydate.render({
+            elem: '#dateFilterEnd',
+            type: 'datetime',
+            calendar: true
+        });
+        $("#search").click(function (){
+            var data = {
+                fileName:$("#fileNameFilter").val(),
+                beginDate:$("#dateFilterBegin").val(),
+                endDate:$("#dateFilterEnd").val()
+            };
+            reloadTableData(data);
+        });
+        $("#refresh").click(function (){
+            reloadTableData({});
+        });
+
+    });
+});
+
+function reloadTableData(p){
+    var index = layer.load(2, {time: 10*1000});
+    alert("reload");
+    $.when(request("c/getNraHistory", p)).done(function (data){
+        console.log(JSON.parse(data))
+        layer.close(index);
+        layui.table.reload("queue", {
+            data: JSON.parse(data)
+        });
+    });
+
+
+}
+
+</script>
+</body>
+</html>

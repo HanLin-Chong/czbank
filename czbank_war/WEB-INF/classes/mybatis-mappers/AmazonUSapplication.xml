@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.relesee.dao.AmazonUSdao">
+
+
+    <insert id="insertApplication" parameterType="com.relesee.domains.AmazonUSapplication">
+        INSERT INTO
+            amazonusapplication(
+                id,
+                amazonMail,
+                businessName,
+                shopUrl,
+                shopName,
+                applicantName,
+                applicantId,
+                recipientAcc,
+                recipientAccName,
+                recipientId,
+                address,
+                managerName,
+                managerDepartment,
+                managerId,
+                transactionRecordName,
+                applicationFileName,
+                uploadTime,
+                status
+            )
+        VALUES
+        (
+            #{id},
+            #{amazonMail},
+            #{businessName},
+            #{shopUrl},
+            #{shopName},
+            #{applicantName},
+            #{applicantId},
+            #{recipientAcc},
+            #{recipientAccName},
+            #{recipientId},
+            #{address},
+            #{managerName},
+            #{managerDepartment},
+            #{managerId},
+            #{transactionRecordName},
+            #{applicationFileName},
+            NOW(),
+            0
+        )
+    </insert>
+
+    <select id="selectLocked" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+            id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            status,
+            auditor
+        FROM
+            amazonusapplication
+        WHERE
+            status = #{status}
+        AND
+            auditor = #{auditor}
+    </select>
+
+    <select id="selectOneApplication" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+            id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            status,
+            auditor
+        FROM
+            amazonusapplication
+        WHERE
+            status = 0
+        ORDER BY
+            uploadTime
+        LIMIT
+            0,1
+    </select>
+
+    <update id="updateStatus" parameterType="com.relesee.domains.AmazonUSapplication">
+        UPDATE
+            amazonusapplication
+        SET
+            status = #{status}
+        WHERE
+            id = #{id}
+    </update>
+
+    <update id="updateAuditor">
+        UPDATE
+            amazonusapplication
+        SET
+            auditor = #{auditor}
+        WHERE
+            id = #{id}
+    </update>
+
+    <update id="updateApplication" parameterType="com.relesee.domains.AmazonUSapplication">
+        UPDATE
+            amazonusapplication
+        SET
+            amazonMail = #{amazonMail},
+            businessName = #{businessName},
+            shopUrl = #{shopUrl},
+            shopName = #{shopName},
+            applicantName = #{applicantName},
+            applicantId = #{applicantId},
+            recipientAcc = #{recipientAcc},
+            recipientAccName = #{recipientAccName},
+            recipientId = #{recipientId},
+            address = #{address},
+            managerName = #{managerName},
+            managerDepartment = #{managerDepartment},
+            managerId = #{managerId}
+        WHERE
+            id = #{id}
+    </update>
+
+    <select id="selectMachedFeedback" parameterType="String" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+            id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            status,
+            auditor
+        FROM
+            amazonusapplication
+        WHERE
+            businessName = #{accName}
+    </select>
+
+    <select id="selectHistory" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+            id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            auditor,
+            foundTime,
+            accName,
+            acc,
+            currency,
+            foreignBank,
+            routing,
+            postScript,
+            note
+        FROM
+            amazonusapplication
+        INNER JOIN
+            foreignfeedback
+        ON
+            amazonusapplication.businessName = foreignfeedback.accName
+        ORDER BY
+            uploadTime
+        LIMIT
+            #{begin}, #{size}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        SELECT
+            COUNT(*) count
+        FROM
+            amazonusapplication
+        WHERE
+            status >= 0
+    </select>
+
+    <select id="selectSearchHistory" parameterType="String" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+            id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            auditor,
+            foundTime,
+            accName,
+            acc,
+            currency,
+            foreignBank,
+            routing,
+            postScript,
+            note
+        FROM
+            amazonusapplication
+        INNER JOIN
+            foreignfeedback
+        ON
+            amazonusapplication.businessName = foreignfeedback.accName
+        WHERE
+            amazonMail LIKE CONCAT('%', #{key}, '%')
+        OR
+            businessName LIKE CONCAT('%', #{key}, '%')
+        OR
+            shopName LIKE CONCAT('%', #{key}, '%')
+        OR
+            applicantName LIKE CONCAT('%', #{key}, '%')
+        OR
+            recipientAccName LIKE CONCAT('%', #{key}, '%')
+        OR
+            managerName LIKE CONCAT('%', #{key}, '%')
+        OR
+            accName LIKE CONCAT('%', #{key}, '%')
+        ORDER BY
+            uploadTime
+    </select>
+
+
+</mapper>

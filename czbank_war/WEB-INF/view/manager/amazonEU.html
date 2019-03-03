@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>amazonEU-客户经理</title>
+
+    <link href="../../css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="../../css/bootstrap.modified.css" rel="stylesheet" type="text/css"/>
+    <link href="../../css/bootstrapValidator.min.css" rel="stylesheet" />
+    <!--<link href="../../layui/css/layui.css" rel="stylesheet"/>-->
+
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/bootstrapValidator.min.js" type="text/javascript"></script>
+    <script src="../../js/fileinput.min.js" type="text/javascript"></script>
+    <script src="../../js/locales/zh.js" type="text/javascript"></script>
+
+    <style>
+        .margin-top-20{
+            margin-top: 20px;
+        }
+        .layui-form-switch{/* 解决layui与bootstrap的样式冲突 */
+            height:25px!important;
+            margin-top: 0px;
+        }
+        .hanlin-vertical-line{
+            display: inline !important;
+            border-right: solid 1px #c2c2c2;
+            height: auto;
+            margin: 0px 10px 0px 10px;
+        }
+        #advice:hover{
+            text-decoration: underline !important;
+        }
+    </style>
+</head>
+<body class="container">
+<div class="page-header">
+    <h1>&nbsp;&nbsp;&nbsp;&nbsp;<strong>Amazon欧洲（EU）</strong><small style="margin-left: 20px;">账户申请</small></h1>
+</div>
+<div class="alert alert-warning fade in">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>注意：</strong>表单校验尚未完善，使用者可提出更多的需求，目前的校验规则<strong>可参考：</strong><a href="adviceCenter.html#amazonEUform" id="advice" target="_blank" style="color: #337ab7;"><span class="glyphicon glyphicon-link"></span>当前页表单的校验规则（也可在此向开发者提出需求与建议）</a>
+</div>
+<div class="col-lg-12 layui-form">
+    <button id="submit" class="btn btn-primary">提交申请</button>
+    <button id="reset" class="btn btn-warning">重置表单</button>
+    <div class="hanlin-vertical-line"></div>
+    <label>表单验证：</label>
+    <input id="validatorSetting" type="checkbox" lay-filter="validatorSetting" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
+    <hr/>
+</div>
+
+<div class="col-lg-8" style="border-right: dotted 1px #0C0C0C;">
+    <form id="form">
+        <div class="input-group form-group">
+            <span class="input-group-addon">店铺链接</span>
+            <input name="shopUrl" type="text" class="form-control" placeholder="https://www.amazon.com/..."/>
+        </div>
+        <div id="container1"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">店铺ID</span>
+            <input name="shopId" type="text" class="form-control" placeholder="请填写店铺ID" aria-describedby="basic-addon3"/>
+        </div>
+        <div id="container2"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">店铺名称</span>
+            <input name="shopName" type="text" class="form-control" placeholder="请填写店铺名称"/>
+        </div>
+        <div id="container3"></div>
+        <div class="input-group form-group margin-top-20" style="width: 100%">
+            <label>主营商品:</label>
+            <!--<input name="shopName" type="text" class="form-control" placeholder="请填写Ebay店铺名称"/>-->
+            <textarea name="mainCommodity" style="resize: vertical; width: 100%;"></textarea>
+        </div>
+        <div id="container4"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">注册公司名称</span>
+            <input name="companyName" type="text" class="form-control" placeholder="请用中英文填写"/>
+        </div>
+        <div id="container5"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">董事长姓名</span>
+            <input name="chairManName" type="text" class="form-control" placeholder="请用中英文填写"/>
+        </div>
+        <div id="container6"></div>
+        <hr/>
+        <strong>以下股东信息请按持股比例由大到小填写</strong>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">大股东1（25%以上）姓名</span>
+            <input name="majorShareHolder1" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <div id="container7"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">持股比例</span>
+            <input name="shareHolderRate1" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <div id="container8"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">生日</span>
+            <input id="birthday1" name="shareHolderBirthday1" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <div id="container9"></div>
+        <div class="input-group form-group">
+            <span class="input-group-addon">地址</span>
+            <input name="shareHolderAddress1" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <div id="container10"></div>
+
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">大股东2（25%以上）姓名</span>
+            <input name="majorShareHolder2" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <div id="container11"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">持股比例</span>
+            <input name="shareHolderRate2" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <div id="container12"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">生日</span>
+            <input id="birthday2" name="shareHolderBirthday2" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <div id="container13"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">地址</span>
+            <input name="shareHolderAddress2" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <div id="container14"></div>
+
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">大股东3（25%以上）姓名</span>
+            <input name="majorShareHolder3" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <div id="container15"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">持股比例</span>
+            <input name="shareHolderRate3" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <div id="container16"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">生日</span>
+            <input id="birthday3" name="shareHolderBirthday3" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <div id="container17"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">地址</span>
+            <input name="shareHolderAddress3" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <div id="container18"></div>
+
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">大股东4（25%以上）姓名</span>
+            <input name="majorShareHolder4" type="text" class="form-control" placeholder="中文及拼音"/>
+        </div>
+        <div id="container19"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">持股比例</span>
+            <input name="shareHolderRate4" type="text" class="form-control" placeholder=">=25 && <=100"/>
+            <span class="input-group-addon">%</span>
+        </div>
+        <div id="container20"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">生日</span>
+            <input id="birthday4" name="shareHolderBirthday4" type="text" class="form-control" placeholder="yyyy-mm-dd"/>
+        </div>
+        <div id="container21"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">地址</span>
+            <input name="shareHolderAddress4" type="text" class="form-control" placeholder="中英文"/>
+        </div>
+        <div id="container22"></div>
+        <hr/>
+
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">稠州银行账号开户网点</span>
+            <input name="czbankBranch" type="text" class="form-control" placeholder="义乌+{机构名}，例：义乌营业部、义乌广场支行"/>
+        </div>
+        <div id="container23"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">稠州银行账号</span>
+            <input name="czbankAcc" type="text" class="form-control" placeholder=""/>
+        </div>
+        <div id="container24"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">客户姓名</span>
+            <input name="customerName" type="text" class="form-control" placeholder="中文+拼音，例：张三zhangsan"/>
+        </div>
+        <div id="container25"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">邮箱</span>
+            <input name="mail" type="text" class="form-control" placeholder="example@org.domain"/>
+        </div>
+        <div id="container26"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">客户经理姓名</span>
+            <input name="managerName" type="text" class="form-control" placeholder="。。"/>
+        </div>
+        <div id="container27"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">客户经理所属机构</span>
+            <input name="managerDepartment" type="text" class="form-control" placeholder="请填写XX支行字样"/>
+        </div>
+        <div id="container28"></div>
+        <div class="input-group form-group margin-top-20">
+            <span class="input-group-addon">客户经理工号</span>
+            <input name="managerId" type="text" class="form-control" placeholder="。。"/>
+        </div>
+        <div id="container29"></div>
+    </form>
+
+
+</div>
+<div class="col-lg-4">
+
+    <div class="col-lg-12 margin-top-20 ">
+        <input id="applicationFile" name="file" type="file" multiple/>
+    </div>
+
+</div>
+<script>
+    var applicationFile = null;
+    $(document).ready(function (){
+        layui.form.render();
+        //form.render();
+        //validator参考博客: https://www.cnblogs.com/hwaggLee/p/6565604.html
+        var validator = $("#form").bootstrapValidator({
+            //message: '不正确的内容',
+            live: 'enabled',
+            container: 'tooltip',
+            //submitButtons: '#submit',
+            excluded: [':disabled', ':hidden', ':not(:visible)'],
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                shopUrl: {
+                    container: "#container1",
+                    validators: {
+                        notEmpty: {
+                            message: '店铺链接为必填项'
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                        uri: {
+                            message: "请输入正确的URL地址，如：https://www.amazon.com..."
+                        },
+                        callback: {
+                            callback: function (value, validatorIn){
+                                if (!value.match("amazon.com")){
+
+                                    return {
+                                        valid: false,
+                                        message: "URL地址需要包含amazon.com"
+                                    };
+                                } else {
+                                    return true;
+                                }
+
+                            }
+                        },
+                    },
+
+                },
+                shopId: {
+                    container: "#container2",
+                    validators: {
+                        notEmpty: {
+                            message: '店铺Id为必填项'
+                        },
+                        stringLength: {
+                            message: "长度不得超过50",
+                            max: 50
+                        },
+                    }
+                },
+                shopName: {
+                    container: "#container3",
+                    validators: {
+                        notEmpty: {
+                            message: '店铺名称为必填项'
+                        },
+                        stringLength: {
+                            message: "长度不得超过50",
+                            max: 50
+                        },
+                    }
+                },
+                mainCommodity: {
+                    container: "#container4",
+                    validators: {
+                        notEmpty: {
+                            message: "主营商品为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过255",
+                            max: 255
+                        },
+                    },
+
+                },
+                companyName: {
+                    container: "#container5",
+                    validators: {
+                        notEmpty: {
+                            message: "注册公司名称为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        },
+                    },
+
+                },
+                chairManName: {
+                    container: "#container6",
+                    validators: {
+                        notEmpty: {
+                            message: "董事长姓名为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过50",
+                            max: 50
+                        },
+                    }
+                },
+                majorShareHolder1: {
+                    container: "#container7",
+                    validators: {
+                        stringLength: {
+                            message: '长度不超过50',
+                            max: 50,
+                        },
+                        notEmpty: {
+                            message: "股东1为必填项"
+                        },
+                    }
+                },
+                shareHolderRate1: {
+                    container: "#container8",
+                    validators: {
+                        notEmpty: {
+                            message: "境内收款人户名为必填项"
+                        },
+                        digits: {
+                            message: "非数字输入"
+                        },
+                        between: {
+                            inclusive: true,
+                            min: 25,
+                            max: 100,
+                            message: "只允许填写25-100的数字"
+                        }
+                    }
+                },
+                /*
+                shareHolderBirthday1: {
+                    container: "#container9",
+                    validators: {
+
+                        notEmpty: {
+                            message: "大股东1生日为必填项"
+                        },
+                        date: {
+                            format: 'YYYY-MM-DD',
+                            message: '不正确的日期格式'
+                        }
+                    }
+                },*/
+                shareHolderAddress1: {
+                    container: "#container10",
+                    validators: {
+                        notEmpty: {
+                            message: "详细联系地址为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        },
+                    }
+                },
+                /*
+                majorShareHolder2: {
+                    container: "#container11",
+                    validators: {
+                        stringLength: {
+                            message: '长度不超过50',
+                            max: 50,
+                        }
+                    }
+                },
+                shareHolderRate2: {
+                    container: "#container12",
+                    validators: {
+                        digits: {
+                            message: "非数字输入"
+                        },
+                        between: {
+                            inclusive: true,
+                            min: 25,
+                            max: 100,
+                            message: "只允许填写25-100的数字"
+                        }
+                    }
+                },
+                shareHolderBirthday2: {
+                    container: "#container13",
+                    validators: {
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        }
+                    },
+                },
+                shareHolderAddress2: {
+                    container: "#container14",
+                    validators: {
+                        stringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        },
+                    }
+                },
+                majorShareHolder3: {
+                    container: "#container15",
+                    validators: {
+                        stringLength: {
+                            message: '长度不超过50',
+                            max: 50,
+                        }
+                    }
+                },
+                shareHolderRate3: {
+                    container: "#container16",
+                    validators: {
+                        digits: {
+                            message: "非数字输入"
+                        },
+                        between: {
+                            inclusive: true,
+                            min: 25,
+                            max: 100,
+                            message: "只允许填写25-100的数字"
+                        }
+                    }
+                },
+                shareHolderBirthday3: {
+                    container: "#container17",
+                    validators: {
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        }
+                    },
+                },
+                shareHolderAddress3: {
+                    container: "#container18",
+                    validators: {
+                        stringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        },
+                    }
+                },
+                majorShareHolder4: {
+                    container: "#container19",
+                    validators: {
+                        stringLength: {
+                            message: '长度不超过50',
+                            max: 50,
+                        }
+                    }
+                },
+                shareHolderRate4: {
+                    container: "#container20",
+                    validators: {
+                        digits: {
+                            message: "非数字输入"
+                        },
+                        between: {
+                            inclusive: true,
+                            min: 25,
+                            max: 100,
+                            message: "只允许填写25-100的数字"
+                        }
+                    }
+                },
+                shareHolderBirthday4: {
+                    container: "#container21",
+                    validators: {
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        }
+                    },
+                },
+                shareHolderAddress4: {
+                    container: "#container22",
+                    validators: {
+                        stringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        },
+                    }
+                },
+                */
+                czbankBranch: {
+                    container: "#container23",
+                    validators: {
+                        notEmpty: {
+                            message: "稠州银行开户网点为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过20",
+                            max: 20
+                        }
+                    }
+                },
+                czbankAcc: {
+                    container: "#container24",
+                    validators: {
+                        notEmpty: {
+                            message: "稠州银行账号为必填项"
+                        },
+                        StringLength: {
+                            message: "长度不得超过30",
+                            max: 30
+                        }
+                    }
+                },
+                customerName: {
+                    container: "#container25",
+                    validators: {
+                        notEmpty: {
+                            message: "客户姓名为必填项"
+                        },
+                        StringLength: {
+                            message: "长度不得超过30",
+                            max: 30
+                        }
+                    }
+                },
+                mail: {
+                    container: "#container26",
+                    validators: {
+                        notEmpty: {
+                            message: "邮箱为必填项"
+                        },
+                        StringLength: {
+                            message: "长度不得超过100",
+                            max: 100
+                        }
+                    }
+                },
+                managerName: {
+                    container: "#container27",
+                    validators: {
+                        notEmpty: {
+                            message: "所属客户经理为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                },
+                managerDepartment: {
+                    container: "#container28",
+                    validators: {
+                        notEmpty: {
+                            message: "客户经理所属机构为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                },
+
+                managerId: {
+                    container: "#container29",
+                    validators: {
+                        notEmpty: {
+                            message: "客户经理工号为必填项"
+                        },
+                        stringLength: {
+                            message: "长度不得超过10",
+                            max: 10
+                        },
+                    }
+                }
+
+            }
+
+        });
+
+
+        layui.form.on('switch(validatorSetting)', function(data){
+            if (!data.elem.checked){
+                layer.msg("强制提交会加重审核员的负担，请三思");
+                $("#form").bootstrapValidator('resetForm');
+            }
+        });
+        layui.laydate.render({
+            elem: '#birthday1',
+            type: "date",
+            calendar: true,
+        });
+        layui.laydate.render({
+            elem: '#birthday2',
+            type: "date",
+            calendar: true,
+        });
+        layui.laydate.render({
+            elem: '#birthday3',
+            type: "date",
+            calendar: true,
+        });
+        layui.laydate.render({
+            elem: '#birthday4',
+            type: "date",
+            calendar: true,
+        });
+
+        $("#applicationFile").fileinput({
+            language: 'zh',
+            browseLabel: '选择申请文件',
+            //showCaption: true,
+            showBrowse: true,
+            showPreview: false,
+            //showRemove: true,
+            showUpload: false,
+            //showCancel: true,
+            //autoReplace: true,
+            maxFileSize: 0,//kb
+            maxFileCount: 1,
+            //elCaptionText: "选择交易记录（新店铺不用上传）",
+            textEncoding: "UTF-8",
+            allowedFileExtensions : ['doc', 'docx'],
+        });
+        $("#applicationFile").on("filebatchselected", function(event, files) {
+            applicationFile = files[0];
+        });
+        $('#applicationFile').on('filecleared', function(event) {
+            applicationFile = null;
+        });
+        $('#applicationFile').on('fileerror', function(event, data, msg) {
+            layer.msg(msg);
+            HanLin.error(msg);
+        });
+
+        $('#submit').click(function() {
+            //validator.bootstrapValidator('validate');
+            if ($("#validatorSetting").is(":checked")){
+                //需要表单验证
+
+                var flag = $("form").data("bootstrapValidator").isValid();
+                $("#form").bootstrapValidator("validate");
+                if (flag){
+                    //若表单填写正确
+                    submit();
+                } else {
+                    HanLin.error("表单填写不正确，请检查表单，或关闭表单验证强制提交");
+                }
+            } else {
+                submit();
+            }
+        });
+
+        $("#reset").click(function (){
+            resetForm();
+        });
+        function resetForm(){
+            $("#form")[0].reset();
+            $("#form").bootstrapValidator('resetForm');
+            //$("#form").data("bootstrapValidator").resetForm();
+        }
+
+        function submit(){
+            if (applicationFile == null){
+                layer.msg("请选择申请文件");
+            } else {
+                var formData = new FormData();
+                var form = HanLin.getFrom("#form");
+                //script开始定义了 transactionRecordFile，用于保存交易记录文件
+                //以及applicationFile，用于保存申请文件
+                for(var i = 0; i < form.length; i++){
+                    formData.append(form[i].name, form[i].value);
+                }
+                if (applicationFile != null){
+                    formData.append("applicationFile", applicationFile);
+                }
+                var layerUploadingIndex = layer.load(2);
+                var defer = $.Deferred();
+                $.ajax({
+                    url: "c/amazonEUapplication",
+                    data: formData,
+                    processData: false,  //tell jQuery not to process the data
+                    contentType: false,  //tell jQuery not to set contentType
+                    async: false,
+                    method: 'post',
+                    success:function (data){
+                        defer.resolve(data);
+
+                    },
+                    error: function(){
+                        layer.close(layerUploadingIndex);
+                        HanLin.error("上传发生错误");
+                    },
+                    /*
+                    xhr :function () {//这里我们先拿到jQuery产生的 XMLHttpRequest对象，为其增加 progress 事件绑定，然后再返回交给ajax使用
+                        var myXhr = $.ajaxSettings.xhr();
+
+                         * progress事件会在浏览器接收新数据期间周期性地触发。
+                         * 而onprogress事件处理程序会接收到一个event对象，
+                         * 其target属性是XHR对象，但包含着三个额外的属性：lengthComputable、loaded和total。
+                         * 其中，lengthComputable是一个表示进度信息是否可用的布尔值，loaded表示已经接收的字节数，
+                         * loaded表示根据Content-Length响应头部确定的预期字节数。
+
+                        if(myXhr.upload){
+                            myXhr.upload.addEventListener('progress',progress1, false)
+                        }
+                    },*/
+
+                });
+                defer.done(function (data){
+                    layer.close(layerUploadingIndex);
+                    data = JSON.parse(data);
+                    HanLin.success(data.message);
+                });
+
+
+
+            }
+
+
+
+        }
+    });
+
+
+</script>
+</body>
+</html>

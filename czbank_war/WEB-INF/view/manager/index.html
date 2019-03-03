@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>客户经理</title>
+    <!-- 禁止用户缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="../../js/html5.min.js"></script>
+    <script src="../../js/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="icon" href="../../img/czyh.png">
+    <link rel="stylesheet" href="../../css/bootstrap.modified.css"/>
+    <!-- iziToast -->
+    <link rel="stylesheet" href="../../css/iziToast.min.css"/>
+    <link rel="stylesheet" href="../../layuiIM/css/layui.css"/>
+
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/iziToast.min.js"></script>
+    <script src="../../js/deferredAjax.js"></script>
+    <script src="../../js/hanlinCommons.js"></script>
+    <script src="../../layuiIM/layui.all.js"></script>
+    <!--<script src="../../layui/lay/modules/upload.js.min"></script>-->
+    <style>
+        a, a:hover, a:active{
+            text-decoration: none !important;
+        }
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo" style="color: #9dc1d3;">客户经理</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="../message" target="_blank">消息中心</a></li>
+            <!--<li class="layui-nav-item loadPage"><a>商品管理</a></li>
+            <li class="layui-nav-item loadPage"><a>用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd class="loadPage"><a>邮件管理</a></dd>
+                    <dd class="loadPage"><a>消息管理</a></dd>
+                    <dd class="loadPage"><a>授权管理</a></dd>
+                </dl>
+            </li>-->
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <!--layui upload的bug：choose回调第一次可以触发，第二次不能，但是故意选择不符合格式的文件
+                        后，再选择正确的文件，choose回调又可以触发一次然后有丢失了choose回调，然后再故意选择不符合格式的
+                        文件。。。如此反复
+                    -->
+                    <img id="headPhoto" src="../../img/czyh.png" class="layui-nav-img">
+                    <jsWrite id="userName"><img src="../../img/load.gif" class="layui-nav-img"/></jsWrite>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd class="loadPage" whichPage="userCenter"><a>个人资料</a></dd>
+                    <a href="adviceCenter.html" target="_blank">帮助</a>
+                    <dd><a href="/logout" style="color: #ff0000;">安全退出</a></dd>
+                </dl>
+            </li>
+
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item "><!-- layui-nav-itemed -->
+                    <a href="javascript:;">NRA业务</a>
+                    <dl class="layui-nav-child">
+                        <dd class="loadPage" whichPage="nra"><a href="javascript:;">审核队列查看</a></dd>
+                        <dd class="loadPage" whichPage="nraUpload"><a href="javascript:;">境内账户申请资料上传</a></dd>
+                        <dd class="loadPage" whichPage="nraHistory"><a href="javascript:;">历史申请记录</a></dd>
+                        <!--<dd><a>超链接</a></dd>-->
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">境外账户申请</a>
+                    <dl class="layui-nav-child">
+                        <dd class="loadPage" whichPage="amazonUS"><a href="javascript:;">Amazon(US)</a></dd>
+                        <dd class="loadPage" whichPage="amazonEU"><a href="javascript:;">Amazon(EU)</a></dd>
+                        <dd class="loadPage" whichPage="ebay"><a href="javascript:;">ebay</a></dd>
+
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="contentArea" class="layui-body layui-flud">
+
+    </div>
+
+
+    <div class="layui-footer">
+        <!--&lt;!&ndash; 底部固定区域 &ndash;&gt;
+        © layui.com - 底部固定区域-->
+    </div>
+</div>
+<script>
+
+    //JavaScript代码区域
+    //layui.use(['element', 'layer', 'form'], function(){
+        //var element = layui.element;
+        //element.init();
+
+    //});
+
+
+    //当前用户的JSON数据
+    var currentUser;
+    $(document).ready(function(){
+        var device = layui.device("os");
+        console.log(device);
+
+        iziToast.destroy();
+        layui.element.init();
+
+        //加载此页时检查subject是否拥有经理的角色，这样做是为了提高用户体验，并不是为了提高安全性（后台代码已经拦截）
+        $.when(request("c/checkLogin", {})).done(function(data){
+            if (data){
+                HanLin.info("欢迎回来");
+                HanLin.warn("对开发者说（我自己）：记得不要把用户重要的信息传回来");
+            } else {
+                //这里会被后台过滤器拦截所以不会执行，但以防万一，在这里写一个
+                alert("用户未登录，跳转至登录页");
+                window.location.href = "/login";
+            }
+        });
+        //获取用户信息，缓存到客户端内存中
+        $.when(request("c/getManager", {})).done(function(data){
+            data = JSON.parse(data);
+            var user = data.result;
+            currentUser = user;
+            setTimeout(function (){
+                $("#userName").html(currentUser.userName);
+                $("#headPhoto").attr("src", currentUser.headPhoto);
+            },100);
+            renderUpload(user);
+        });
+
+
+        //绑定导航选项的点击事件
+        $(".loadPage").click(function (e){
+            $("#contentArea").html("");
+            var index = layer.load(2, {time: 10*1000});
+            setTimeout(function (){
+                var whichPage = $(e.currentTarget).attr("whichPage");
+                if (whichPage == "" || whichPage == null || whichPage == undefined){
+                    //$("#contentArea").html("暂无此页面");
+                    HanLin.error("该功能正在施工中");
+                    layer.close(index);
+                } else {
+                    $("#contentArea").load(whichPage, function (){
+                        layer.close(index);
+                    });
+
+                }
+            },100);
+
+        });
+        var countDownNumber = 5;
+        var countDown = setInterval(function(e){
+            layer.closeAll();
+            layer.msg(countDownNumber+"秒后，自动打开消息中心");
+            if (countDownNumber <= 0){
+
+                clearInterval(countDown);
+                layer.closeAll();
+                layer.msg("如果未弹出，可能是被浏览器拦截了，也可手动打开");
+                window.open("../message", '_blank').location;
+            }
+            countDownNumber--;
+        },1000);
+
+    });
+    function renderUpload(user){
+        layui.upload.render({
+            elem: '#headPhoto',
+            url: 'c/changeHeadPhoto',
+            data: {
+                userId: user.userId
+            },
+            accept: "images",
+            acceptMine: 'image/*',
+            auto: true,
+            field: "headPhoto",
+            done: function(data, index, upload){ //上传后的回调
+
+                console.log(data);
+                if (data.flag){
+                    HanLin.success(data.message);
+                    currentUser.headPhoto = data.result;
+                    $("#headPhoto").attr("src", currentUser.headPhoto);
+                } else {
+                    HanLin.error(data.message);
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

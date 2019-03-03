@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.relesee.dao.UserDao">
+    <select id="selectUserById" parameterType="String" resultType="com.relesee.domains.User">
+        SELECT
+            username,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            sign
+        FROM
+            user
+        WHERE
+            userid=#{userId}
+    </select>
+
+    <select id="selectUserByIdAndPass" parameterType="String" resultType="com.relesee.domains.User">
+        SELECT
+            username,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            sign
+        FROM
+            user
+        WHERE
+            UserId = #{userId}
+        AND
+            PassWord = #{pass}
+    </select>
+
+    <update id="updatePersonalInformation" parameterType="com.relesee.domains.User">
+        UPDATE
+            user
+        SET
+            email = #{email},
+            phone = #{phone}
+        WHERE
+            userId = #{userId}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE
+            user
+        SET
+            password = #{password}
+        WHERE
+            userId = #{userId}
+    </update>
+
+    <insert id="insertManager" parameterType="com.relesee.domains.User">
+        INSERT INTO
+            user(
+               userName,
+               password,
+               userId,
+               email,
+               role,
+               userState,
+               phone,
+               headPhoto,
+               deptId,
+               registerDate,
+               permissionId,
+               sign
+            )
+        VALUES(
+            #{userName},
+            '000000',
+            #{userId},
+            #{email},
+            'manager',
+            1,
+            #{phone},
+            'default',
+            #{deptId},
+            NOW(),
+            0,
+            ''
+        )
+    </insert>
+
+    <select id="selectCountManagerId" parameterType="String" resultType="int">
+        SELECT
+            COUNT(*) count
+        FROM
+            user
+        WHERE
+            userId = #{userId}
+    </select>
+
+    <select id="selectManager" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        WHERE
+            role IN ('manager', 'auditor')
+        AND
+            userName LIKE CONCAT('%', #{userName}, '%')
+        AND
+            phone LIKE CONCAT('%', #{phone} ,'%')
+        AND
+            email LIKE CONCAT('%', #{email}, '%')
+    </select>
+
+    <update id="updateManagerBlock">
+        UPDATE
+            user
+        SET
+            useRState = #{userState}
+        WHERE
+            userId = #{userId}
+    </update>
+
+    <update id="updateManagerActive">
+        UPDATE
+            user
+        SET
+            useRState = #{userState}
+        WHERE
+            userId = #{userId}
+    </update>
+
+    <select id="selectAllManager" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        WHERE
+            role = 'manager'
+        AND
+            userState > 0
+    </select>
+
+    <select id="selectAllAuditor" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        WHERE
+            role = 'auditor'
+        AND
+            userState > 0
+    </select>
+
+    <select id="selectAllRoot" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        WHERE
+            role = 'root'
+        AND
+            userState > 0
+    </select>
+
+    <!--<select id="selectGroupMembers" parameterType="String" resultType="com.relesee.domains.User">
+        SELECT
+            userName,
+            password,
+            userId,
+            email,
+            role,
+            userState,
+            phone,
+            headPhoto,
+            deptId,
+            registerDate,
+            permissionId,
+            sign
+        FROM
+            user
+        INNER JOIN
+
+    </select>-->
+</mapper>

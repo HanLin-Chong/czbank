@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.relesee.dao.EbayApplicationDao">
+
+
+    <insert id="insertApplication" parameterType="com.relesee.domains.EbayApplication">
+        INSERT INTO
+            ebayapplication(
+                id,
+                paypalId,
+                businessName,
+                shopUrl,
+                shopName,
+                applicantName,
+                applicantId,
+                recipientAcc,
+                recipientAccName,
+                recipientId,
+                address,
+                managerName,
+                managerDepartment,
+                managerId,
+                transactionRecordName,
+                applicationFileName,
+                uploadTime,
+                status
+            )
+        VALUES
+            (
+                #{id},
+                #{paypalId},
+                #{businessName},
+                #{shopUrl},
+                #{shopName},
+                #{applicantName},
+                #{applicantId},
+                #{recipientAcc},
+                #{recipientAccName},
+                #{recipientId},
+                #{address},
+                #{managerName},
+                #{managerDepartment},
+                #{managerId},
+                #{transactionRecordName},
+                #{applicationFileName},
+                NOW(),
+                0
+            )
+    </insert>
+
+    <select id="selectLocked" resultType="com.relesee.domains.EbayApplication">
+        SELECT
+            id,
+            paypalId,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime
+        FROM
+            ebayapplication
+        WHERE
+            status = #{status}
+        AND
+            auditor = #{auditor}
+    </select>
+
+    <select id="selectOneEbayApplication" resultType="com.relesee.domains.EbayApplication">
+        SELECT
+            id,
+            paypalId,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime
+        FROM
+            ebayapplication
+        WHERE
+            status = 0
+        ORDER BY
+            uploadTime
+        LIMIT
+            0, 1
+    </select>
+
+    <update id="updateStatus" parameterType="com.relesee.domains.EbayApplication">
+        UPDATE
+            ebayapplication
+        SET
+            status = #{status}
+        WHERE
+            id = #{id}
+    </update>
+
+    <update id="updateAuditor" parameterType="com.relesee.domains.EbayApplication">
+        UPDATE
+            ebayapplication
+        SET
+            auditor = #{auditor}
+        WHERE
+            id = #{id}
+    </update>
+
+    <update id="updateApplication" parameterType="com.relesee.domains.EbayApplication">
+
+
+        UPDATE
+            ebayapplication
+        SET
+            paypalId = #{paypalId},
+            businessName = #{businessName},
+            shopUrl = #{shopUrl},
+            shopName = #{shopName},
+            applicantName = #{applicantName},
+            applicantId = #{applicantId},
+            recipientAcc = #{recipientAcc},
+            recipientAccName = #{recipientAccName},
+            recipientId = #{recipientId},
+            address = #{address},
+            managerName = #{managerName},
+            managerDepartment = #{managerDepartment},
+            managerId = #{managerId}
+        WHERE
+            id = #{id}
+    </update>
+
+    <select id="selectMachedFeedback" parameterType="String" resultType="com.relesee.domains.EbayApplication">
+        SELECT
+            id,
+            paypalId,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            status,
+            auditor
+        FROM
+            ebayapplication
+        WHERE
+            businessName = #{accName}
+    </select>
+
+    <select id="selectHistory" resultType="com.relesee.domains.EbayApplication">
+        SELECT
+            id,
+            paypalId,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            auditor,
+            foundTime,
+            accName,
+            acc,
+            currency,
+            foreignBank,
+            routing,
+            postScript,
+            note
+        FROM
+            ebayapplication
+        INNER JOIN
+            foreignfeedback
+        ON
+            foreignfeedback.accName = ebayapplication.businessName
+        ORDER BY
+            uploadTime
+        LIMIT
+            #{begin}, #{size}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        SELECT
+            COUNT(*) count
+        FROM
+            ebayapplication
+        WHERE
+            status >= 0
+    </select>
+
+    <select id="selectSearchHistory" parameterType="String" resultType="com.relesee.domains.EbayApplication">
+        SELECT
+            id,
+            paypalId,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName,
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            auditor,
+            foundTime,
+            accName,
+            acc,
+            currency,
+            foreignBank,
+            routing,
+            postScript,
+            note
+        FROM
+            ebayapplication
+        INNER JOIN
+            foreignfeedback
+        ON
+            foreignfeedback.accName = ebayapplication.businessName
+        WHERE
+            paypalId LIKE CONCAT('%', #{key}, '%')
+        OR
+            businessName LIKE CONCAT('%', #{key}, '%')
+        OR
+            shopName LIKE CONCAT ('%', #{key}, '%')
+        OR
+            applicantName LIKE CONCAT('%', #{key}, '%')
+        OR
+            recipientAccName LIKE CONCAT('%', #{key}, '%')
+        OR
+            managerName LIKE CONCAT('%', #{key}, '%')
+        OR
+            accName LIKE CONCAT('%', #{key}, '%')
+        ORDER BY
+            uploadTime
+    </select>
+
+</mapper>
