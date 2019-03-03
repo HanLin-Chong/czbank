@@ -17,4 +17,5 @@ public interface MessageDao {
 
     List<Message> selectUnreceivedMessages(@Param("recipientId") String recipientId, @Param("statusCode") int statusCode);
 
+    List<Message> selectChatLog(@Param("id") String id, @Param("userId") String userId, @Param("type") String type);
 }

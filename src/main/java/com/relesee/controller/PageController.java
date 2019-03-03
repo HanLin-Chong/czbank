@@ -4,6 +4,7 @@ package com.relesee.controller;
 import com.alibaba.fastjson.JSON;
 import com.relesee.aspect.AccessLogAspect;
 import com.relesee.domains.User;
+import com.relesee.service.MessageService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -28,6 +29,9 @@ import java.io.IOException;
 public class PageController {
 
     private static final Logger logger = Logger.getLogger(PageController.class);
+
+    @Autowired
+    MessageService messageService;
 
     /*@Autowired
     AccessLogAspect accessLog;*/
@@ -74,6 +78,14 @@ public class PageController {
     public String message(){
         logger.info("WEB-INF/view/message.html["+getUserId()+"]");
         return "WEB-INF/view/message.html";
+    }
+
+    @RequiresPermissions( {"message"} )
+    @RequestMapping("/chatLog")
+    public String chatLog(String id, String friend){
+        logger.info("WEB-INF/view/chatLog.html["+getUserId()+"]");
+
+        return "WEB-INF/view/chatLog.jsp";
     }
 
     @RequestMapping("/distribute")

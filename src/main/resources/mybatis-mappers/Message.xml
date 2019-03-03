@@ -100,4 +100,34 @@
             status = #{statusCode};
     </select>
 
+    <select id="selectChatLog" resultType="com.relesee.domains.layim.Message">
+        SELECT
+            username,
+            avatar,
+            id,
+            type,
+            content,
+            cid,
+            mine,
+            fromid,
+            timestamp,
+            recipientId,
+            status
+        FROM
+            chatlog
+        WHERE
+            (
+                recipientId = #{id}
+                AND
+                fromid = #{userId}
+            )
+        OR
+            (
+                recipientId = #{userId}
+                AND
+                fromId = #{id}
+            )
+        ORDER BY
+            timestamp
+    </select>
 </mapper>

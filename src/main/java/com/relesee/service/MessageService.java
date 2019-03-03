@@ -198,4 +198,11 @@ public class MessageService {
         }
         return result;
     }
+
+    public List<Message> getChatLog(String id, String type){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+
+        List<Message> result = messageDao.selectChatLog(id, user.getUserId(), type);
+        return result;
+    }
 }
