@@ -23,7 +23,11 @@ public interface AmazonUSdao {
 
     List<AmazonUSapplication> selectHistory(@Param("begin") int begin, @Param("size") int size);
 
+    List<AmazonUSapplication> selectPageHistory(@Param("begin") int begin, @Param("size") int size);
+
     int selectCount();
 
     List<AmazonUSapplication> selectSearchHistory(String key);
+
+    AmazonUSapplication selectById(String uuid);
 }

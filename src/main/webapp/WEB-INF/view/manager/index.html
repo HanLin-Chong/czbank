@@ -128,7 +128,7 @@
         $.when(request("c/checkLogin", {})).done(function(data){
             if (data){
                 HanLin.info("欢迎回来");
-                HanLin.warn("对开发者说（我自己）：记得不要把用户重要的信息传回来");
+                //HanLin.warn("对开发者说（我自己）：记得不要把用户重要的信息传回来");
             } else {
                 //这里会被后台过滤器拦截所以不会执行，但以防万一，在这里写一个
                 alert("用户未登录，跳转至登录页");
@@ -167,7 +167,7 @@
             },100);
 
         });
-        var countDownNumber = 5;
+        /*var countDownNumber = 5;
         var countDown = setInterval(function(e){
             layer.closeAll();
             layer.msg(countDownNumber+"秒后，自动打开消息中心");
@@ -179,7 +179,7 @@
                 window.open("../message", '_blank').location;
             }
             countDownNumber--;
-        },1000);
+        },1000);*/
 
     });
     function renderUpload(user){

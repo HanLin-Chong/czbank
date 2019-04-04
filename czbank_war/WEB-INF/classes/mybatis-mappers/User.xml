@@ -214,6 +214,41 @@
             userState > 0
     </select>
 
+    <insert id="temp" parameterType="com.relesee.domains.User">
+        INSERT INTO
+            user(
+                userName,
+                password,
+                userId,
+                email,
+                role,
+                userState,
+                phone,
+                headPhoto,
+                deptId,
+                deptName,
+                registerDate,
+                permissionId,
+                sign
+            )
+        VALUES(
+            #{userName},
+            #{password},
+            #{userId},
+            #{email},
+            #{role},
+            #{userState},
+            #{phone},
+            #{headPhoto},
+            #{deptId},
+            #{deptName},
+            NOW(),
+            0,
+            #{sign}
+        )
+
+    </insert>
+
     <!--<select id="selectGroupMembers" parameterType="String" resultType="com.relesee.domains.User">
         SELECT
             userName,

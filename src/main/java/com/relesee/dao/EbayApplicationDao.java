@@ -23,7 +23,11 @@ public interface EbayApplicationDao {
 
     List<EbayApplication> selectHistory(@Param("begin") int begin, @Param("size") int size);
 
+    List<EbayApplication> selectPageHistory(@Param("begin") int begin, @Param("size") int size);
+
     int selectCount();
 
     List<EbayApplication> selectSearchHistory(String key);
+
+    EbayApplication selectById(String uuid);
 }

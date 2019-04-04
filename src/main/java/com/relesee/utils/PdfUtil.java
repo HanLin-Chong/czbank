@@ -25,6 +25,10 @@ public class PdfUtil {
 
     private static Map<String, String> region = new HashMap();
 
+    private static Map<String, String> swiftCode = new HashMap();
+
+    private static Map<String, String> cooperativeBank = new HashMap();
+
     static {
         region.put("USD", "美元/USD");
         region.put("EUR", "欧元/EUR");
@@ -32,6 +36,10 @@ public class PdfUtil {
         region.put("JPY", "日元/JPY");
         region.put("AUD", "澳大利亚元/AUD");
         region.put("HKD", "港币/HKD");
+
+        swiftCode.put("IBOC", "IBOCUS44");
+
+        cooperativeBank.put("IBOC", "INTERNATIONAL BANK OF CHICAGO");
     }
 
     /**
@@ -78,7 +86,7 @@ public class PdfUtil {
         head2.setSpacingBefore(20f);
         headDivLeft.addElement(head2);
         //headEN2.setColor(BaseColor.RED);//temp
-        Paragraph 临时1 = new Paragraph(p.getForeignFullName(), headEN2);
+        Paragraph 临时1 = new Paragraph(cooperativeBank.get(feedback.getForeignBank()), headEN2);
         headDivLeft.addElement(临时1);
 
         Paragraph head3 = new Paragraph("地址：浙江省义乌市义乌乐园东侧", headCN2);
@@ -122,7 +130,7 @@ public class PdfUtil {
         cell_0_0.setUseAscender(true);
         cell_0_0.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
         table.addCell(cell_0_0);
-        PdfPCell cell_1_0 = new PdfPCell(new Paragraph(p.getForeignSwiftCode(), tableRight));
+        PdfPCell cell_1_0 = new PdfPCell(new Paragraph(swiftCode.get(feedback.getForeignBank()), tableRight));
         cell_1_0.setUseAscender(true);
         cell_1_0.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
         table.addCell(cell_1_0);

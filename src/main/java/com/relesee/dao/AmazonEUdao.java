@@ -24,4 +24,6 @@ public interface AmazonEUdao {
     int selectCount();
 
     List<AmazonEUapplication> selectSearchHistory(String key);
+
+    AmazonEUapplication selectById(String uuid);
 }

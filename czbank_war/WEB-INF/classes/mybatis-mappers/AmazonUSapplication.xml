@@ -217,6 +217,34 @@
             #{begin}, #{size}
     </select>
 
+    <select id="selectPageHistory" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+            id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            auditor
+        FROM
+            amazonusapplication
+        ORDER BY
+            uploadTime
+        LIMIT
+            #{begin}, #{size}
+    </select>
+
     <select id="selectCount" resultType="int">
         SELECT
             COUNT(*) count
@@ -278,5 +306,29 @@
             uploadTime
     </select>
 
-
+    <select id="selectById" parameterType="String" resultType="com.relesee.domains.AmazonUSapplication">
+        SELECT
+                        id,
+            amazonMail,
+            businessName,
+            shopUrl,
+            shopName,
+            applicantName,
+            applicantId,
+            recipientAcc,
+            recipientAccName
+            recipientId,
+            address,
+            managerName,
+            managerDepartment,
+            managerId,
+            transactionRecordName,
+            applicationFileName,
+            uploadTime,
+            auditor
+        FROM
+            amazonusapplication
+        WHERE
+            id = #{uuid}
+    </select>
 </mapper>

@@ -1,14 +1,19 @@
 package com.relesee.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.relesee.dao.AmazonEUdao;
+import com.relesee.dao.AmazonUSdao;
+import com.relesee.dao.EbayApplicationDao;
 import com.relesee.domains.*;
 import com.relesee.service.*;
+import com.relesee.utils.ZipUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Header;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.tools.zip.ZipOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -266,8 +271,9 @@ public class AuditorController {
 
     @RequestMapping(value = "ebayPassed", produces = "text/plane;charset=utf-8")
     @ResponseBody
-    public String ebayPassed(EbayApplication ebayApplication){
-        Result result = foreignAccService.ebayPassed(ebayApplication);
+    public String ebayPassed(EbayApplication ebayApplication, HttpServletRequest request){
+        String realpath = request.getServletContext().getRealPath("/");
+        Result result = foreignAccService.ebayPassed(ebayApplication, realpath);
         return JSON.toJSONString(result);
     }
 
@@ -527,5 +533,83 @@ public class AuditorController {
     public String searchNraHistory(String key){
         List<NraFile> result = nraQueueService.searchHistory(key);
         return JSON.toJSONString(result);
+    }
+
+    @Autowired
+    EbayApplicationDao ebayApplicationDao;
+
+    @RequestMapping("ebayZip/{uuid}")
+    public void ebayZip(@PathVariable("uuid") String uuid, HttpServletRequest request, HttpServletResponse response){
+        String realpath = request.getServletContext().getRealPath("/");
+        String forderPath = realpath+"/files/ebay/"+uuid;
+        try {
+            EbayApplication a = ebayApplicationDao.selectById(uuid);
+            String zipName = "ebay_"+ a.getManagerDepartment() +"_"+ a.getManagerName()+ "_" + a.getUploadTime() +".zip";
+            response.setHeader("content-type", "application/octet-stream");
+            response.setCharacterEncoding("utf-8");
+            // 设置浏览器响应头对应的Content-disposition
+            response.setHeader("Content-disposition", "attachment;filename=" + new String(zipName.getBytes("utf-8"), "iso8859-1"));
+
+            ZipOutputStream out = new ZipOutputStream(response.getOutputStream());
+
+            ZipUtil.zip(forderPath, out);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Autowired
+    AmazonUSdao amazonUSdao;
+
+    @RequestMapping("amazonUSzip/{uuid}")
+    public void amazonUSZip(@PathVariable("uuid") String uuid, HttpServletRequest request, HttpServletResponse response){
+        String realpath = request.getServletContext().getRealPath("/");
+        String forderPath = realpath+"/files/amazon/us/"+uuid;
+        try {
+            AmazonUSapplication a = amazonUSdao.selectById(uuid);
+            String zipName = "amazon_us_"+ a.getManagerDepartment() +"_"+ a.getManagerName()+ "_" + a.getUploadTime() +".zip";
+            response.setHeader("content-type", "application/octet-stream");
+            response.setCharacterEncoding("utf-8");
+            // 设置浏览器响应头对应的Content-disposition
+            response.setHeader("Content-disposition", "attachment;filename=" + new String(zipName.getBytes("utf-8"), "iso8859-1"));
+
+            ZipOutputStream out = new ZipOutputStream(response.getOutputStream());
+
+            ZipUtil.zip(forderPath, out);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Autowired
+    AmazonEUdao amazonEUdao;
+
+    @RequestMapping("amazonEUzip/{uuid}")
+    public void amazonEUzip(@PathVariable("uuid") String uuid, HttpServletRequest request, HttpServletResponse response){
+        String realpath = request.getServletContext().getRealPath("/");
+        String forderPath = realpath+"/files/amazon/eu/"+uuid;
+        try {
+            AmazonEUapplication a = amazonEUdao.selectById(uuid);
+            String zipName = "ebay_"+ a.getManagerDepartment() +"_"+ a.getManagerName()+ "_" + a.getUploadTime() +".zip";
+            response.setHeader("content-type", "application/octet-stream");
+            response.setCharacterEncoding("utf-8");
+            // 设置浏览器响应头对应的Content-disposition
+            response.setHeader("Content-disposition", "attachment;filename=" + new String(zipName.getBytes("utf-8"), "iso8859-1"));
+
+            ZipOutputStream out = new ZipOutputStream(response.getOutputStream());
+
+            ZipUtil.zip(forderPath, out);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

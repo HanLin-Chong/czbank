@@ -191,12 +191,18 @@ public class ForeignAccService {
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation=Propagation.REQUIRED,rollbackForClassName="Exception")
-    public Result ebayPassed(EbayApplication input){
+    public Result ebayPassed(EbayApplication input, String realpath){
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         input.setAuditor(user.getUserId());
         Result result = new Result();
         input.setStatus(ForeignApplicationStatus.SUBMITTED.getCode());
+
+        //新增的打包下载功能
+        /*String uuid = input.getId();
+        String forderPath = realpath+"/files/amazon/us/"+uuid;*/
+
         int count = ebayApplicationDao.updateStatus(input);
+
         if (count == 1){
             result.setFlag(true);
             result.setMessage("通过申请成功，即将打包下载");
@@ -398,7 +404,7 @@ public class ForeignAccService {
 
     public LayTableResult<List<EbayApplication>> getEbayHistory(int begin, int size){
         LayTableResult<List<EbayApplication>> result = new LayTableResult();
-        List<EbayApplication> list = ebayApplicationDao.selectHistory(begin, size);
+        List<EbayApplication> list = ebayApplicationDao.selectPageHistory(begin, size);
         int count = ebayApplicationDao.selectCount();
         result.setCount(count);
         result.setMsg("获取数据成功");
@@ -413,7 +419,7 @@ public class ForeignAccService {
 
     public LayTableResult<List<AmazonUSapplication>> getAmazonUShistory(int begin, int size){
         LayTableResult<List<AmazonUSapplication>> result = new LayTableResult();
-        List<AmazonUSapplication> list = amazonUSdao.selectHistory(begin, size);
+        List<AmazonUSapplication> list = amazonUSdao.selectPageHistory(begin, size);
         int count = amazonUSdao.selectCount();
         result.setCount(count);
         result.setMsg("获取数据成功");

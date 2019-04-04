@@ -8,6 +8,7 @@ import com.relesee.domains.layim.*;
 import com.relesee.utils.FileUtil;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,9 @@ public class MessageService {
 
     @Autowired
     MessageDao messageDao;
+
+    @Value("#{projectProperties['server.host']}")//projectProperties是在spring的配置文件中配置的一个bean
+    private String SERVER_HOST;
 
     public Init init(){
         Init init = new Init();
@@ -151,7 +155,7 @@ public class MessageService {
             res.setCode(0);
             res.setMsg("");
             Omnipotent data = new Omnipotent();
-            data.setSrc("http://127.0.0.1:8080/img/im/"+file.getOriginalFilename());
+            data.setSrc(SERVER_HOST+"/img/im/"+file.getOriginalFilename());
             data.setName(file.getOriginalFilename());
             res.setData(data);
         } catch (Exception e){
@@ -173,7 +177,7 @@ public class MessageService {
             res.setMsg("");
             Omnipotent data = new Omnipotent();
             data.setName(file.getOriginalFilename());
-            data.setSrc("http://127.0.0.1:8080/files/im/"+file.getOriginalFilename());
+            data.setSrc(SERVER_HOST+"/files/im/"+file.getOriginalFilename());
             res.setData(data);
         } catch (Exception e){
             e.printStackTrace();

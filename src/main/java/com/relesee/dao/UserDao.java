@@ -35,4 +35,6 @@ public interface UserDao {
     List<User> selectAllAuditor();
 
     List<User> selectAllRoot();
+
+    int temp(User user);
 }

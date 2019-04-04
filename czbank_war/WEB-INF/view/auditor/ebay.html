@@ -32,7 +32,7 @@
     <div class="col-lg-12">
         <br/><br/>
     </div>
-    <div class="col-lg-8 layui-form">
+    <div class="col-lg-6 layui-form">
         <label>当前申请操作完成后自动加载新的申请：</label>
         <input id="autoLoadSetting" type="checkbox" lay-filter="validatorSetting" name="null" lay-skin="switch" lay-text="开启|关闭" checked/>
         <div class="hanlin-vertical-line"></div>
@@ -40,6 +40,9 @@
         <input id="viewModeSetting" type="checkbox" lay-filter="viewModeSetting" name="null" lay-skin="switch" lay-text="流式布局|窗口模式" checked/>-->
     </div>
 
+    <div class="col-lg-1">
+        <a id="zip" target="_blank">打包下载</a>
+    </div>
     <div class="col-lg-1">
         <button id="newApp" class="btn btn-primary">获取申请</button>
     </div>
@@ -49,7 +52,7 @@
     <div class="col-lg-1">
         <button id="passApplication" class="btn btn-success">申请通过</button>
     </div>
-    <div class="col-lg-1"></div>
+    <div class="col-lg-2"></div>
     <div class="col-lg-12">
         <hr/>
     </div>
@@ -430,6 +433,9 @@ function newEbayApplication(){
             var formData = data.result;
             currentData = formData;
             HanLin.setForm(formData, "#form");
+
+            $("#zip").attr("href", "/auditor/c/ebayZip/"+formData.id);
+
             //加载word
             var applicationFileName = formData.applicationFileName;
             applicationFileUrl = "http://ow365.cn/?i="+HanLin.SERVER_ID+"&furl=http://"+HanLin.SERVER_HOST+":8080/files/ebay/"+formData.id+"/"+applicationFileName;

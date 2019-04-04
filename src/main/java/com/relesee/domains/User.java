@@ -23,6 +23,7 @@ public class User {
     private String phone;
     private String headPhoto;
     private String deptId;
+    private String deptName;
     private String registerDate;
     private String sign;
 
@@ -96,6 +97,14 @@ public class User {
 
     public void setDeptId(String deptId) {
         this.deptId = deptId;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 
     public String getRegisterDate() {
