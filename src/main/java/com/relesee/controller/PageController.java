@@ -51,7 +51,7 @@ public class PageController {
 
     @RequestMapping("/login")
     public String login2(){
-
+//zhixiang,login.html
         return "WEB-INF/view/login.html";
     }
 

@@ -91,14 +91,10 @@ public class ManagerController {
     @RequestMapping(value = "nraUpload", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String nraUpload(MultipartFile file, boolean isQualityCustomer, String note){
-
         NraFile nraFile = new NraFile();
         nraFile.setQualityCustomer(isQualityCustomer);
         nraFile.setNote(note);
-
-
         Result result = nraQueueService.nraUpload(file, nraFile);
-
         return JSON.toJSONString(result);
     }
 

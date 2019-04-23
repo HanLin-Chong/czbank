@@ -196,6 +196,7 @@ public class MessageController {
     @ResponseBody
     public String getChatLog(String id, String type){
         List<Message> list = messageService.getChatLog(id, type);
+        System.out.println(JSON.toJSONString(list));
         return JSON.toJSONString(list);
     }
 }

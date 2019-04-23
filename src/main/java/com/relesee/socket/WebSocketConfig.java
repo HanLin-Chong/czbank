@@ -28,7 +28,6 @@ public class WebSocketConfig implements WebSocketConfigurer{
         return new SocketHandler();
     }
 
-
     @Bean
     public ServletServerContainerFactoryBean createWebSocketContainer() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();

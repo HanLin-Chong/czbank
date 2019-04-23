@@ -1,5 +1,6 @@
 package com.relesee.service;
 
+import com.alibaba.fastjson.JSON;
 import com.itextpdf.text.DocumentException;
 import com.relesee.dao.AmazonUSdao;
 import com.relesee.dao.EbayApplicationDao;
@@ -83,6 +84,8 @@ public class ForeignFeedBackService {
                 String managerId = "";
                 String recipientMail = "";
                 PdfParameters pdfParameters = new PdfParameters();
+                System.out.println("---feedback:"+JSON.toJSONString(feedback));
+                System.out.println("----note:"+feedback.getNote());
 
                 if (StringUtils.isBlank(feedback.getNote())){
                     //若备注为空，是AmazonUS的
@@ -106,6 +109,7 @@ public class ForeignFeedBackService {
                         businessName = application.getBusinessName();
                         managerId = application.getManagerId();
                         recipientMail = application.getPaypalId();
+                        System.out.println("application:"+JSON.toJSONString(application));
                         pdfParameters.setCzbankAcc(application.getRecipientAcc());
                         pdfParameters.setCzbankAccName(application.getRecipientAccName());
                     } else {
@@ -125,6 +129,7 @@ public class ForeignFeedBackService {
                 mailParameters.setMailSubject("稠州银行境外合作银行账户申请《账户通知书》");
                 mailParameters.setMailContent("您此前提交的账户申请现已收到境外银行的反馈结果，详情请咨询您的客户经理，如果您之前并没有提交过任何申请，请忽略此邮件");
                 mailParameters.setFileAbsolutePosition(outputPath+"境外账户通知书.pdf");
+                System.out.println("--- "+recipientMail+" ---");
                 mailParameters.setRecipientAddress(recipientMail);
                 try {
                     MailUtil.send(mailParameters);
@@ -138,9 +143,9 @@ public class ForeignFeedBackService {
                     result.setMessage("处理失败");
                 }
                 //通知客户经理
-                Map<String, WebSocketSession> sessions =  SocketHandler.getSessions();
+                /*Map<String, WebSocketSession> sessions =  SocketHandler.getSessions();
                 String payload = "{system:true,content:\"您的申请已经收到外行反馈\"}";
-                sessions.get(managerId).sendMessage(new TextMessage(payload));
+                sessions.get(managerId).sendMessage(new TextMessage(payload));*/
             }
             int count = foreignFeedbackDao.insertFeedback(list);
             if (count >= 1){

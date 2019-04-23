@@ -132,12 +132,12 @@ $.when(request("c/getManager"), {}).done(function (userData){
                     }
                 },
 
-                {field: 'priority', title: '插队', width: 80, align: 'center',
+                /*{field: 'priority', title: '插队', width: 80, align: 'center',
                     templet: function (d){
 
                         return d.priority?"<span class='glyphicon glyphicon-ok' style='color: #5eb95e'></span>":"-";
                     }
-                },
+                },*/
                 {field: 'note', title: '备注', width: 200},
                 {field: 'id', title: 'ID', width:280},
             ]],

@@ -125,7 +125,19 @@ $(document).ready(function (){
         var id = $(btn).attr("nraFileId");
         var uploadTime = $(btn).attr("uploadTime");
         var fileName = $(btn).attr("fileName");
-        layer.confirm('确定同意文件“'+fileName+'”插队？', {
+        var index = layer.load(2);
+        HanLin.requestTypical("c/priorityPass", {id:id}, function(data){
+            data = JSON.parse(data);
+            layui.layer.close(index);
+            if (data.flag){
+                HanLin.success("已同意插队申请：("+fileName+":"+uploadTime+")");
+            } else {
+                HanLin.error("同意插队失败");
+            }
+            reloadTableData({});
+        }, "同意插队时服务器端出现错误");
+        layer.close(index);
+        /*layer.confirm('确定同意文件“'+fileName+'”插队？', {
             icon: 3,
             title:'同意插队',
             btn: ["确定", "取消"],
@@ -144,7 +156,7 @@ $(document).ready(function (){
             layer.close(index);
         }, function(index){
             layer.close(index);
-        });
+        });*/
     });
     $(document).on("click", ".refuse", function (e){
         var btn = e.currentTarget;

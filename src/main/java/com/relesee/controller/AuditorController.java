@@ -354,7 +354,6 @@ public class AuditorController {
     @RequestMapping(value = "foreignFeedback", produces = "text/plane;charset=utf-8")
     @ResponseBody
     public String foreignFeedback(MultipartFile file, HttpServletRequest request){
-
         Result result = null;
         try {
             result = feedBackService.process(file.getInputStream(), request.getServletContext().getRealPath("/"));
@@ -364,8 +363,6 @@ public class AuditorController {
             result.setFlag(false);
             result.setMessage("上传反馈文件失败");
         }
-
-
         return JSON.toJSONString(result);
     }
 

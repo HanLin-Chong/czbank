@@ -361,7 +361,7 @@
         layui.form.on('switch(validatorSetting)', function(data){
             if (!data.elem.checked){
                 layer.msg("强制提交会加重审核员的负担，请三思");
-                $("#form").bootstrapValidator('resetForm');
+                //$("#form").bootstrapValidator('resetForm');
             }
         });
         $("#transactionRecord").on("filebatchselected", function(event, files) {

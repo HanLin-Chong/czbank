@@ -25,7 +25,7 @@
     <br/>
 </div>
 <div class="col-lg-12">
-    <input id="uploadfile" name="file" type="file" multiple>
+    <input id="uploadfile" name="file" type="file" multiple/>
 </div>
 <div class="col-lg-12 layui-form">
     <div style="margin-top: 10px;margin-bottom: 10px;">
@@ -39,14 +39,10 @@
 </div>
 
 
-
-
-
 </body>
 
 <script>//参考手册：https://blog.csdn.net/u012526194/article/details/69937741
 var fileInput = $('#uploadfile').fileinput({
-
     language: 'zh',
     uploadUrl: 'c/nraUpload',
     //这里应该让高级用户来决定能上传那些文件
@@ -99,8 +95,6 @@ $(document).ready(function(){
         } else {
             HanLin.error(response.message);
         }
-
-
     });
     /*通过设置uplaodExtraData好像没用，修改源码，在源码上传前的部分调用函数preUpload(this.formdata);
     //上传前

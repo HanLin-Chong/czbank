@@ -1,5 +1,6 @@
 package com.relesee.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.relesee.domains.MailParameters;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -57,6 +58,10 @@ public class MailUtil {
          * MimeMessage.RecipientType.CC：抄送
          * MimeMessage.RecipientType.BCC：密送
          */
+        System.out.println("---------------------------------");
+        System.out.println(JSON.toJSONString(parameters));
+        System.out.println(parameters.getRecipientAddress());
+        System.out.println("---------------------------------");
         msg.setRecipient(MimeMessage.RecipientType.TO,new InternetAddress(parameters.getRecipientAddress()));
         //4.设置邮件主题
         msg.setSubject(parameters.getMailSubject(),"UTF-8");

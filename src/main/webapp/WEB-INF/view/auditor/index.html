@@ -29,6 +29,20 @@
         a, a:hover, a:active{
             text-decoration: none !important;
         }
+        @keyframes zoomIn {
+            0% {
+                opacity: 0;
+                -webkit-transform: scale3d(.3,.3,.3);
+                transform: scale3d(.3,.3,.3);
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        .animated{
+            animation-name: zoomIn;
+            animation-duration: .5s;
+        }
     </style>
 </head>
 <body class="layui-layout-body">
@@ -195,9 +209,15 @@
                     HanLin.error("该功能正在施工中");
                     layer.close(index);
                 } else {
-                    $("#contentArea").load(whichPage, function (){
-                        layer.close(index);
-                    });
+
+                    $("#contentArea").removeClass("animated");
+                    setTimeout(function (){
+                        $("#contentArea").load(whichPage, function (){
+
+                            layer.close(index);
+                            $("#contentArea").addClass("animated");
+                        });
+                    }, 100);
                 }
             },200);
         });
